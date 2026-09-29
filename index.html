@@ -1,1 +1,1638 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#ee4d2d" />
+  <title>Mini Shop</title>
+  <style>
+    :root {
+      --brand: #ee4d2d;
+      --brand-dark: #d93f22;
+      --brand-soft: #fff1ed;
+      --text: #222;
+      --muted: #8b8b8b;
+      --border: #ececec;
+      --bg: #f5f5f5;
+      --card: #fff;
+      --success: #16a34a;
+      --danger: #dc2626;
+      --shadow: 0 8px 28px rgba(0, 0, 0, .08);
+      --radius: 14px;
+    }
 
+    * { box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    body.no-scroll { overflow: hidden; }
+
+    button, input, textarea { font: inherit; }
+    button { cursor: pointer; }
+    button:disabled { cursor: not-allowed; opacity: .5; }
+
+    .hidden { display: none !important; }
+
+    .app-shell {
+      width: min(1240px, 100%);
+      margin: 0 auto;
+      padding: 0 16px 96px;
+    }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      margin: 0 -16px;
+      padding: 12px 16px 10px;
+      background: rgba(245, 245, 245, .94);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border-bottom: 1px solid rgba(0,0,0,.04);
+    }
+
+    .topbar-inner {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      width: min(1240px, 100%);
+      margin: 0 auto;
+    }
+
+    .brand {
+      min-width: max-content;
+      font-weight: 900;
+      font-size: 20px;
+      letter-spacing: -.4px;
+      color: var(--brand);
+    }
+
+    .search-wrap {
+      position: relative;
+      flex: 1;
+      min-width: 0;
+    }
+
+    .search-wrap svg {
+      position: absolute;
+      left: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #999;
+      pointer-events: none;
+    }
+
+    .search-input {
+      width: 100%;
+      height: 44px;
+      border: 1px solid #dedede;
+      border-radius: 12px;
+      padding: 0 42px 0 42px;
+      outline: none;
+      background: #fff;
+      transition: .18s ease;
+    }
+
+    .search-input:focus {
+      border-color: var(--brand);
+      box-shadow: 0 0 0 3px rgba(238, 77, 45, .08);
+    }
+
+    .search-clear {
+      position: absolute;
+      right: 8px;
+      top: 7px;
+      width: 30px;
+      height: 30px;
+      border: 0;
+      border-radius: 50%;
+      background: #f1f1f1;
+      color: #777;
+      display: grid;
+      place-items: center;
+    }
+
+    .cart-icon-btn {
+      position: relative;
+      flex: 0 0 auto;
+      width: 44px;
+      height: 44px;
+      border: 0;
+      border-radius: 50%;
+      background: var(--brand);
+      color: #fff;
+      display: grid;
+      place-items: center;
+      box-shadow: 0 6px 18px rgba(238,77,45,.24);
+    }
+
+    .cart-count {
+      position: absolute;
+      top: -3px;
+      right: -2px;
+      min-width: 19px;
+      height: 19px;
+      padding: 0 5px;
+      border-radius: 999px;
+      display: grid;
+      place-items: center;
+      background: #fff;
+      color: var(--brand);
+      border: 2px solid var(--brand);
+      font-size: 11px;
+      font-weight: 800;
+      line-height: 1;
+    }
+
+    .hero {
+      padding: 22px 0 14px;
+    }
+
+    .hero-title {
+      margin: 0;
+      font-size: clamp(22px, 3.6vw, 30px);
+      line-height: 1.1;
+      font-weight: 900;
+      letter-spacing: -.7px;
+    }
+
+    .hero-subtitle {
+      margin: 8px 0 0;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .section-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin: 14px 0 12px;
+    }
+
+    .section-title {
+      margin: 0;
+      font-size: 18px;
+      font-weight: 900;
+    }
+
+    .result-count {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .message {
+      margin: 12px 0;
+      padding: 12px 14px;
+      border-radius: 10px;
+      font-size: 14px;
+    }
+
+    .message-error { background: #fff0f0; color: #a61b1b; }
+
+    .products {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px;
+    }
+
+    .product-card {
+      position: relative;
+      min-width: 0;
+      overflow: hidden;
+      background: var(--card);
+      border-radius: 10px;
+      box-shadow: 0 1px 3px rgba(0,0,0,.06);
+    }
+
+    .product-media {
+      position: relative;
+      aspect-ratio: 1 / 1;
+      background: #f0f0f0;
+      overflow: hidden;
+    }
+
+    .product-image {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .product-placeholder {
+      width: 100%;
+      height: 100%;
+      display: grid;
+      place-items: center;
+      color: #bcbcbc;
+    }
+
+    .discount-badge {
+      position: absolute;
+      top: 8px;
+      left: 8px;
+      padding: 4px 6px;
+      border-radius: 5px;
+      background: #ffd9d0;
+      color: var(--brand);
+      font-size: 10px;
+      font-weight: 900;
+    }
+
+    .out-badge {
+      position: absolute;
+      right: 8px;
+      top: 8px;
+      padding: 4px 6px;
+      border-radius: 5px;
+      background: rgba(0,0,0,.62);
+      color: #fff;
+      font-size: 10px;
+      font-weight: 800;
+    }
+
+    .product-content { padding: 9px 9px 10px; }
+
+    .product-name {
+      min-height: 38px;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      font-size: 13px;
+      line-height: 1.45;
+      font-weight: 700;
+    }
+
+    .price-row {
+      display: flex;
+      align-items: baseline;
+      gap: 6px;
+      flex-wrap: wrap;
+      margin-top: 6px;
+    }
+
+    .product-price {
+      font-size: 16px;
+      color: var(--brand);
+      font-weight: 900;
+    }
+
+    .product-old-price {
+      color: #aaa;
+      text-decoration: line-through;
+      font-size: 11px;
+    }
+
+    .product-stock {
+      margin-top: 4px;
+      color: var(--muted);
+      font-size: 11px;
+    }
+
+    .product-actions {
+      display: grid;
+      grid-template-columns: 40px 1fr;
+      gap: 7px;
+      margin-top: 9px;
+    }
+
+    .icon-button,
+    .buy-button {
+      height: 38px;
+      border-radius: 10px;
+      border: 1px solid transparent;
+      display: grid;
+      place-items: center;
+      transition: transform .12s ease, box-shadow .12s ease, background .12s ease;
+    }
+
+    .icon-button:active,
+    .buy-button:active { transform: scale(.98); }
+
+    .icon-button {
+      background: var(--brand-soft);
+      color: var(--brand);
+      border-color: #ffd7cd;
+    }
+
+    .buy-button {
+      background: var(--brand);
+      color: #fff;
+      font-size: 13px;
+      font-weight: 800;
+      box-shadow: 0 5px 14px rgba(238,77,45,.16);
+    }
+
+    .empty-state {
+      grid-column: 1 / -1;
+      padding: 54px 16px;
+      text-align: center;
+      color: var(--muted);
+      background: #fff;
+      border-radius: 12px;
+    }
+
+    /* Modal / bottom sheet */
+    .sheet-root {
+      position: fixed;
+      inset: 0;
+      z-index: 100;
+      pointer-events: none;
+    }
+
+    .sheet-root.is-open { pointer-events: auto; }
+
+    .sheet-backdrop {
+      position: absolute;
+      inset: 0;
+      background: rgba(0,0,0,.48);
+      opacity: 0;
+      transition: opacity .2s ease;
+    }
+
+    .sheet {
+      position: absolute;
+      left: 50%;
+      bottom: 0;
+      width: min(960px, calc(100% - 16px));
+      height: min(92dvh, 900px);
+      transform: translate(-50%, 105%);
+      background: #fff;
+      border-radius: 22px 22px 0 0;
+      box-shadow: 0 -14px 42px rgba(0,0,0,.18);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      transition: transform .24s cubic-bezier(.2,.8,.2,1);
+    }
+
+    .sheet-root.is-open .sheet-backdrop { opacity: 1; }
+    .sheet-root.is-open .sheet { transform: translate(-50%, 0); }
+
+    .sheet-handle {
+      width: 44px;
+      height: 4px;
+      border-radius: 999px;
+      background: #ddd;
+      margin: 8px auto 0;
+      flex: 0 0 auto;
+    }
+
+    .sheet-header {
+      min-height: 60px;
+      padding: 10px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      border-bottom: 1px solid var(--border);
+      flex: 0 0 auto;
+    }
+
+    .sheet-title-wrap { min-width: 0; }
+    .sheet-title { margin: 0; font-size: 18px; font-weight: 900; }
+    .sheet-subtitle { margin: 3px 0 0; color: var(--muted); font-size: 12px; }
+
+    .sheet-actions { display: flex; gap: 7px; }
+
+    .ghost-icon-btn {
+      width: 38px;
+      height: 38px;
+      border: 0;
+      border-radius: 50%;
+      background: #f5f5f5;
+      color: #333;
+      display: grid;
+      place-items: center;
+    }
+
+    .sheet-body {
+      min-height: 0;
+      flex: 1;
+      overflow: auto;
+      -webkit-overflow-scrolling: touch;
+      padding: 12px 14px 130px;
+    }
+
+    .cart-list { display: grid; gap: 8px; }
+
+    .cart-row {
+      display: grid;
+      grid-template-columns: 22px 68px minmax(0,1fr);
+      gap: 10px;
+      align-items: start;
+      padding: 10px 0;
+      border-bottom: 1px solid #f0f0f0;
+    }
+
+    .cart-check {
+      width: 18px;
+      height: 18px;
+      margin: 3px 0 0;
+      accent-color: var(--brand);
+    }
+
+    .cart-image {
+      width: 68px;
+      height: 68px;
+      border-radius: 8px;
+      object-fit: cover;
+      background: #f3f3f3;
+    }
+
+    .cart-name {
+      font-size: 14px;
+      font-weight: 800;
+      line-height: 1.35;
+      display: -webkit-box;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 2;
+      overflow: hidden;
+    }
+
+    .cart-price { margin-top: 4px; color: var(--brand); font-size: 13px; font-weight: 800; }
+
+    .cart-line {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin-top: 9px;
+    }
+
+    .qty-stepper {
+      display: inline-flex;
+      align-items: center;
+      overflow: hidden;
+      border: 1px solid #ddd;
+      border-radius: 9px;
+    }
+
+    .qty-stepper button {
+      width: 32px;
+      height: 32px;
+      border: 0;
+      background: #fff;
+    }
+
+    .qty-stepper span {
+      width: 34px;
+      text-align: center;
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .remove-btn {
+      border: 0;
+      background: transparent;
+      color: #999;
+      padding: 4px;
+    }
+
+    .cart-summary {
+      margin-top: 14px;
+      padding: 14px;
+      border-radius: 12px;
+      background: #fafafa;
+      border: 1px solid #f0f0f0;
+    }
+
+    .summary-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 5px 0;
+      font-size: 13px;
+    }
+
+    .summary-total {
+      margin-top: 6px;
+      padding-top: 10px;
+      border-top: 1px solid #e6e6e6;
+      font-size: 18px;
+      font-weight: 900;
+    }
+
+    .checkout-products {
+      display: grid;
+      gap: 7px;
+      margin-bottom: 14px;
+    }
+
+    .checkout-product {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 10px 0;
+      border-bottom: 1px solid #f0f0f0;
+      font-size: 13px;
+    }
+
+    .checkout-product strong { white-space: nowrap; }
+
+    .form-card {
+      margin-top: 12px;
+      padding: 14px;
+      border: 1px solid #ececec;
+      border-radius: 12px;
+    }
+
+    .form-title {
+      margin-bottom: 12px;
+      font-size: 15px;
+      font-weight: 900;
+    }
+
+    .form-group { margin-bottom: 12px; }
+    .form-group:last-child { margin-bottom: 0; }
+
+    label {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    input, textarea {
+      width: 100%;
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      padding: 11px 12px;
+      outline: none;
+      background: #fff;
+      color: var(--text);
+    }
+
+    input:focus, textarea:focus {
+      border-color: var(--brand);
+      box-shadow: 0 0 0 3px rgba(238,77,45,.08);
+    }
+
+    textarea { min-height: 92px; resize: vertical; }
+
+    .sheet-footer {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      padding: 10px 14px calc(10px + env(safe-area-inset-bottom));
+      background: rgba(255,255,255,.96);
+      backdrop-filter: blur(12px);
+      border-top: 1px solid var(--border);
+    }
+
+    .footer-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .footer-meta { min-width: 0; }
+    .footer-label { color: var(--muted); font-size: 12px; }
+    .footer-total { margin-top: 2px; color: var(--brand); font-size: 19px; font-weight: 900; }
+
+    .primary-btn {
+      min-height: 44px;
+      padding: 0 18px;
+      border: 0;
+      border-radius: 10px;
+      background: var(--brand);
+      color: #fff;
+      font-size: 14px;
+      font-weight: 900;
+      box-shadow: 0 8px 18px rgba(238,77,45,.18);
+    }
+
+    .secondary-btn {
+      min-height: 42px;
+      padding: 0 15px;
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      background: #fff;
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .empty-cart {
+      padding: 76px 20px;
+      text-align: center;
+      color: var(--muted);
+    }
+
+    .empty-cart-icon {
+      width: 60px;
+      height: 60px;
+      margin: 0 auto 12px;
+      border-radius: 50%;
+      background: var(--brand-soft);
+      color: var(--brand);
+      display: grid;
+      place-items: center;
+    }
+
+    .success-state {
+      min-height: 100%;
+      display: grid;
+      place-items: center;
+      text-align: center;
+      padding: 24px;
+    }
+
+    .success-icon {
+      width: 74px;
+      height: 74px;
+      border-radius: 50%;
+      margin: 0 auto 14px;
+      background: #dcfce7;
+      color: var(--success);
+      display: grid;
+      place-items: center;
+    }
+
+    .success-state h2 { margin: 0; font-size: 22px; }
+    .success-state p { margin: 8px 0 0; color: var(--muted); font-size: 14px; }
+    .success-code { margin-top: 14px; font-size: 18px; font-weight: 900; }
+    .success-total { margin-top: 8px; color: var(--brand); font-size: 20px; font-weight: 900; }
+
+    .loading-grid .skeleton {
+      background: linear-gradient(90deg, #eee 25%, #f7f7f7 37%, #eee 63%);
+      background-size: 400% 100%;
+      animation: shimmer 1.2s infinite;
+      border-radius: 8px;
+    }
+
+    .skeleton-card { overflow: hidden; background: #fff; border-radius: 10px; }
+    .skeleton-image { aspect-ratio: 1; }
+    .skeleton-line { height: 12px; margin: 9px; }
+    .skeleton-line.short { width: 55%; }
+
+    @keyframes shimmer { 0% { background-position: 100% 0; } 100% { background-position: -100% 0; } }
+
+    @media (min-width: 700px) {
+      .products { gap: 12px; }
+      .product-card { border-radius: 12px; }
+      .product-content { padding: 12px; }
+      .product-name { font-size: 14px; }
+      .product-price { font-size: 18px; }
+      .product-actions { grid-template-columns: 42px 1fr; }
+    }
+
+    @media (min-width: 900px) {
+      .app-shell { padding-left: 20px; padding-right: 20px; }
+      .topbar { margin-left: -20px; margin-right: -20px; padding-left: 20px; padding-right: 20px; }
+      .products { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; }
+    }
+
+    @media (max-width: 520px) {
+      .brand { display: none; }
+      .topbar-inner { gap: 8px; }
+      .sheet { width: 100%; height: 96dvh; border-radius: 20px 20px 0 0; }
+      .sheet-body { padding-left: 12px; padding-right: 12px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <div class="topbar-inner">
+        <div id="storeName" class="brand">Mini Shop</div>
+
+        <div class="search-wrap">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.5-3.5"></path></svg>
+          <input id="searchInput" class="search-input" type="search" placeholder="Tìm sản phẩm..." autocomplete="off" />
+          <button id="searchClear" class="search-clear hidden" type="button" aria-label="Xóa tìm kiếm">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 6 12 12M18 6 6 18"></path></svg>
+          </button>
+        </div>
+
+        <button class="cart-icon-btn" data-action="open-cart" type="button" aria-label="Mở giỏ hàng">
+          <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="20" r="1"></circle><circle cx="18" cy="20" r="1"></circle><path d="M3 4h2l2.4 11.2a2 2 0 0 0 2 1.6h7.7a2 2 0 0 0 2-1.6L21 8H6"></path></svg>
+          <span id="cartCount" class="cart-count">0</span>
+        </button>
+      </div>
+    </header>
+
+    <main>
+      <section class="hero">
+        <h1 class="hero-title">Khám phá sản phẩm</h1>
+        <p class="hero-subtitle">Chọn sản phẩm bạn thích và đặt hàng nhanh.</p>
+      </section>
+
+      <div id="globalMessage" class="message message-error hidden"></div>
+
+      <div class="section-head">
+        <h2 class="section-title">Tất cả sản phẩm</h2>
+        <span id="resultCount" class="result-count"></span>
+      </div>
+
+      <div id="products" class="products loading-grid"></div>
+    </main>
+  </div>
+
+  <div id="sheetRoot" class="sheet-root" aria-hidden="true">
+    <div class="sheet-backdrop" data-action="close-sheet"></div>
+    <section class="sheet" role="dialog" aria-modal="true" aria-labelledby="sheetTitle">
+      <div class="sheet-handle"></div>
+      <header class="sheet-header">
+        <div class="sheet-title-wrap">
+          <h2 id="sheetTitle" class="sheet-title">Giỏ hàng</h2>
+          <p id="sheetSubtitle" class="sheet-subtitle"></p>
+        </div>
+        <div class="sheet-actions">
+          <button id="sheetBackButton" class="ghost-icon-btn hidden" type="button" data-action="sheet-back" aria-label="Quay lại">
+            <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m15 18-6-6 6-6"></path></svg>
+          </button>
+          <button class="ghost-icon-btn" type="button" data-action="close-sheet" aria-label="Đóng">
+            <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6l12 12M18 6 6 18"></path></svg>
+          </button>
+        </div>
+      </header>
+
+      <div id="sheetBody" class="sheet-body"></div>
+      <div id="sheetFooter" class="sheet-footer hidden"></div>
+    </section>
+  </div>
+
+  <script>
+    /* =================================================
+       Configuration
+       ================================================= */
+    const CONFIG = {
+      API_URL: 'https://script.google.com/macros/s/AKfycbwBmNWlCqustuCS6b_FBirEqg1pd8TmYgkA4u7yR26tn5itlFowpGi1Nk18LqvX740i/exec',
+      CART_STORAGE_KEY: 'mini-shop-cart'
+    };
+
+    /* =================================================
+       Infrastructure / Repositories
+       ================================================= */
+    class ApiRepository {
+      constructor(apiUrl) { this.apiUrl = apiUrl; }
+
+      async getBootstrap() {
+        const response = await fetch(`${this.apiUrl}?action=bootstrap`);
+        return this.parseResponse(response);
+      }
+
+      async quoteOrder(items) {
+        return this.post({ action: 'quoteOrder', items });
+      }
+
+      async placeOrder(payload) {
+        return this.post({ action: 'placeOrder', ...payload });
+      }
+
+      async post(payload) {
+        const response = await fetch(this.apiUrl, {
+          method: 'POST',
+          body: JSON.stringify(payload)
+        });
+        return this.parseResponse(response);
+      }
+
+      async parseResponse(response) {
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        const result = await response.json();
+        if (!result.success) throw new Error(result.error || 'Request failed');
+        return result.data;
+      }
+    }
+
+    class LocalStorageCartRepository {
+      constructor(storageKey) { this.storageKey = storageKey; }
+
+      getItems() {
+        try {
+          const raw = localStorage.getItem(this.storageKey);
+          if (!raw) return [];
+          const parsed = JSON.parse(raw);
+          if (!Array.isArray(parsed)) return [];
+          return parsed
+            .map(item => ({ productId: String(item.productId), quantity: Number(item.quantity) }))
+            .filter(item => item.productId && Number.isInteger(item.quantity) && item.quantity > 0);
+        } catch {
+          return [];
+        }
+      }
+
+      saveItems(items) { localStorage.setItem(this.storageKey, JSON.stringify(items)); }
+
+      add(productId, quantity) {
+        const items = this.getItems();
+        const existing = items.find(item => item.productId === productId);
+        if (existing) existing.quantity += quantity;
+        else items.push({ productId, quantity });
+        this.saveItems(items);
+        return items;
+      }
+
+      update(productId, quantity) {
+        const items = this.getItems();
+        const item = items.find(entry => entry.productId === productId);
+        if (!item) return items;
+        if (quantity <= 0) return this.remove(productId);
+        item.quantity = quantity;
+        this.saveItems(items);
+        return items;
+      }
+
+      remove(productId) {
+        const items = this.getItems().filter(item => item.productId !== productId);
+        this.saveItems(items);
+        return items;
+      }
+
+      removeMany(productIds) {
+        const ids = new Set(productIds);
+        const items = this.getItems().filter(item => !ids.has(item.productId));
+        this.saveItems(items);
+        return items;
+      }
+    }
+
+    /* =================================================
+       Application Store
+       ================================================= */
+    class AppStore {
+      constructor() {
+        this.state = {
+          loading: true,
+          products: [],
+          categories: [],
+          settings: {},
+          searchQuery: '',
+          cart: [],
+          selectedCartProductIds: new Set(),
+          checkout: { mode: null, items: [], quote: null },
+          sheet: { open: false, view: 'cart' },
+          submitting: false,
+          message: null,
+          successOrder: null
+        };
+        this.listeners = [];
+      }
+
+      subscribe(listener) {
+        this.listeners.push(listener);
+        return () => { this.listeners = this.listeners.filter(item => item !== listener); };
+      }
+
+      setState(patch) {
+        this.state = { ...this.state, ...patch };
+        this.listeners.forEach(listener => listener(this.state));
+      }
+
+      getState() { return this.state; }
+    }
+
+    /* =================================================
+       Use Cases
+       ================================================= */
+    class LoadShopUseCase {
+      constructor(apiRepository) { this.apiRepository = apiRepository; }
+      execute() { return this.apiRepository.getBootstrap(); }
+    }
+
+    class SearchProductsUseCase {
+      execute(products, query) {
+        const normalized = String(query || '').trim().toLocaleLowerCase('vi');
+        if (!normalized) return products;
+        return products.filter(product => String(product.name || '').toLocaleLowerCase('vi').includes(normalized));
+      }
+    }
+
+    class AddToCartUseCase {
+      constructor(cartRepository) { this.cartRepository = cartRepository; }
+      execute(product, quantity = 1) {
+        if (!product) throw new Error('Không tìm thấy sản phẩm');
+        if (product.availableStock <= 0) throw new Error('Sản phẩm đã hết hàng');
+        if (quantity <= 0) throw new Error('Số lượng không hợp lệ');
+        const current = this.cartRepository.getItems().find(item => item.productId === product.productId);
+        const nextQuantity = (current?.quantity || 0) + quantity;
+        if (nextQuantity > product.availableStock) throw new Error(`Chỉ còn ${product.availableStock} sản phẩm`);
+        return this.cartRepository.add(product.productId, quantity);
+      }
+    }
+
+    class UpdateCartQuantityUseCase {
+      constructor(cartRepository) { this.cartRepository = cartRepository; }
+      execute(product, quantity) {
+        if (!product) throw new Error('Không tìm thấy sản phẩm');
+        if (quantity < 0) throw new Error('Số lượng không hợp lệ');
+        if (quantity > product.availableStock) throw new Error(`Chỉ còn ${product.availableStock} sản phẩm`);
+        return this.cartRepository.update(product.productId, quantity);
+      }
+    }
+
+    class RemoveFromCartUseCase {
+      constructor(cartRepository) { this.cartRepository = cartRepository; }
+      execute(productId) { return this.cartRepository.remove(productId); }
+    }
+
+    class BuyNowUseCase {
+      execute(product, quantity = 1) {
+        if (!product) throw new Error('Không tìm thấy sản phẩm');
+        if (product.availableStock <= 0) throw new Error('Sản phẩm đã hết hàng');
+        if (quantity > product.availableStock) throw new Error(`Chỉ còn ${product.availableStock} sản phẩm`);
+        return [{ productId: product.productId, quantity }];
+      }
+    }
+
+    class CheckoutCartUseCase {
+      execute(cart, selectedProductIds) {
+        const ids = new Set(selectedProductIds);
+        const items = cart.filter(item => ids.has(item.productId));
+        if (!items.length) throw new Error('Hãy chọn ít nhất 1 sản phẩm');
+        return items.map(item => ({ productId: item.productId, quantity: item.quantity }));
+      }
+    }
+
+    class GetCheckoutQuoteUseCase {
+      constructor(apiRepository) { this.apiRepository = apiRepository; }
+      execute(items) { return this.apiRepository.quoteOrder(items); }
+    }
+
+    class PlaceOrderUseCase {
+      constructor(apiRepository) { this.apiRepository = apiRepository; }
+      execute(form, items) {
+        return this.apiRepository.placeOrder({
+          customerName: 'Khách hàng',
+          phone: form.phone,
+          email: '',
+          address: form.address,
+          province: '',
+          district: '',
+          ward: '',
+          note: form.note,
+          paymentMethod: 'COD',
+          shippingMethod: 'STANDARD',
+          items
+        });
+      }
+    }
+
+    class CartSummaryUseCase {
+      execute(cart, products) {
+        const productMap = new Map(products.map(product => [product.productId, product]));
+        const items = cart.map(cartItem => {
+          const product = productMap.get(cartItem.productId);
+          if (!product) return null;
+          return {
+            ...cartItem,
+            product,
+            subtotal: Number(product.price || 0) * cartItem.quantity
+          };
+        }).filter(Boolean);
+        return { items, subtotal: items.reduce((sum, item) => sum + item.subtotal, 0) };
+      }
+    }
+
+    /* =================================================
+       Controller
+       ================================================= */
+    class ShopController {
+      constructor(store, dependencies) {
+        Object.assign(this, dependencies);
+        this.store = store;
+      }
+
+      async init() {
+        try {
+          const data = await this.loadShopUseCase.execute();
+          const cart = this.cartRepository.getItems();
+          this.store.setState({
+            loading: false,
+            products: data.products || [],
+            categories: data.categories || [],
+            settings: data.settings || {},
+            cart,
+            selectedCartProductIds: new Set(cart.map(item => item.productId))
+          });
+        } catch (error) {
+          this.store.setState({ loading: false, message: error.message || 'Không thể tải sản phẩm' });
+        }
+      }
+
+      getProduct(productId) {
+        return this.store.getState().products.find(product => product.productId === productId);
+      }
+
+      setSearchQuery(query) {
+        this.store.setState({ searchQuery: query });
+      }
+
+      async addToCart(productId) {
+        try {
+          const product = this.getProduct(productId);
+          const cart = this.addToCartUseCase.execute(product, 1);
+          const selected = new Set(this.store.getState().selectedCartProductIds);
+          selected.add(productId);
+          this.store.setState({ cart, selectedCartProductIds: selected, message: null });
+        } catch (error) {
+          this.showError(error.message);
+        }
+      }
+
+      async buyNow(productId) {
+        try {
+          const product = this.getProduct(productId);
+          const items = this.buyNowUseCase.execute(product, 1);
+          await this.startCheckout('buyNow', items);
+        } catch (error) {
+          this.showError(error.message);
+        }
+      }
+
+      updateCartQuantity(productId, quantity) {
+        try {
+          const product = this.getProduct(productId);
+          const cart = this.updateCartQuantityUseCase.execute(product, quantity);
+          const state = this.store.getState();
+          const selected = new Set(state.selectedCartProductIds);
+          if (quantity <= 0) selected.delete(productId);
+          this.store.setState({ cart, selectedCartProductIds: selected });
+          this.refreshCheckoutAfterCartChange();
+        } catch (error) {
+          this.showError(error.message);
+        }
+      }
+
+      removeFromCart(productId) {
+        const cart = this.removeFromCartUseCase.execute(productId);
+        const selected = new Set(this.store.getState().selectedCartProductIds);
+        selected.delete(productId);
+        this.store.setState({ cart, selectedCartProductIds: selected });
+        this.refreshCheckoutAfterCartChange();
+      }
+
+      toggleCartSelection(productId, selected) {
+        const ids = new Set(this.store.getState().selectedCartProductIds);
+        selected ? ids.add(productId) : ids.delete(productId);
+        this.store.setState({ selectedCartProductIds: ids });
+      }
+
+      selectAllCart() {
+        const ids = new Set(this.store.getState().cart.map(item => item.productId));
+        this.store.setState({ selectedCartProductIds: ids });
+      }
+
+      clearCartSelection() {
+        this.store.setState({ selectedCartProductIds: new Set() });
+      }
+
+      openCart() {
+        this.store.setState({ sheet: { open: true, view: 'cart' }, message: null, successOrder: null });
+      }
+
+      closeSheet() {
+        this.store.setState({ sheet: { open: false, view: 'cart' } });
+      }
+
+      async checkoutSelectedCart() {
+        try {
+          const state = this.store.getState();
+          const items = this.checkoutCartUseCase.execute(state.cart, state.selectedCartProductIds);
+          await this.startCheckout('cart', items);
+        } catch (error) {
+          this.showError(error.message);
+        }
+      }
+
+      async startCheckout(mode, items) {
+        try {
+          const quote = await this.getCheckoutQuoteUseCase.execute(items);
+          this.store.setState({
+            checkout: { mode, items, quote },
+            sheet: { open: true, view: 'checkout' },
+            message: null,
+            successOrder: null
+          });
+        } catch (error) {
+          this.showError(error.message);
+        }
+      }
+
+      backToCart() {
+        this.store.setState({ sheet: { open: true, view: 'cart' }, message: null });
+      }
+
+      async refreshCheckoutAfterCartChange() {
+        const state = this.store.getState();
+        if (state.checkout.mode !== 'cart') return;
+
+        const ids = new Set(state.selectedCartProductIds);
+        const items = state.cart.filter(item => ids.has(item.productId));
+        if (!items.length) {
+          this.store.setState({ checkout: { mode: null, items: [], quote: null }, sheet: { open: true, view: 'cart' } });
+          return;
+        }
+
+        try {
+          const quote = await this.getCheckoutQuoteUseCase.execute(items);
+          this.store.setState({ checkout: { mode: 'cart', items, quote } });
+        } catch { /* quote refreshed next checkout */ }
+      }
+
+      async placeOrder(form) {
+        const state = this.store.getState();
+        if (!state.checkout.items.length) {
+          this.showError('Không có sản phẩm để đặt hàng');
+          return;
+        }
+
+        if (!/^0\d{9,10}$/.test(form.phone.replace(/\s+/g, ''))) {
+          this.showError('Vui lòng nhập số điện thoại hợp lệ');
+          return;
+        }
+
+        if (!form.address.trim()) {
+          this.showError('Vui lòng nhập địa chỉ nhận hàng');
+          return;
+        }
+
+        this.store.setState({ submitting: true, message: null });
+
+        try {
+          const result = await this.placeOrderUseCase.execute(form, state.checkout.items);
+
+          let cart = state.cart;
+          if (state.checkout.mode === 'cart') {
+            const ids = state.checkout.items.map(item => item.productId);
+            cart = this.cartRepository.removeMany(ids);
+          }
+
+          this.store.setState({
+            submitting: false,
+            cart,
+            checkout: { mode: null, items: [], quote: null },
+            sheet: { open: true, view: 'success' },
+            successOrder: result,
+            message: null
+          });
+
+          await this.reloadProducts();
+        } catch (error) {
+          this.store.setState({ submitting: false, message: error.message || 'Đặt hàng thất bại' });
+        }
+      }
+
+      async reloadProducts() {
+        try {
+          const data = await this.loadShopUseCase.execute();
+          this.store.setState({ products: data.products || [] });
+        } catch { /* keep current data */ }
+      }
+
+      showError(message) {
+        this.store.setState({ message: message || 'Có lỗi xảy ra' });
+      }
+
+      getCartSummary() {
+        const state = this.store.getState();
+        return this.cartSummaryUseCase.execute(state.cart, state.products);
+      }
+    }
+
+    /* =================================================
+       UI
+       ================================================= */
+    class ShopUI {
+      constructor(searchProductsUseCase) {
+        this.controller = null;
+        this.searchProductsUseCase = searchProductsUseCase;
+        this.messageTimer = null;
+      }
+
+      connect(controller) {
+        this.controller = controller;
+        this.bindEvents();
+      }
+
+      bindEvents() {
+        document.addEventListener('click', event => {
+          const target = event.target.closest('[data-action]');
+          if (!target) return;
+
+          const action = target.dataset.action;
+          const productId = target.dataset.productId;
+
+          switch (action) {
+            case 'open-cart': this.controller.openCart(); break;
+            case 'close-sheet': this.controller.closeSheet(); break;
+            case 'sheet-back': this.controller.backToCart(); break;
+            case 'add-cart': this.controller.addToCart(productId); break;
+            case 'buy-now': this.controller.buyNow(productId); break;
+            case 'cart-minus': this.controller.updateCartQuantity(productId, Number(target.dataset.quantity) - 1); break;
+            case 'cart-plus': this.controller.updateCartQuantity(productId, Number(target.dataset.quantity) + 1); break;
+            case 'cart-remove': this.controller.removeFromCart(productId); break;
+            case 'checkout-cart': this.controller.checkoutSelectedCart(); break;
+            case 'select-all': this.controller.selectAllCart(); break;
+            case 'clear-select': this.controller.clearCartSelection(); break;
+            case 'continue-shopping': this.controller.closeSheet(); break;
+          }
+        });
+
+        document.addEventListener('change', event => {
+          const selectAll = event.target.closest('[data-cart-select-all]');
+          if (selectAll) {
+            selectAll.checked ? this.controller.selectAllCart() : this.controller.clearCartSelection();
+            return;
+          }
+
+          const checkbox = event.target.closest('[data-cart-select]');
+          if (checkbox) this.controller.toggleCartSelection(checkbox.dataset.productId, checkbox.checked);
+        });
+
+        const searchInput = document.getElementById('searchInput');
+        searchInput.addEventListener('input', event => this.controller.setSearchQuery(event.target.value));
+
+        document.getElementById('searchClear').addEventListener('click', () => {
+          searchInput.value = '';
+          this.controller.setSearchQuery('');
+          searchInput.focus();
+        });
+
+        document.getElementById('sheetBody').addEventListener('submit', event => {
+          const form = event.target.closest('#checkoutForm');
+          if (!form) return;
+          event.preventDefault();
+          this.controller.placeOrder({
+            phone: form.elements.phone.value.trim(),
+            address: form.elements.address.value.trim(),
+            note: form.elements.note.value.trim()
+          });
+        });
+
+        document.addEventListener('keydown', event => {
+          if (event.key === 'Escape') this.controller.closeSheet();
+        });
+      }
+
+      render(state) {
+        this.renderHeader(state);
+        this.renderMessage(state.message);
+        this.renderProducts(state);
+        this.renderSheet(state);
+        this.renderSubmitting(state.submitting);
+        document.body.classList.toggle('no-scroll', state.sheet.open);
+      }
+
+      renderHeader(state) {
+        const storeName = state.settings.storeName || 'Mini Shop';
+        document.getElementById('storeName').textContent = storeName;
+        const count = state.cart.reduce((sum, item) => sum + item.quantity, 0);
+        document.getElementById('cartCount').textContent = count > 99 ? '99+' : count;
+        const clearButton = document.getElementById('searchClear');
+        clearButton.classList.toggle('hidden', !state.searchQuery);
+        const searchInput = document.getElementById('searchInput');
+        if (document.activeElement !== searchInput && searchInput.value !== state.searchQuery) {
+          searchInput.value = state.searchQuery;
+        }
+      }
+
+      renderMessage(message) {
+        const element = document.getElementById('globalMessage');
+        if (!message) {
+          element.classList.add('hidden');
+          element.textContent = '';
+          return;
+        }
+        element.textContent = message;
+        element.classList.remove('hidden');
+        clearTimeout(this.messageTimer);
+        this.messageTimer = setTimeout(() => {
+          if (this.controller) this.controller.store.setState({ message: null });
+        }, 3200);
+      }
+
+      renderProducts(state) {
+        const container = document.getElementById('products');
+        if (state.loading) {
+          container.className = 'products loading-grid';
+          container.innerHTML = Array.from({ length: 8 }).map(() => `
+            <article class="skeleton-card">
+              <div class="skeleton skeleton-image"></div>
+              <div class="skeleton skeleton-line"></div>
+              <div class="skeleton skeleton-line short"></div>
+            </article>
+          `).join('');
+          document.getElementById('resultCount').textContent = '';
+          return;
+        }
+
+        const products = this.searchProductsUseCase.execute(state.products, state.searchQuery);
+        document.getElementById('resultCount').textContent = state.searchQuery ? `${products.length} kết quả` : `${products.length} sản phẩm`;
+
+        if (!products.length) {
+          container.className = 'products';
+          container.innerHTML = `<div class="empty-state">Không tìm thấy sản phẩm phù hợp.</div>`;
+          return;
+        }
+
+        container.className = 'products';
+        container.innerHTML = products.map(product => this.renderProductCard(product)).join('');
+      }
+
+      renderProductCard(product) {
+        const outOfStock = Number(product.availableStock || 0) <= 0;
+        const hasDiscount = Number(product.compareAtPrice || 0) > Number(product.price || 0);
+        const discount = hasDiscount ? Math.round((1 - Number(product.price) / Number(product.compareAtPrice)) * 100) : 0;
+
+        const image = product.imageUrl
+          ? `<img class="product-image" src="${escapeHtml(product.imageUrl)}" alt="${escapeHtml(product.name)}" loading="lazy">`
+          : `<div class="product-placeholder">${icon('image')}</div>`;
+
+        return `
+          <article class="product-card">
+            <div class="product-media">
+              ${image}
+              ${hasDiscount ? `<span class="discount-badge">-${discount}%</span>` : ''}
+              ${outOfStock ? `<span class="out-badge">Hết hàng</span>` : ''}
+            </div>
+            <div class="product-content">
+              <div class="product-name">${escapeHtml(product.name)}</div>
+              <div class="price-row">
+                <span class="product-price">${formatCurrency(product.price)}</span>
+                ${hasDiscount ? `<span class="product-old-price">${formatCurrency(product.compareAtPrice)}</span>` : ''}
+              </div>
+              <div class="product-stock">${outOfStock ? 'Tạm hết' : `Còn ${product.availableStock}`}</div>
+              <div class="product-actions">
+                <button
+                  type="button"
+                  class="icon-button"
+                  data-action="add-cart"
+                  data-product-id="${escapeHtml(product.productId)}"
+                  ${outOfStock ? 'disabled' : ''}
+                  aria-label="Thêm vào giỏ hàng"
+                  title="Thêm vào giỏ hàng"
+                >${icon('cart-plus')}</button>
+                <button
+                  type="button"
+                  class="buy-button"
+                  data-action="buy-now"
+                  data-product-id="${escapeHtml(product.productId)}"
+                  ${outOfStock ? 'disabled' : ''}
+                >Mua ngay</button>
+              </div>
+            </div>
+          </article>
+        `;
+      }
+
+      renderSheet(state) {
+        const root = document.getElementById('sheetRoot');
+        root.classList.toggle('is-open', state.sheet.open);
+        root.setAttribute('aria-hidden', String(!state.sheet.open));
+        const title = document.getElementById('sheetTitle');
+        const subtitle = document.getElementById('sheetSubtitle');
+        const body = document.getElementById('sheetBody');
+        const footer = document.getElementById('sheetFooter');
+        const back = document.getElementById('sheetBackButton');
+
+        if (!state.sheet.open) return;
+
+        if (state.sheet.view === 'cart') {
+          title.textContent = 'Giỏ hàng';
+          subtitle.textContent = this.cartSubtitle(state);
+          back.classList.add('hidden');
+          const summary = this.controller.getCartSummary();
+          body.innerHTML = this.renderCartBody(summary, state);
+          footer.innerHTML = this.renderCartFooter(summary, state);
+          footer.classList.toggle('hidden', !summary.items.length);
+          return;
+        }
+
+        if (state.sheet.view === 'checkout') {
+          title.textContent = 'Thông tin nhận hàng';
+          subtitle.textContent = state.checkout.mode === 'buyNow' ? 'Mua ngay' : 'Sản phẩm đã chọn';
+          back.classList.remove('hidden');
+          body.innerHTML = this.renderCheckoutBody(state);
+          footer.innerHTML = this.renderCheckoutFooter(state);
+          footer.classList.remove('hidden');
+          return;
+        }
+
+        title.textContent = 'Đặt hàng thành công';
+        subtitle.textContent = '';
+        back.classList.add('hidden');
+        body.innerHTML = this.renderSuccessBody(state.successOrder);
+        footer.innerHTML = `<div class="footer-row"><div></div><button class="primary-btn" type="button" data-action="continue-shopping">Tiếp tục mua sắm</button></div>`;
+        footer.classList.remove('hidden');
+      }
+
+      cartSubtitle(state) {
+        const totalQty = state.cart.reduce((sum, item) => sum + item.quantity, 0);
+        return `${totalQty} sản phẩm trong giỏ`;
+      }
+
+      renderCartBody(summary, state) {
+        if (!summary.items.length) {
+          return `
+            <div class="empty-cart">
+              <div class="empty-cart-icon">${icon('cart')}</div>
+              <strong>Giỏ hàng đang trống</strong>
+              <div style="margin-top:6px">Thêm sản phẩm để bắt đầu mua sắm.</div>
+            </div>
+          `;
+        }
+
+        const allSelected = summary.items.every(item => state.selectedCartProductIds.has(item.product.productId));
+        return `
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+            <label style="display:flex;align-items:center;gap:8px;margin:0;font-size:13px;font-weight:800">
+              <input type="checkbox" class="cart-check" data-cart-select-all ${allSelected ? 'checked' : ''} />
+              Chọn tất cả
+            </label>
+            <button class="remove-btn" type="button" data-action="clear-select">Bỏ chọn</button>
+          </div>
+          <div class="cart-list">
+            ${summary.items.map(item => this.renderCartItem(item, state)).join('')}
+          </div>
+        `;
+      }
+
+      renderCartItem(item, state) {
+        const selected = state.selectedCartProductIds.has(item.product.productId);
+        const maxStock = Number(item.product.availableStock || 0);
+        return `
+          <div class="cart-row">
+            <input class="cart-check" type="checkbox" data-cart-select data-product-id="${escapeHtml(item.product.productId)}" ${selected ? 'checked' : ''} />
+            ${item.product.imageUrl
+              ? `<img class="cart-image" src="${escapeHtml(item.product.imageUrl)}" alt="${escapeHtml(item.product.name)}">`
+              : `<div class="cart-image"></div>`}
+            <div>
+              <div class="cart-name">${escapeHtml(item.product.name)}</div>
+              <div class="cart-price">${formatCurrency(item.product.price)}</div>
+              <div class="cart-line">
+                <div class="qty-stepper">
+                  <button type="button" data-action="cart-minus" data-product-id="${escapeHtml(item.product.productId)}" data-quantity="${item.quantity}" aria-label="Giảm">−</button>
+                  <span>${item.quantity}</span>
+                  <button type="button" data-action="cart-plus" data-product-id="${escapeHtml(item.product.productId)}" data-quantity="${item.quantity}" ${item.quantity >= maxStock ? 'disabled' : ''} aria-label="Tăng">+</button>
+                </div>
+                <button class="remove-btn" type="button" data-action="cart-remove" data-product-id="${escapeHtml(item.product.productId)}" aria-label="Xóa sản phẩm">${icon('trash')}</button>
+              </div>
+            </div>
+          </div>
+        `;
+      }
+
+      renderCartFooter(summary, state) {
+        const selectedItems = summary.items.filter(item => state.selectedCartProductIds.has(item.product.productId));
+        const selectedSubtotal = selectedItems.reduce((sum, item) => sum + item.subtotal, 0);
+        const count = selectedItems.reduce((sum, item) => sum + item.quantity, 0);
+        return `
+          <div class="footer-row">
+            <div class="footer-meta">
+              <div class="footer-label">Đã chọn ${count} sản phẩm</div>
+              <div class="footer-total">${formatCurrency(selectedSubtotal)}</div>
+            </div>
+            <button class="primary-btn" type="button" data-action="checkout-cart" ${selectedItems.length ? '' : 'disabled'}>Mua sản phẩm</button>
+          </div>
+        `;
+      }
+
+      renderCheckoutBody(state) {
+        const quote = state.checkout.quote;
+        const items = quote?.items || [];
+        return `
+          <div class="checkout-products">
+            ${items.map(item => `
+              <div class="checkout-product">
+                <span>${escapeHtml(item.name)} × ${item.quantity}</span>
+                <strong>${formatCurrency(item.subtotal)}</strong>
+              </div>
+            `).join('')}
+          </div>
+
+          ${quote ? `
+            <div class="cart-summary">
+              <div class="summary-row"><span>Tạm tính</span><strong>${formatCurrency(quote.subtotal)}</strong></div>
+              <div class="summary-row"><span>Phí vận chuyển</span><strong>${formatCurrency(quote.shippingFee)}</strong></div>
+              <div class="summary-row"><span>Giảm giá</span><strong>${formatCurrency(quote.discount)}</strong></div>
+              <div class="summary-row summary-total"><span>Tổng thanh toán</span><strong>${formatCurrency(quote.total)}</strong></div>
+            </div>
+          ` : ''}
+
+          <form id="checkoutForm" class="form-card" novalidate>
+            <div class="form-title">Thông tin nhận hàng</div>
+            <div class="form-group">
+              <label for="checkoutPhone">Số điện thoại *</label>
+              <input id="checkoutPhone" name="phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="0901 234 567" required />
+            </div>
+            <div class="form-group">
+              <label for="checkoutAddress">Địa chỉ nhận hàng *</label>
+              <textarea id="checkoutAddress" name="address" autocomplete="street-address" placeholder="Số nhà, tên đường, phường/xã, quận/huyện, tỉnh/thành" required></textarea>
+            </div>
+            <div class="form-group">
+              <label for="checkoutNote">Ghi chú</label>
+              <textarea id="checkoutNote" name="note" placeholder="Ví dụ: giao giờ hành chính, gọi trước khi giao..."></textarea>
+            </div>
+          </form>
+
+          ${state.message ? `<div class="message message-error">${escapeHtml(state.message)}</div>` : ''}
+        `;
+      }
+
+      renderCheckoutFooter(state) {
+        const total = state.checkout.quote?.total || 0;
+        return `
+          <div class="footer-row">
+            <div class="footer-meta">
+              <div class="footer-label">Thanh toán khi nhận hàng</div>
+              <div class="footer-total">${formatCurrency(total)}</div>
+            </div>
+            <button id="placeOrderButton" class="primary-btn" type="submit" form="checkoutForm" ${state.submitting ? 'disabled' : ''}>
+              ${state.submitting ? 'Đang đặt...' : 'Đặt hàng'}
+            </button>
+          </div>
+        `;
+      }
+
+      renderSuccessBody(order) {
+        if (!order) return '';
+        return `
+          <div class="success-state">
+            <div>
+              <div class="success-icon">${icon('check')}</div>
+              <h2>Đặt hàng thành công</h2>
+              <p>Cảm ơn bạn. Shop sẽ liên hệ để xác nhận đơn.</p>
+              <div class="success-code">Mã đơn: ${escapeHtml(order.orderCode || order.orderId || '')}</div>
+              <div class="success-total">${formatCurrency(order.total)}</div>
+            </div>
+          </div>
+        `;
+      }
+
+      renderSubmitting(submitting) {
+        const button = document.getElementById('placeOrderButton');
+        if (!button) return;
+        button.disabled = submitting;
+        button.textContent = submitting ? 'Đang đặt...' : 'Đặt hàng';
+      }
+    }
+
+    /* =================================================
+       Formatting / Icons
+       ================================================= */
+    function formatCurrency(value) {
+      return `${Number(value || 0).toLocaleString('vi-VN')} ₫`;
+    }
+
+    function escapeHtml(value) {
+      return String(value ?? '')
+        .replaceAll('&', '&amp;')
+        .replaceAll('<', '&lt;')
+        .replaceAll('>', '&gt;')
+        .replaceAll('"', '&quot;')
+        .replaceAll("'", '&#039;');
+    }
+
+    function icon(name) {
+      const icons = {
+        cart: '<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="9" cy="20" r="1"></circle><circle cx="18" cy="20" r="1"></circle><path d="M3 4h2l2.4 11.2a2 2 0 0 0 2 1.6h7.7a2 2 0 0 0 2-1.6L21 8H6"></path></svg>',
+        'cart-plus': '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><circle cx="9" cy="20" r="1"></circle><circle cx="18" cy="20" r="1"></circle><path d="M3 4h2l2.4 11.2a2 2 0 0 0 2 1.6h7.7a2 2 0 0 0 2-1.6L21 8H6"></path><path d="M15 4v6M12 7h6"></path></svg>',
+        trash: '<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"></path></svg>',
+        check: '<svg width="38" height="38" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="m5 12 4 4L19 6"></path></svg>',
+        image: '<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="3" width="18" height="18" rx="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><path d="m21 15-5-5L5 21"></path></svg>'
+      };
+      return icons[name] || '';
+    }
+
+    /* =================================================
+       Composition Root
+       ================================================= */
+    const apiRepository = new ApiRepository(CONFIG.API_URL);
+    const cartRepository = new LocalStorageCartRepository(CONFIG.CART_STORAGE_KEY);
+    const store = new AppStore();
+    const searchProductsUseCase = new SearchProductsUseCase();
+
+    const controller = new ShopController(store, {
+      loadShopUseCase: new LoadShopUseCase(apiRepository),
+      addToCartUseCase: new AddToCartUseCase(cartRepository),
+      updateCartQuantityUseCase: new UpdateCartQuantityUseCase(cartRepository),
+      removeFromCartUseCase: new RemoveFromCartUseCase(cartRepository),
+      buyNowUseCase: new BuyNowUseCase(),
+      checkoutCartUseCase: new CheckoutCartUseCase(),
+      getCheckoutQuoteUseCase: new GetCheckoutQuoteUseCase(apiRepository),
+      placeOrderUseCase: new PlaceOrderUseCase(apiRepository),
+      cartRepository,
+      cartSummaryUseCase: new CartSummaryUseCase()
+    });
+
+    const ui = new ShopUI(searchProductsUseCase);
+    ui.connect(controller);
+    store.subscribe(state => ui.render(state));
+    ui.render(store.getState());
+    controller.init();
+  </script>
+</body>
+</html>
