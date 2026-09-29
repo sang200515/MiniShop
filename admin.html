@@ -1,0 +1,4550 @@
+```html
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <title>Mini Shop Admin</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+      font-family:
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        sans-serif;
+
+      background: #f5f7fa;
+      color: #111827;
+    }
+
+    button,
+    input,
+    textarea,
+    select {
+      font: inherit;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    .container {
+      width: 100%;
+    }
+
+    /* =================================================
+       LOGIN
+       ================================================= */
+
+    .login-page {
+      min-height: 100vh;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      padding: 24px;
+    }
+
+    .login-card {
+      width: 100%;
+      max-width: 400px;
+
+      padding: 32px;
+
+      background: white;
+
+      border: 1px solid #e5e7eb;
+      border-radius: 16px;
+
+      box-shadow:
+        0 10px 30px rgba(0, 0, 0, 0.05);
+    }
+
+    .login-title {
+      margin: 0 0 8px;
+
+      font-size: 28px;
+      font-weight: 800;
+    }
+
+    .login-description {
+      margin: 0 0 24px;
+
+      color: #6b7280;
+    }
+
+    /* =================================================
+       FORM
+       ================================================= */
+
+    .form-group {
+      margin-bottom: 16px;
+    }
+
+    .label {
+      display: block;
+
+      margin-bottom: 6px;
+
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .input {
+      width: 100%;
+
+      padding: 11px 12px;
+
+      border:
+        1px solid #d1d5db;
+
+      border-radius: 8px;
+
+      background: white;
+
+      outline: none;
+    }
+
+    .input:focus {
+      border-color: #111827;
+    }
+
+    textarea.input {
+      min-height: 100px;
+      resize: vertical;
+    }
+
+    .checkbox-group {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .checkbox-group label {
+      margin: 0;
+    }
+
+    /* =================================================
+       BUTTONS
+       ================================================= */
+
+    .button {
+      border: 0;
+      border-radius: 8px;
+
+      padding: 10px 14px;
+
+      font-weight: 600;
+    }
+
+    .button-primary {
+      background: #111827;
+      color: white;
+    }
+
+    .button-secondary {
+      background: #e5e7eb;
+      color: #111827;
+    }
+
+    .button-danger {
+      background: #fee2e2;
+      color: #991b1b;
+    }
+
+    .button-success {
+      background: #dcfce7;
+      color: #166534;
+    }
+
+    /* =================================================
+       APP
+       ================================================= */
+
+    .app {
+      min-height: 100vh;
+
+      display: flex;
+    }
+
+    .sidebar {
+      width: 230px;
+      flex-shrink: 0;
+
+      min-height: 100vh;
+
+      padding: 20px;
+
+      background: #111827;
+      color: white;
+    }
+
+    .logo {
+      margin-bottom: 28px;
+
+      font-size: 21px;
+      font-weight: 800;
+    }
+
+    .nav {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .nav-button {
+      width: 100%;
+
+      border: 0;
+      border-radius: 8px;
+
+      padding: 11px 12px;
+
+      text-align: left;
+
+      background: transparent;
+      color: #d1d5db;
+    }
+
+    .nav-button:hover,
+    .nav-button.active {
+      background: #374151;
+      color: white;
+    }
+
+    .content {
+      min-width: 0;
+      flex: 1;
+
+      padding: 24px;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+
+      gap: 16px;
+
+      margin-bottom: 24px;
+    }
+
+    .page-title {
+      font-size: 28px;
+      font-weight: 800;
+    }
+
+    /* =================================================
+       MESSAGES
+       ================================================= */
+
+    .message {
+      margin-bottom: 16px;
+      padding: 12px 14px;
+
+      border-radius: 8px;
+    }
+
+    .message-error {
+      background: #fee2e2;
+      color: #991b1b;
+    }
+
+    .message-success {
+      background: #dcfce7;
+      color: #166534;
+    }
+
+    /* =================================================
+       PAGES
+       ================================================= */
+
+    .page {
+      display: none;
+    }
+
+    .page.active {
+      display: block;
+    }
+
+    /* =================================================
+       CARDS
+       ================================================= */
+
+    .cards {
+      display: grid;
+
+      grid-template-columns:
+        repeat(
+          auto-fit,
+          minmax(180px, 1fr)
+        );
+
+      gap: 16px;
+    }
+
+    .card {
+      padding: 18px;
+
+      background: white;
+
+      border:
+        1px solid #e5e7eb;
+
+      border-radius: 14px;
+    }
+
+    .card-label {
+      color: #6b7280;
+
+      font-size: 14px;
+    }
+
+    .card-value {
+      margin-top: 8px;
+
+      font-size: 25px;
+      font-weight: 800;
+    }
+
+    /* =================================================
+       SECTION
+       ================================================= */
+
+    .section {
+      margin-top: 24px;
+
+      background: white;
+
+      border:
+        1px solid #e5e7eb;
+
+      border-radius: 14px;
+
+      overflow: hidden;
+    }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+
+      gap: 12px;
+
+      padding: 16px;
+
+      border-bottom:
+        1px solid #e5e7eb;
+    }
+
+    .section-title {
+      font-size: 18px;
+      font-weight: 800;
+    }
+
+    .section-body {
+      padding: 16px;
+    }
+
+    /* =================================================
+       TABLE
+       ================================================= */
+
+    .table-wrapper {
+      width: 100%;
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+
+      border-collapse: collapse;
+    }
+
+    th,
+    td {
+      padding: 12px 14px;
+
+      border-bottom:
+        1px solid #f0f0f0;
+
+      text-align: left;
+
+      white-space: nowrap;
+
+      font-size: 14px;
+    }
+
+    th {
+      background: #f9fafb;
+
+      color: #6b7280;
+
+      font-weight: 700;
+    }
+
+    .stock-low {
+      color: #b91c1c;
+      font-weight: 800;
+    }
+
+    .stock-ok {
+      color: #166534;
+      font-weight: 700;
+    }
+
+    /* =================================================
+       FORM GRID
+       ================================================= */
+
+    .form-grid {
+      display: grid;
+
+      grid-template-columns:
+        repeat(
+          2,
+          minmax(0, 1fr)
+        );
+
+      gap: 16px;
+    }
+
+    .full {
+      grid-column: 1 / -1;
+    }
+
+    .button-row {
+      display: flex;
+
+      gap: 8px;
+
+      margin-top: 16px;
+    }
+
+    /* =================================================
+       MOBILE
+       ================================================= */
+
+    @media (
+      max-width: 800px
+    ) {
+
+      .app {
+        display: block;
+      }
+
+      .sidebar {
+        width: 100%;
+        min-height: auto;
+
+        position: sticky;
+        top: 0;
+
+        z-index: 20;
+      }
+
+      .nav {
+        flex-direction: row;
+
+        overflow-x: auto;
+      }
+
+      .nav-button {
+        width: auto;
+
+        white-space: nowrap;
+      }
+
+      .content {
+        padding: 16px;
+      }
+
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .full {
+        grid-column: auto;
+      }
+
+      .topbar {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .topbar .button {
+        width: 100%;
+      }
+    }
+  </style>
+
+</head>
+
+
+<body>
+
+
+<!-- ===================================================
+     LOGIN
+==================================================== -->
+
+<div
+  id="loginPage"
+  class="login-page"
+>
+
+  <div class="login-card">
+
+    <h1 class="login-title">
+      Mini Shop Admin
+    </h1>
+
+    <p class="login-description">
+      Đăng nhập quản trị
+    </p>
+
+
+    <div
+      id="loginError"
+      class="message message-error hidden"
+    ></div>
+
+
+    <div class="form-group">
+
+      <label
+        class="label"
+        for="loginPassword"
+      >
+        Password
+      </label>
+
+      <input
+        id="loginPassword"
+        class="input"
+        type="password"
+        autocomplete="current-password"
+      >
+
+    </div>
+
+
+    <button
+      id="loginButton"
+      class="button button-primary"
+      style="width:100%"
+    >
+      Đăng nhập
+    </button>
+
+  </div>
+
+</div>
+
+
+<!-- ===================================================
+     ADMIN APP
+==================================================== -->
+
+<div
+  id="app"
+  class="app hidden"
+>
+
+
+  <!-- =================================================
+       SIDEBAR
+  ================================================== -->
+
+  <aside class="sidebar">
+
+    <div class="logo">
+      Mini Shop Admin
+    </div>
+
+
+    <nav class="nav">
+
+      <button
+        class="nav-button active"
+        data-page="dashboard"
+      >
+        Dashboard
+      </button>
+
+      <button
+        class="nav-button"
+        data-page="products"
+      >
+        Products
+      </button>
+
+      <button
+        class="nav-button"
+        data-page="categories"
+      >
+        Categories
+      </button>
+
+      <button
+        class="nav-button"
+        data-page="inventory"
+      >
+        Inventory
+      </button>
+
+      <button
+        class="nav-button"
+        data-page="orders"
+      >
+        Orders
+      </button>
+
+      <button
+        class="nav-button"
+        data-page="customers"
+      >
+        Customers
+      </button>
+
+      <button
+        class="nav-button"
+        data-page="settings"
+      >
+        Settings
+      </button>
+
+      <button
+        id="logoutButton"
+        class="nav-button"
+      >
+        Logout
+      </button>
+
+    </nav>
+
+  </aside>
+
+
+  <!-- =================================================
+       CONTENT
+  ================================================== -->
+
+  <main class="content">
+
+
+    <div class="topbar">
+
+      <div
+        id="pageTitle"
+        class="page-title"
+      >
+        Dashboard
+      </div>
+
+
+      <button
+        id="refreshButton"
+        class="button button-secondary"
+      >
+        Refresh
+      </button>
+
+    </div>
+
+
+    <div
+      id="globalMessage"
+      class="hidden"
+    ></div>
+
+
+    <!-- =================================================
+         DASHBOARD
+    ================================================== -->
+
+    <section
+      id="page-dashboard"
+      class="page active"
+    >
+
+      <div
+        id="dashboardCards"
+        class="cards"
+      ></div>
+
+
+      <div class="section">
+
+        <div class="section-header">
+
+          <div class="section-title">
+            Low Stock
+          </div>
+
+        </div>
+
+
+        <div
+          id="dashboardLowStock"
+          class="table-wrapper"
+        ></div>
+
+      </div>
+
+
+      <div class="section">
+
+        <div class="section-header">
+
+          <div class="section-title">
+            Recent Orders
+          </div>
+
+        </div>
+
+
+        <div
+          id="dashboardOrders"
+          class="table-wrapper"
+        ></div>
+
+      </div>
+
+    </section>
+
+
+    <!-- =================================================
+         PRODUCTS
+    ================================================== -->
+
+    <section
+      id="page-products"
+      class="page"
+    >
+
+
+      <div class="section">
+
+        <div class="section-header">
+
+          <div class="section-title">
+            Product
+          </div>
+
+
+          <button
+            id="newProductButton"
+            class="button button-primary"
+          >
+            + New Product
+          </button>
+
+        </div>
+
+
+        <div
+          id="productForm"
+          class="section-body hidden"
+        >
+
+
+          <input
+            id="productId"
+            type="hidden"
+          >
+
+
+          <div class="form-grid">
+
+
+            <div class="form-group">
+
+              <label
+                class="label"
+                for="productName"
+              >
+                Name
+              </label>
+
+              <input
+                id="productName"
+                class="input"
+              >
+
+            </div>
+
+
+            <div class="form-group">
+
+              <label
+                class="label"
+                for="productSku"
+              >
+                SKU
+              </label>
+
+              <input
+                id="productSku"
+                class="input"
+              >
+
+            </div>
+
+
+            <div class="form-group">
+
+              <label
+                class="label"
+                for="productSlug"
+              >
+                Slug
+              </label>
+
+              <input
+                id="productSlug"
+                class="input"
+              >
+
+            </div>
+
+
+            <div class="form-group">
+
+              <label
+                class="label"
+                for="productCategory"
+              >
+                Category
+              </label>
+
+              <select
+                id="productCategory"
+                class="input"
+              ></select>
+
+            </div>
+
+
+            <div class="form-group">
+
+              <label
+                class="label"
+                for="productPrice"
+              >
+                Price
+              </label>
+
+              <input
+                id="productPrice"
+                class="input"
+                type="number"
+                min="0"
+              >
+
+            </div>
+
+
+            <div class="form-group">
+
+              <label
+                class="label"
+                for="productComparePrice"
+              >
+                Compare Price
+              </label>
+
+              <input
+                id="productComparePrice"
+                class="input"
+                type="number"
+                min="0"
+              >
+
+            </div>
+
+
+            <div class="form-group">
+
+              <label
+                class="label"
+                for="productCostPrice"
+              >
+                Cost Price
+              </label>
+
+              <input
+                id="productCostPrice"
+                class="input"
+                type="number"
+                min="0"
+              >
+
+            </div>
+
+
+            <div class="form-group">
+
+              <label
+                class="label"
+                for="productShippingFee"
+              >
+                Shipping Fee
+              </label>
+
+              <input
+                id="productShippingFee"
+                class="input"
+                type="number"
+                min="0"
+              >
+
+            </div>
+
+
+            <div class="form-group">
+
+              <label
+                class="label"
+                for="productInitialStock"
+              >
+                Initial Stock
+              </label>
+
+              <input
+                id="productInitialStock"
+                class="input"
+                type="number"
+                min="0"
+              >
+
+            </div>
+
+
+            <div class="form-group">
+
+              <label
+                class="label"
+                for="productImageUrl"
+              >
+                Image URL
+              </label>
+
+              <input
+                id="productImageUrl"
+                class="input"
+              >
+
+            </div>
+
+
+            <div class="form-group full">
+
+              <label
+                class="label"
+                for="productDescription"
+              >
+                Description
+              </label>
+
+              <textarea
+                id="productDescription"
+                class="input"
+              ></textarea>
+
+            </div>
+
+
+            <div class="checkbox-group">
+
+              <input
+                id="productActive"
+                type="checkbox"
+                checked
+              >
+
+              <label for="productActive">
+                Active
+              </label>
+
+            </div>
+
+
+            <div class="checkbox-group">
+
+              <input
+                id="productFeatured"
+                type="checkbox"
+              >
+
+              <label for="productFeatured">
+                Featured
+              </label>
+
+            </div>
+
+          </div>
+
+
+          <div class="button-row">
+
+            <button
+              id="saveProductButton"
+              class="button button-primary"
+            >
+              Save Product
+            </button>
+
+
+            <button
+              id="cancelProductButton"
+              class="button button-secondary"
+            >
+              Cancel
+            </button>
+
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <div class="section">
+
+        <div class="section-header">
+
+          <div class="section-title">
+            Products
+          </div>
+
+        </div>
+
+
+        <div
+          id="productsTable"
+          class="table-wrapper"
+        ></div>
+
+      </div>
+
+    </section>
+
+
+    <!-- =================================================
+         CATEGORIES
+    ================================================== -->
+
+    <section
+      id="page-categories"
+      class="page"
+    >
+
+      <div class="section">
+
+        <div class="section-header">
+
+          <div class="section-title">
+            Category
+          </div>
+
+          <button
+            id="clearCategoryButton"
+            class="button button-secondary"
+          >
+            Clear
+          </button>
+
+        </div>
+
+
+        <div class="section-body">
+
+
+          <div class="form-grid">
+
+            <div class="form-group">
+
+              <label
+                class="label"
+                for="categoryId"
+              >
+                Category ID
+              </label>
+
+              <input
+                id="categoryId"
+                class="input"
+              >
+
+            </div>
+
+
+            <div class="form-group">
+
+              <label
+                class="label"
+                for="categoryName"
+              >
+                Name
+              </label>
+
+              <input
+                id="categoryName"
+                class="input"
+              >
+
+            </div>
+
+
+            <div class="form-group">
+
+              <label
+                class="label"
+                for="categorySlug"
+              >
+                Slug
+              </label>
+
+              <input
+                id="categorySlug"
+                class="input"
+              >
+
+            </div>
+
+
+            <div class="form-group">
+
+              <label
+                class="label"
+                for="categorySortOrder"
+              >
+                Sort Order
+              </label>
+
+              <input
+                id="categorySortOrder"
+                class="input"
+                type="number"
+              >
+
+            </div>
+
+
+            <div class="form-group full">
+
+              <label
+                class="label"
+                for="categoryDescription"
+              >
+                Description
+              </label>
+
+              <textarea
+                id="categoryDescription"
+                class="input"
+              ></textarea>
+
+            </div>
+
+          </div>
+
+
+          <button
+            id="saveCategoryButton"
+            class="button button-primary"
+          >
+            Save Category
+          </button>
+
+        </div>
+
+      </div>
+
+
+      <div class="section">
+
+        <div
+          id="categoriesTable"
+          class="table-wrapper"
+        ></div>
+
+      </div>
+
+    </section>
+
+
+    <!-- =================================================
+         INVENTORY
+    ================================================== -->
+
+    <section
+      id="page-inventory"
+      class="page"
+    >
+
+      <div class="section">
+
+        <div class="section-header">
+
+          <div class="section-title">
+            Inventory Management
+          </div>
+
+        </div>
+
+
+        <div
+          id="inventoryTable"
+          class="table-wrapper"
+        ></div>
+
+      </div>
+
+    </section>
+
+
+    <!-- =================================================
+         ORDERS
+    ================================================== -->
+
+    <section
+      id="page-orders"
+      class="page"
+    >
+
+      <div class="section">
+
+        <div class="section-header">
+
+          <div class="section-title">
+            Orders
+          </div>
+
+        </div>
+
+
+        <div
+          id="ordersTable"
+          class="table-wrapper"
+        ></div>
+
+      </div>
+
+    </section>
+
+
+    <!-- =================================================
+         CUSTOMERS
+    ================================================== -->
+
+    <section
+      id="page-customers"
+      class="page"
+    >
+
+      <div class="section">
+
+        <div class="section-header">
+
+          <div class="section-title">
+            Customers
+          </div>
+
+        </div>
+
+
+        <div
+          id="customersTable"
+          class="table-wrapper"
+        ></div>
+
+      </div>
+
+    </section>
+
+
+    <!-- =================================================
+         SETTINGS
+    ================================================== -->
+
+    <section
+      id="page-settings"
+      class="page"
+    >
+
+      <div class="section">
+
+        <div class="section-header">
+
+          <div class="section-title">
+            Store Settings
+          </div>
+
+        </div>
+
+
+        <div
+          id="settingsContent"
+          class="section-body"
+        ></div>
+
+      </div>
+
+    </section>
+
+  </main>
+
+</div>
+
+
+<script>
+
+
+/* =====================================================
+ MARK: - Configuration
+ ===================================================== */
+
+const CONFIG = {
+
+  API_URL:
+    'https://script.google.com/macros/s/AKfycbxZZimUCvCIKSj1FBmKlag6gtf4mmaQxG3bPsAGe8QX0GUttRrDjz0Bm4rhV9GoGFvUKQ/exec',
+
+  TOKEN_KEY:
+    'mini-shop-admin-token'
+
+};
+
+
+/* =====================================================
+ MARK: - API Repository
+ ===================================================== */
+
+class AdminApiRepository {
+
+  constructor(
+    apiUrl
+  ) {
+
+    this.apiUrl =
+      apiUrl;
+  }
+
+
+  async request(
+    payload
+  ) {
+
+    const response =
+      await fetch(
+        this.apiUrl,
+        {
+          method: 'POST',
+
+          body:
+            JSON.stringify(
+              payload
+            )
+        }
+      );
+
+
+    if (!response.ok) {
+
+      throw new Error(
+        `HTTP ${response.status}`
+      );
+
+    }
+
+
+    const result =
+      await response.json();
+
+
+    if (!result.success) {
+
+      throw new Error(
+        result.error ||
+        'Request failed'
+      );
+
+    }
+
+
+    /*
+     Compatible with both:
+
+     {
+       success: true,
+       data: {...}
+     }
+
+     and the current nested admin response:
+
+     {
+       success: true,
+       data: {
+         success: true,
+         data: {...}
+       }
+     }
+    */
+
+    let data =
+      result.data;
+
+
+    if (
+      data &&
+      typeof data === 'object' &&
+      data.success === false
+    ) {
+
+      throw new Error(
+        data.error ||
+        'Admin request failed'
+      );
+
+    }
+
+
+    if (
+      data &&
+      typeof data === 'object' &&
+      data.success === true &&
+      Object.prototype.hasOwnProperty.call(
+        data,
+        'data'
+      )
+    ) {
+
+      data =
+        data.data;
+
+    }
+
+
+    return data;
+  }
+
+
+  login(
+    password
+  ) {
+
+    return this.request({
+
+      action:
+        'admin.login',
+
+      password
+
+    });
+
+  }
+
+
+  bootstrap(
+    token
+  ) {
+
+    return this.request({
+
+      action:
+        'admin.bootstrap',
+
+      token
+
+    });
+
+  }
+
+
+  saveProduct(
+    token,
+    data
+  ) {
+
+    return this.request({
+
+      action:
+        'admin.products.save',
+
+      token,
+
+      ...data
+
+    });
+
+  }
+
+
+  archiveProduct(
+    token,
+    productId
+  ) {
+
+    return this.request({
+
+      action:
+        'admin.products.archive',
+
+      token,
+
+      productId
+
+    });
+
+  }
+
+
+  saveCategory(
+    token,
+    data
+  ) {
+
+    return this.request({
+
+      action:
+        'admin.categories.save',
+
+      token,
+
+      ...data
+
+    });
+
+  }
+
+
+  adjustInventory(
+    token,
+    data
+  ) {
+
+    return this.request({
+
+      action:
+        'admin.inventory.adjust',
+
+      token,
+
+      ...data
+
+    });
+
+  }
+
+
+  updateOrderStatus(
+    token,
+    data
+  ) {
+
+    return this.request({
+
+      action:
+        'admin.orders.status',
+
+      token,
+
+      ...data
+
+    });
+
+  }
+
+
+  updatePaymentStatus(
+    token,
+    data
+  ) {
+
+    return this.request({
+
+      action:
+        'admin.payments.status',
+
+      token,
+
+      ...data
+
+    });
+
+  }
+
+
+  updateShipment(
+    token,
+    data
+  ) {
+
+    return this.request({
+
+      action:
+        'admin.shipments.update',
+
+      token,
+
+      ...data
+
+    });
+
+  }
+
+
+  saveSetting(
+    token,
+    data
+  ) {
+
+    return this.request({
+
+      action:
+        'admin.settings.save',
+
+      token,
+
+      ...data
+
+    });
+
+  }
+
+}
+
+
+/* =====================================================
+ MARK: - UseCases
+ ===================================================== */
+
+class AdminLoginUseCase {
+
+  constructor(
+    api
+  ) {
+
+    this.api =
+      api;
+  }
+
+
+  async execute(
+    password
+  ) {
+
+    if (
+      !password
+    ) {
+
+      throw new Error(
+        'Password is required'
+      );
+
+    }
+
+
+    const data =
+      await this.api.login(
+        password
+      );
+
+
+    if (
+      !data ||
+      !data.token
+    ) {
+
+      throw new Error(
+        'Login response is invalid'
+      );
+
+    }
+
+
+    localStorage.setItem(
+      CONFIG.TOKEN_KEY,
+      data.token
+    );
+
+
+    return data;
+  }
+
+}
+
+
+class LoadAdminUseCase {
+
+  constructor(
+    api
+  ) {
+
+    this.api =
+      api;
+  }
+
+
+  execute(
+    token
+  ) {
+
+    return this.api
+      .bootstrap(
+        token
+      );
+
+  }
+
+}
+
+
+class SaveProductUseCase {
+
+  constructor(
+    api
+  ) {
+
+    this.api =
+      api;
+  }
+
+
+  execute(
+    token,
+    data
+  ) {
+
+    if (
+      !String(
+        data.name || ''
+      ).trim()
+    ) {
+
+      throw new Error(
+        'Product name is required'
+      );
+
+    }
+
+
+    if (
+      !Number.isFinite(
+        Number(data.price)
+      ) ||
+      Number(data.price) < 0
+    ) {
+
+      throw new Error(
+        'Invalid price'
+      );
+
+    }
+
+
+    return this.api
+      .saveProduct(
+        token,
+        data
+      );
+
+  }
+
+}
+
+
+class SaveCategoryUseCase {
+
+  constructor(
+    api
+  ) {
+
+    this.api =
+      api;
+  }
+
+
+  execute(
+    token,
+    data
+  ) {
+
+    if (
+      !String(
+        data.name || ''
+      ).trim()
+    ) {
+
+      throw new Error(
+        'Category name is required'
+      );
+
+    }
+
+
+    return this.api
+      .saveCategory(
+        token,
+        data
+      );
+
+  }
+
+}
+
+
+class InventoryAdjustmentUseCase {
+
+  constructor(
+    api
+  ) {
+
+    this.api =
+      api;
+  }
+
+
+  execute(
+    token,
+    data
+  ) {
+
+    if (
+      !data.productId
+    ) {
+
+      throw new Error(
+        'Product ID is required'
+      );
+
+    }
+
+
+    if (
+      !Number.isInteger(
+        Number(data.delta)
+      ) ||
+      Number(data.delta) === 0
+    ) {
+
+      throw new Error(
+        'Inventory delta must be a non-zero integer'
+      );
+
+    }
+
+
+    if (
+      !String(
+        data.reason || ''
+      ).trim()
+    ) {
+
+      throw new Error(
+        'Reason is required'
+      );
+
+    }
+
+
+    return this.api
+      .adjustInventory(
+        token,
+        data
+      );
+
+  }
+
+}
+
+
+/* =====================================================
+ MARK: - Admin UI
+ ===================================================== */
+
+class AdminUI {
+
+  constructor() {
+
+    this.controller =
+      null;
+
+    this.data =
+      null;
+
+  }
+
+
+  connect(
+    controller
+  ) {
+
+    this.controller =
+      controller;
+
+  }
+
+
+  bindEvents() {
+
+    document
+      .getElementById(
+        'loginButton'
+      )
+      .addEventListener(
+        'click',
+        () =>
+          this.controller.login()
+      );
+
+
+    document
+      .getElementById(
+        'loginPassword'
+      )
+      .addEventListener(
+        'keydown',
+        event => {
+
+          if (
+            event.key ===
+            'Enter'
+          ) {
+
+            this.controller.login();
+
+          }
+
+        }
+      );
+
+
+    document
+      .getElementById(
+        'logoutButton'
+      )
+      .addEventListener(
+        'click',
+        () =>
+          this.controller.logout()
+      );
+
+
+    document
+      .getElementById(
+        'refreshButton'
+      )
+      .addEventListener(
+        'click',
+        () =>
+          this.controller.load()
+      );
+
+
+    document
+      .querySelectorAll(
+        '[data-page]'
+      )
+      .forEach(
+        button => {
+
+          button.addEventListener(
+            'click',
+            () =>
+              this.showPage(
+                button.dataset.page
+              )
+          );
+
+        }
+      );
+
+
+    document
+      .getElementById(
+        'newProductButton'
+      )
+      .addEventListener(
+        'click',
+        () =>
+          this.newProduct()
+      );
+
+
+    document
+      .getElementById(
+        'cancelProductButton'
+      )
+      .addEventListener(
+        'click',
+        () =>
+          this.closeProductForm()
+      );
+
+
+    document
+      .getElementById(
+        'saveProductButton'
+      )
+      .addEventListener(
+        'click',
+        () =>
+          this.controller.saveProduct()
+      );
+
+
+    document
+      .getElementById(
+        'clearCategoryButton'
+      )
+      .addEventListener(
+        'click',
+        () =>
+          this.clearCategory()
+      );
+
+
+    document
+      .getElementById(
+        'saveCategoryButton'
+      )
+      .addEventListener(
+        'click',
+        () =>
+          this.controller.saveCategory()
+      );
+
+  }
+
+
+  showLogin() {
+
+    document
+      .getElementById(
+        'loginPage'
+      )
+      .classList.remove(
+        'hidden'
+      );
+
+
+    document
+      .getElementById(
+        'app'
+      )
+      .classList.add(
+        'hidden'
+      );
+
+  }
+
+
+  hideLogin() {
+
+    document
+      .getElementById(
+        'loginPage'
+      )
+      .classList.add(
+        'hidden'
+      );
+
+
+    document
+      .getElementById(
+        'app'
+      )
+      .classList.remove(
+        'hidden'
+      );
+
+  }
+
+
+  showLoginError(
+    message
+  ) {
+
+    const element =
+      document
+        .getElementById(
+          'loginError'
+        );
+
+
+    element.textContent =
+      message;
+
+
+    element.classList.remove(
+      'hidden'
+    );
+
+  }
+
+
+  clearLoginError() {
+
+    document
+      .getElementById(
+        'loginError'
+      )
+      .classList.add(
+        'hidden'
+      );
+
+  }
+
+
+  showGlobalMessage(
+    message,
+    success = false
+  ) {
+
+    const element =
+      document
+        .getElementById(
+          'globalMessage'
+        );
+
+
+    if (
+      !message
+    ) {
+
+      element.className =
+        'hidden';
+
+      element.textContent =
+        '';
+
+      return;
+
+    }
+
+
+    element.className =
+      success
+        ? 'message message-success'
+        : 'message message-error';
+
+
+    element.textContent =
+      message;
+
+  }
+
+
+  showPage(
+    page
+  ) {
+
+    document
+      .querySelectorAll(
+        '.page'
+      )
+      .forEach(
+        element =>
+          element.classList.remove(
+            'active'
+          )
+      );
+
+
+    const target =
+      document
+        .getElementById(
+          `page-${page}`
+        );
+
+
+    if (target) {
+
+      target.classList.add(
+        'active'
+      );
+
+    }
+
+
+    document
+      .querySelectorAll(
+        '[data-page]'
+      )
+      .forEach(
+        button =>
+          button.classList.toggle(
+            'active',
+            button.dataset.page ===
+              page
+          )
+      );
+
+
+    const titles = {
+
+      dashboard:
+        'Dashboard',
+
+      products:
+        'Products',
+
+      categories:
+        'Categories',
+
+      inventory:
+        'Inventory',
+
+      orders:
+        'Orders',
+
+      customers:
+        'Customers',
+
+      settings:
+        'Settings'
+
+    };
+
+
+    document
+      .getElementById(
+        'pageTitle'
+      )
+      .textContent =
+      titles[page] ||
+      page;
+
+  }
+
+
+  render(
+    data
+  ) {
+
+    this.data =
+      data;
+
+
+    this.renderDashboard(
+      data
+    );
+
+    this.renderProducts(
+      data
+    );
+
+    this.renderCategories(
+      data
+    );
+
+    this.renderInventory(
+      data
+    );
+
+    this.renderOrders(
+      data
+    );
+
+    this.renderCustomers(
+      data
+    );
+
+    this.renderSettings();
+
+  }
+
+
+  renderDashboard(
+    data
+  ) {
+
+    const summary =
+      data.summary ||
+      {};
+
+
+    const cards = [
+
+      [
+        'Products',
+        summary.totalProducts || 0
+      ],
+
+      [
+        'Active Products',
+        summary.activeProducts || 0
+      ],
+
+      [
+        'Low Stock',
+        summary.lowStockProducts || 0
+      ],
+
+      [
+        'Orders',
+        summary.totalOrders || 0
+      ],
+
+      [
+        'Pending',
+        summary.pendingOrders || 0
+      ],
+
+      [
+        'Shipping',
+        summary.shippingOrders || 0
+      ],
+
+      [
+        'Customers',
+        summary.totalCustomers || 0
+      ],
+
+      [
+        'Revenue',
+        formatCurrency(
+          summary.totalRevenue || 0
+        )
+      ]
+
+    ];
+
+
+    document
+      .getElementById(
+        'dashboardCards'
+      )
+      .innerHTML =
+      cards
+        .map(
+          card => `
+
+            <div class="card">
+
+              <div class="card-label">
+                ${escapeHtml(
+                  card[0]
+                )}
+              </div>
+
+              <div class="card-value">
+                ${escapeHtml(
+                  card[1]
+                )}
+              </div>
+
+            </div>
+
+          `
+        )
+        .join('');
+
+
+    const lowStock =
+      (data.products || [])
+        .filter(
+          product =>
+            product.active &&
+            Number(
+              product.availableStock
+            ) <= 5
+        );
+
+
+    document
+      .getElementById(
+        'dashboardLowStock'
+      )
+      .innerHTML =
+      createSimpleTable(
+        [
+          'Product',
+          'Stock',
+          'Reserved',
+          'Available'
+        ],
+
+        lowStock.map(
+          product => [
+
+            product.name,
+
+            product.stock,
+
+            product.reservedStock,
+
+            product.availableStock
+
+          ]
+        )
+      );
+
+
+    document
+      .getElementById(
+        'dashboardOrders'
+      )
+      .innerHTML =
+      createSimpleTable(
+        [
+          'Order',
+          'Customer',
+          'Total',
+          'Status',
+          'Created'
+        ],
+
+        (data.orders || [])
+          .slice(0, 10)
+          .map(
+            order => [
+
+              order.orderCode ||
+                order.orderId,
+
+              order.customerName,
+
+              formatCurrency(
+                order.total
+              ),
+
+              order.status,
+
+              formatDate(
+                order.createdDate
+              )
+
+            ]
+          )
+      );
+
+  }
+
+
+  renderProducts(
+    data
+  ) {
+
+    const categories =
+      new Map(
+        (data.categories || [])
+          .map(
+            category => [
+              category.categoryId,
+              category.name
+            ]
+          )
+      );
+
+
+    document
+      .getElementById(
+        'productsTable'
+      )
+      .innerHTML = `
+
+        <table>
+
+          <thead>
+
+            <tr>
+
+              <th>ID</th>
+
+              <th>Product</th>
+
+              <th>Price</th>
+
+              <th>Stock</th>
+
+              <th>Reserved</th>
+
+              <th>Available</th>
+
+              <th>Category</th>
+
+              <th>Active</th>
+
+              <th>Action</th>
+
+            </tr>
+
+          </thead>
+
+
+          <tbody>
+
+            ${(data.products || [])
+              .map(
+                product => `
+
+                  <tr>
+
+                    <td>
+                      ${escapeHtml(
+                        product.productId
+                      )}
+                    </td>
+
+
+                    <td>
+
+                      <strong>
+                        ${escapeHtml(
+                          product.name
+                        )}
+                      </strong>
+
+                      <br>
+
+                      <small>
+                        ${escapeHtml(
+                          product.sku
+                        )}
+                      </small>
+
+                    </td>
+
+
+                    <td>
+                      ${formatCurrency(
+                        product.price
+                      )}
+                    </td>
+
+
+                    <td
+                      class="${
+                        Number(
+                          product.availableStock
+                        ) <= 5
+                          ? 'stock-low'
+                          : 'stock-ok'
+                      }"
+                    >
+                      ${product.stock}
+                    </td>
+
+
+                    <td>
+                      ${product.reservedStock}
+                    </td>
+
+
+                    <td
+                      class="${
+                        Number(
+                          product.availableStock
+                        ) <= 5
+                          ? 'stock-low'
+                          : 'stock-ok'
+                      }"
+                    >
+                      ${product.availableStock}
+                    </td>
+
+
+                    <td>
+                      ${escapeHtml(
+                        categories.get(
+                          product.categoryId
+                        ) || ''
+                      )}
+                    </td>
+
+
+                    <td>
+                      ${
+                        product.active
+                          ? 'YES'
+                          : 'NO'
+                      }
+                    </td>
+
+
+                    <td>
+
+                      <button
+                        class="button button-secondary"
+                        onclick="adminController.editProduct('${escapeJs(
+                          product.productId
+                        )}')"
+                      >
+                        Edit
+                      </button>
+
+
+                      ${
+                        product.active
+                          ? `
+                            <button
+                              class="button button-danger"
+                              onclick="adminController.archiveProduct('${escapeJs(
+                                product.productId
+                              )}')"
+                            >
+                              Disable
+                            </button>
+                          `
+                          : ''
+                      }
+
+                    </td>
+
+                  </tr>
+
+                `
+              )
+              .join('')}
+
+          </tbody>
+
+        </table>
+
+      `;
+
+  }
+
+
+  renderCategories(
+    data
+  ) {
+
+    document
+      .getElementById(
+        'categoriesTable'
+      )
+      .innerHTML =
+      createSimpleTableWithActions(
+        [
+          'ID',
+          'Name',
+          'Slug',
+          'Sort',
+          'Active'
+        ],
+
+        (data.categories || [])
+          .map(
+            category => ({
+              values: [
+
+                category.categoryId,
+
+                category.name,
+
+                category.slug,
+
+                category.sortOrder,
+
+                category.active
+                  ? 'YES'
+                  : 'NO'
+
+              ],
+
+              action: `
+                <button
+                  class="button button-secondary"
+                  onclick="adminController.editCategory('${escapeJs(
+                    category.categoryId
+                  )}')"
+                >
+                  Edit
+                </button>
+              `
+            })
+          )
+      );
+
+  }
+
+
+  renderInventory(
+    data
+  ) {
+
+    document
+      .getElementById(
+        'inventoryTable'
+      )
+      .innerHTML = `
+
+        <table>
+
+          <thead>
+
+            <tr>
+
+              <th>Product</th>
+
+              <th>Stock</th>
+
+              <th>Reserved</th>
+
+              <th>Available</th>
+
+              <th>Delta</th>
+
+              <th>Type</th>
+
+              <th>Action</th>
+
+            </tr>
+
+          </thead>
+
+
+          <tbody>
+
+            ${(data.products || [])
+              .map(
+                product => `
+
+                  <tr>
+
+                    <td>
+
+                      ${escapeHtml(
+                        product.name
+                      )}
+
+                      <br>
+
+                      <small>
+                        ${escapeHtml(
+                          product.productId
+                        )}
+                      </small>
+
+                    </td>
+
+
+                    <td>
+                      ${product.stock}
+                    </td>
+
+
+                    <td>
+                      ${product.reservedStock}
+                    </td>
+
+
+                    <td>
+                      ${product.availableStock}
+                    </td>
+
+
+                    <td>
+
+                      <input
+                        id="inventory-delta-${escapeJs(
+                          product.productId
+                        )}"
+                        class="input"
+                        type="number"
+                        value="1"
+                        style="width:90px"
+                      >
+
+                    </td>
+
+
+                    <td>
+
+                      <select
+                        id="inventory-type-${escapeJs(
+                          product.productId
+                        )}"
+                        class="input"
+                        style="width:150px"
+                      >
+
+                        <option value="IMPORT">
+                          IMPORT
+                        </option>
+
+                        <option value="ADJUSTMENT">
+                          ADJUSTMENT
+                        </option>
+
+                        <option value="RETURN">
+                          RETURN
+                        </option>
+
+                        <option value="DAMAGE">
+                          DAMAGE
+                        </option>
+
+                      </select>
+
+                    </td>
+
+
+                    <td>
+
+                      <button
+                        class="button button-primary"
+                        onclick="adminController.adjustInventory('${escapeJs(
+                          product.productId
+                        )}')"
+                      >
+                        Apply
+                      </button>
+
+                    </td>
+
+                  </tr>
+
+                `
+              )
+              .join('')}
+
+          </tbody>
+
+        </table>
+
+      `;
+
+  }
+
+
+  renderOrders(
+    data
+  ) {
+
+    document
+      .getElementById(
+        'ordersTable'
+      )
+      .innerHTML = `
+
+        <table>
+
+          <thead>
+
+            <tr>
+
+              <th>Order</th>
+
+              <th>Customer</th>
+
+              <th>Total</th>
+
+              <th>Order Status</th>
+
+              <th>Payment</th>
+
+              <th>Carrier</th>
+
+              <th>Tracking</th>
+
+              <th>Shipping</th>
+
+              <th>Action</th>
+
+            </tr>
+
+          </thead>
+
+
+          <tbody>
+
+            ${(data.orders || [])
+              .map(
+                order => `
+
+                  <tr>
+
+                    <td>
+
+                      <strong>
+                        ${escapeHtml(
+                          order.orderCode ||
+                          order.orderId
+                        )}
+                      </strong>
+
+                      <br>
+
+                      <small>
+                        ${formatDate(
+                          order.createdDate
+                        )}
+                      </small>
+
+                    </td>
+
+
+                    <td>
+
+                      ${escapeHtml(
+                        order.customerName
+                      )}
+
+                      <br>
+
+                      ${escapeHtml(
+                        order.customerPhone
+                      )}
+
+                    </td>
+
+
+                    <td>
+                      ${formatCurrency(
+                        order.total
+                      )}
+                    </td>
+
+
+                    <td>
+
+                      <select
+                        id="order-status-${escapeJs(
+                          order.orderId
+                        )}"
+                        class="input"
+                        style="width:150px"
+                      >
+
+                        ${[
+                          'PENDING',
+                          'CONFIRMED',
+                          'SHIPPING',
+                          'COMPLETED',
+                          'CANCELLED'
+                        ]
+                          .map(
+                            status => `
+
+                              <option
+                                value="${status}"
+                                ${
+                                  order.status ===
+                                  status
+                                    ? 'selected'
+                                    : ''
+                                }
+                              >
+                                ${status}
+                              </option>
+
+                            `
+                          )
+                          .join('')}
+
+                      </select>
+
+                    </td>
+
+
+                    <td>
+
+                      <select
+                        id="payment-status-${escapeJs(
+                          order.orderId
+                        )}"
+                        class="input"
+                        style="width:130px"
+                      >
+
+                        ${[
+                          'PENDING',
+                          'PAID',
+                          'FAILED',
+                          'REFUNDED',
+                          'CANCELLED'
+                        ]
+                          .map(
+                            status => `
+
+                              <option
+                                value="${status}"
+                                ${
+                                  order.paymentStatus ===
+                                  status
+                                    ? 'selected'
+                                    : ''
+                                }
+                              >
+                                ${status}
+                              </option>
+
+                            `
+                          )
+                          .join('')}
+
+                      </select>
+
+                    </td>
+
+
+                    <td>
+
+                      <input
+                        id="carrier-${escapeJs(
+                          order.orderId
+                        )}"
+                        class="input"
+                        placeholder="Carrier"
+                        style="width:120px"
+                      >
+
+                    </td>
+
+
+                    <td>
+
+                      <input
+                        id="tracking-${escapeJs(
+                          order.orderId
+                        )}"
+                        class="input"
+                        placeholder="Tracking"
+                        style="width:150px"
+                      >
+
+                    </td>
+
+
+                    <td>
+
+                      <select
+                        id="shipping-status-${escapeJs(
+                          order.orderId
+                        )}"
+                        class="input"
+                        style="width:150px"
+                      >
+
+                        ${[
+                          'PENDING',
+                          'PICKED_UP',
+                          'IN_TRANSIT',
+                          'DELIVERED',
+                          'RETURNED',
+                          'CANCELLED'
+                        ]
+                          .map(
+                            status => `
+
+                              <option
+                                value="${status}"
+                                ${
+                                  order.shippingStatus ===
+                                  status
+                                    ? 'selected'
+                                    : ''
+                                }
+                              >
+                                ${status}
+                              </option>
+
+                            `
+                          )
+                          .join('')}
+
+                      </select>
+
+                    </td>
+
+
+                    <td>
+
+                      <button
+                        class="button button-primary"
+                        onclick="adminController.updateOrder('${escapeJs(
+                          order.orderId
+                        )}')"
+                      >
+                        Update
+                      </button>
+
+                    </td>
+
+                  </tr>
+
+                `
+              )
+              .join('')}
+
+          </tbody>
+
+        </table>
+
+      `;
+
+  }
+
+
+  renderCustomers(
+    data
+  ) {
+
+    document
+      .getElementById(
+        'customersTable'
+      )
+      .innerHTML =
+      createSimpleTable(
+        [
+          'Name',
+          'Phone',
+          'Email',
+          'Orders',
+          'Spent',
+          'Created'
+        ],
+
+        (data.customers || [])
+          .map(
+            customer => [
+
+              customer.name,
+
+              customer.phone,
+
+              customer.email,
+
+              customer.totalOrders,
+
+              formatCurrency(
+                customer.totalSpent
+              ),
+
+              formatDate(
+                customer.createdDate
+              )
+
+            ]
+          )
+      );
+
+  }
+
+
+  renderSettings() {
+
+    document
+      .getElementById(
+        'settingsContent'
+      )
+      .innerHTML = `
+
+        <p style="color:#6b7280">
+
+          Settings API đã được chuẩn bị
+          ở backend.
+
+          Phần editor chi tiết sẽ dùng
+          cùng Admin Settings UseCase.
+
+        </p>
+
+      `;
+
+  }
+
+
+  renderCategoryOptions(
+    selectedId
+  ) {
+
+    const categories =
+      this.data?.categories || [];
+
+
+    document
+      .getElementById(
+        'productCategory'
+      )
+      .innerHTML = `
+
+        <option value="">
+          -- None --
+        </option>
+
+        ${categories
+          .map(
+            category => `
+
+              <option
+                value="${escapeHtml(
+                  category.categoryId
+                )}"
+                ${
+                  category.categoryId ===
+                  selectedId
+                    ? 'selected'
+                    : ''
+                }
+              >
+                ${escapeHtml(
+                  category.name
+                )}
+              </option>
+
+            `
+          )
+          .join('')}
+
+      `;
+
+  }
+
+
+  newProduct() {
+
+    this.openProductForm(
+      null
+    );
+
+  }
+
+
+  editProduct(
+    product
+  ) {
+
+    this.openProductForm(
+      product
+    );
+
+  }
+
+
+  openProductForm(
+    product
+  ) {
+
+    document
+      .getElementById(
+        'productForm'
+      )
+      .classList.remove(
+        'hidden'
+      );
+
+
+    document
+      .getElementById(
+        'productId'
+      )
+      .value =
+      product?.productId || '';
+
+
+    document
+      .getElementById(
+        'productName'
+      )
+      .value =
+      product?.name || '';
+
+
+    document
+      .getElementById(
+        'productSku'
+      )
+      .value =
+      product?.sku || '';
+
+
+    document
+      .getElementById(
+        'productSlug'
+      )
+      .value =
+      product?.slug || '';
+
+
+    this.renderCategoryOptions(
+      product?.categoryId || ''
+    );
+
+
+    document
+      .getElementById(
+        'productPrice'
+      )
+      .value =
+      product?.price ?? '';
+
+
+    document
+      .getElementById(
+        'productComparePrice'
+      )
+      .value =
+      product?.compareAtPrice ?? '';
+
+
+    document
+      .getElementById(
+        'productCostPrice'
+      )
+      .value =
+      product?.costPrice ?? '';
+
+
+    document
+      .getElementById(
+        'productShippingFee'
+      )
+      .value =
+      product?.shippingFee ?? '';
+
+
+    document
+      .getElementById(
+        'productInitialStock'
+      )
+      .value =
+      product
+        ? ''
+        : 0;
+
+
+    document
+      .getElementById(
+        'productInitialStock'
+      )
+      .disabled =
+      !!product;
+
+
+    document
+      .getElementById(
+        'productImageUrl'
+      )
+      .value =
+      product?.imageUrl || '';
+
+
+    document
+      .getElementById(
+        'productDescription'
+      )
+      .value =
+      product?.description || '';
+
+
+    document
+      .getElementById(
+        'productActive'
+      )
+      .checked =
+      product
+        ? product.active
+        : true;
+
+
+    document
+      .getElementById(
+        'productFeatured'
+      )
+      .checked =
+      product
+        ? product.featured
+        : false;
+
+  }
+
+
+  closeProductForm() {
+
+    document
+      .getElementById(
+        'productForm'
+      )
+      .classList.add(
+        'hidden'
+      );
+
+  }
+
+
+  clearCategory() {
+
+    document
+      .getElementById(
+        'categoryId'
+      )
+      .value = '';
+
+    document
+      .getElementById(
+        'categoryName'
+      )
+      .value = '';
+
+    document
+      .getElementById(
+        'categorySlug'
+      )
+      .value = '';
+
+    document
+      .getElementById(
+        'categorySortOrder'
+      )
+      .value = '';
+
+    document
+      .getElementById(
+        'categoryDescription'
+      )
+      .value = '';
+
+  }
+
+
+  editCategory(
+    category
+  ) {
+
+    document
+      .getElementById(
+        'categoryId'
+      )
+      .value =
+      category.categoryId || '';
+
+    document
+      .getElementById(
+        'categoryName'
+      )
+      .value =
+      category.name || '';
+
+    document
+      .getElementById(
+        'categorySlug'
+      )
+      .value =
+      category.slug || '';
+
+    document
+      .getElementById(
+        'categorySortOrder'
+      )
+      .value =
+      category.sortOrder || 0;
+
+    document
+      .getElementById(
+        'categoryDescription'
+      )
+      .value =
+      category.description || '';
+
+    this.showPage(
+      'categories'
+    );
+
+  }
+
+}
+
+
+/* =====================================================
+ MARK: - Controller
+ ===================================================== */
+
+class AdminController {
+
+  constructor(
+    api,
+    loginUseCase,
+    loadUseCase,
+    saveProductUseCase,
+    saveCategoryUseCase,
+    inventoryUseCase,
+    ui
+  ) {
+
+    this.api =
+      api;
+
+    this.loginUseCase =
+      loginUseCase;
+
+    this.loadUseCase =
+      loadUseCase;
+
+    this.saveProductUseCase =
+      saveProductUseCase;
+
+    this.saveCategoryUseCase =
+      saveCategoryUseCase;
+
+    this.inventoryUseCase =
+      inventoryUseCase;
+
+    this.ui =
+      ui;
+
+  }
+
+
+  get token() {
+
+    return localStorage.getItem(
+      CONFIG.TOKEN_KEY
+    );
+
+  }
+
+
+  async login() {
+
+    const password =
+      document
+        .getElementById(
+          'loginPassword'
+        )
+        .value;
+
+
+    this.ui.clearLoginError();
+
+
+    try {
+
+      await this.loginUseCase
+        .execute(
+          password
+        );
+
+
+      this.ui.hideLogin();
+
+
+      await this.load();
+
+
+    } catch (error) {
+
+      this.ui.showLoginError(
+        error.message
+      );
+
+    }
+
+  }
+
+
+  logout() {
+
+    localStorage.removeItem(
+      CONFIG.TOKEN_KEY
+    );
+
+
+    this.ui.showLogin();
+
+  }
+
+
+  async load() {
+
+    const token =
+      this.token;
+
+
+    if (!token) {
+
+      this.ui.showLogin();
+
+      return;
+
+    }
+
+
+    try {
+
+      const data =
+        await this.loadUseCase
+          .execute(
+            token
+          );
+
+
+      this.ui.render(
+        data
+      );
+
+
+    } catch (error) {
+
+      const message =
+        String(
+          error.message || ''
+        );
+
+
+      if (
+        message.includes(
+          'expired'
+        ) ||
+        message.includes(
+          'authentication'
+        )
+      ) {
+
+        this.logout();
+
+        return;
+
+      }
+
+
+      this.ui.showGlobalMessage(
+        message
+      );
+
+    }
+
+  }
+
+
+  async saveProduct() {
+
+    const data = {
+
+      productId:
+        document
+          .getElementById(
+            'productId'
+          )
+          .value
+          .trim(),
+
+      name:
+        document
+          .getElementById(
+            'productName'
+          )
+          .value
+          .trim(),
+
+      sku:
+        document
+          .getElementById(
+            'productSku'
+          )
+          .value
+          .trim(),
+
+      slug:
+        document
+          .getElementById(
+            'productSlug'
+          )
+          .value
+          .trim(),
+
+      categoryId:
+        document
+          .getElementById(
+            'productCategory'
+          )
+          .value,
+
+      price:
+        Number(
+          document
+            .getElementById(
+              'productPrice'
+            )
+            .value
+        ),
+
+      compareAtPrice:
+        Number(
+          document
+            .getElementById(
+              'productComparePrice'
+            )
+            .value
+        ) || 0,
+
+      costPrice:
+        Number(
+          document
+            .getElementById(
+              'productCostPrice'
+            )
+            .value
+        ) || 0,
+
+      shippingFee:
+        Number(
+          document
+            .getElementById(
+              'productShippingFee'
+            )
+            .value
+        ) || 0,
+
+      initialStock:
+        Number(
+          document
+            .getElementById(
+              'productInitialStock'
+            )
+            .value
+        ) || 0,
+
+      imageUrl:
+        document
+          .getElementById(
+            'productImageUrl'
+          )
+          .value
+          .trim(),
+
+      description:
+        document
+          .getElementById(
+            'productDescription'
+          )
+          .value,
+
+      active:
+        document
+          .getElementById(
+            'productActive'
+          )
+          .checked,
+
+      featured:
+        document
+          .getElementById(
+            'productFeatured'
+          )
+          .checked
+
+    };
+
+
+    try {
+
+      await this.saveProductUseCase
+        .execute(
+          this.token,
+          data
+        );
+
+
+      this.ui.closeProductForm();
+
+
+      await this.load();
+
+
+      this.ui.showGlobalMessage(
+        'Product saved successfully',
+        true
+      );
+
+
+    } catch (error) {
+
+      this.ui.showGlobalMessage(
+        error.message
+      );
+
+    }
+
+  }
+
+
+  editProduct(
+    productId
+  ) {
+
+    const product =
+      (this.ui.data?.products || [])
+        .find(
+          item =>
+            item.productId ===
+            productId
+        );
+
+
+    if (!product) {
+
+      this.ui.showGlobalMessage(
+        'Product not found'
+      );
+
+      return;
+
+    }
+
+
+    this.ui.showPage(
+      'products'
+    );
+
+
+    this.ui.editProduct(
+      product
+    );
+
+  }
+
+
+  async archiveProduct(
+    productId
+  ) {
+
+    if (
+      !confirm(
+        'Disable this product?'
+      )
+    ) {
+
+      return;
+
+    }
+
+
+    try {
+
+      await this.api
+        .archiveProduct(
+          this.token,
+          productId
+        );
+
+
+      await this.load();
+
+
+      this.ui.showGlobalMessage(
+        'Product disabled',
+        true
+      );
+
+
+    } catch (error) {
+
+      this.ui.showGlobalMessage(
+        error.message
+      );
+
+    }
+
+  }
+
+
+  async adjustInventory(
+    productId
+  ) {
+
+    const delta =
+      Number(
+        document
+          .getElementById(
+            `inventory-delta-${productId}`
+          )
+          .value
+      );
+
+
+    const type =
+      document
+        .getElementById(
+          `inventory-type-${productId}`
+        )
+        .value;
+
+
+    const reason =
+      prompt(
+        'Inventory reason'
+      );
+
+
+    if (!reason) {
+
+      return;
+
+    }
+
+
+    try {
+
+      await this.inventoryUseCase
+        .execute(
+          this.token,
+          {
+            productId,
+
+            delta,
+
+            type,
+
+            reason
+          }
+        );
+
+
+      await this.load();
+
+
+      this.ui.showGlobalMessage(
+        'Inventory updated successfully',
+        true
+      );
+
+
+    } catch (error) {
+
+      this.ui.showGlobalMessage(
+        error.message
+      );
+
+    }
+
+  }
+
+
+  async updateOrder(
+    orderId
+  ) {
+
+    try {
+
+      const status =
+        document
+          .getElementById(
+            `order-status-${orderId}`
+          )
+          .value;
+
+
+      const paymentStatus =
+        document
+          .getElementById(
+            `payment-status-${orderId}`
+          )
+          .value;
+
+
+      const carrier =
+        document
+          .getElementById(
+            `carrier-${orderId}`
+          )
+          .value
+          .trim();
+
+
+      const trackingNumber =
+        document
+          .getElementById(
+            `tracking-${orderId}`
+          )
+          .value
+          .trim();
+
+
+      const shippingStatus =
+        document
+          .getElementById(
+            `shipping-status-${orderId}`
+          )
+          .value;
+
+
+      /*
+       Order
+      */
+
+      await this.api
+        .updateOrderStatus(
+          this.token,
+          {
+            orderId,
+
+            status
+          }
+        );
+
+
+      /*
+       Payment
+      */
+
+      await this.api
+        .updatePaymentStatus(
+          this.token,
+          {
+            orderId,
+
+            status:
+              paymentStatus
+          }
+        );
+
+
+      /*
+       Shipment
+      */
+
+      await this.api
+        .updateShipment(
+          this.token,
+          {
+            orderId,
+
+            carrier,
+
+            trackingNumber,
+
+            status:
+              shippingStatus
+          }
+        );
+
+
+      await this.load();
+
+
+      this.ui.showGlobalMessage(
+        'Order updated successfully',
+        true
+      );
+
+
+    } catch (error) {
+
+      this.ui.showGlobalMessage(
+        error.message
+      );
+
+    }
+
+  }
+
+
+  async saveCategory() {
+
+    const data = {
+
+      categoryId:
+        document
+          .getElementById(
+            'categoryId'
+          )
+          .value
+          .trim(),
+
+      name:
+        document
+          .getElementById(
+            'categoryName'
+          )
+          .value
+          .trim(),
+
+      slug:
+        document
+          .getElementById(
+            'categorySlug'
+          )
+          .value
+          .trim(),
+
+      description:
+        document
+          .getElementById(
+            'categoryDescription'
+          )
+          .value,
+
+      sortOrder:
+        Number(
+          document
+            .getElementById(
+              'categorySortOrder'
+            )
+            .value
+        ) || 0,
+
+      active:
+        true
+
+    };
+
+
+    try {
+
+      await this.saveCategoryUseCase
+        .execute(
+          this.token,
+          data
+        );
+
+
+      await this.load();
+
+
+      this.ui.clearCategory();
+
+
+      this.ui.showGlobalMessage(
+        'Category saved successfully',
+        true
+      );
+
+
+    } catch (error) {
+
+      this.ui.showGlobalMessage(
+        error.message
+      );
+
+    }
+
+  }
+
+
+  editCategory(
+    categoryId
+  ) {
+
+    const category =
+      (this.ui.data?.categories || [])
+        .find(
+          item =>
+            item.categoryId ===
+            categoryId
+        );
+
+
+    if (!category) {
+
+      this.ui.showGlobalMessage(
+        'Category not found'
+      );
+
+      return;
+
+    }
+
+
+    this.ui.editCategory(
+      category
+    );
+
+  }
+
+}
+
+
+/* =====================================================
+ MARK: - Helper
+ ===================================================== */
+
+function formatCurrency(
+  value
+) {
+
+  return Number(
+    value || 0
+  )
+    .toLocaleString(
+      'vi-VN'
+    ) + ' ₫';
+
+}
+
+
+function formatDate(
+  value
+) {
+
+  if (!value) {
+    return '';
+  }
+
+
+  const date =
+    new Date(value);
+
+
+  if (
+    Number.isNaN(
+      date.getTime()
+    )
+  ) {
+
+    return '';
+
+  }
+
+
+  return date.toLocaleString(
+    'vi-VN'
+  );
+
+}
+
+
+function escapeHtml(
+  value
+) {
+
+  return String(
+    value ?? ''
+  )
+    .replaceAll(
+      '&',
+      '&amp;'
+    )
+    .replaceAll(
+      '<',
+      '&lt;'
+    )
+    .replaceAll(
+      '>',
+      '&gt;'
+    )
+    .replaceAll(
+      '"',
+      '&quot;'
+    )
+    .replaceAll(
+      "'",
+      '&#039;'
+    );
+
+}
+
+
+function escapeJs(
+  value
+) {
+
+  return String(
+    value ?? ''
+  )
+    .replaceAll(
+      '\\',
+      '\\\\'
+    )
+    .replaceAll(
+      "'",
+      "\\'"
+    );
+
+}
+
+
+function createSimpleTable(
+  headers,
+  rows
+) {
+
+  if (
+    !rows.length
+  ) {
+
+    return `
+      <div style="padding:24px">
+        No data
+      </div>
+    `;
+
+  }
+
+
+  return `
+
+    <table>
+
+      <thead>
+
+        <tr>
+
+          ${headers
+            .map(
+              header =>
+                `
+                <th>
+                  ${escapeHtml(
+                    header
+                  )}
+                </th>
+                `
+            )
+            .join('')}
+
+        </tr>
+
+      </thead>
+
+
+      <tbody>
+
+        ${rows
+          .map(
+            row => `
+
+              <tr>
+
+                ${row
+                  .map(
+                    value =>
+                      `
+                      <td>
+                        ${escapeHtml(
+                          value
+                        )}
+                      </td>
+                      `
+                  )
+                  .join('')}
+
+              </tr>
+
+            `
+          )
+          .join('')}
+
+      </tbody>
+
+    </table>
+
+  `;
+
+}
+
+
+function createSimpleTableWithActions(
+  headers,
+  rows
+) {
+
+  if (
+    !rows.length
+  ) {
+
+    return `
+      <div style="padding:24px">
+        No data
+      </div>
+    `;
+
+  }
+
+
+  return `
+
+    <table>
+
+      <thead>
+
+        <tr>
+
+          ${headers
+            .map(
+              header =>
+                `
+                <th>
+                  ${escapeHtml(
+                    header
+                  )}
+                </th>
+                `
+            )
+            .join('')}
+
+          <th>
+            Action
+          </th>
+
+        </tr>
+
+      </thead>
+
+
+      <tbody>
+
+        ${rows
+          .map(
+            row => `
+
+              <tr>
+
+                ${row.values
+                  .map(
+                    value =>
+                      `
+                      <td>
+                        ${escapeHtml(
+                          value
+                        )}
+                      </td>
+                      `
+                  )
+                  .join('')}
+
+                <td>
+                  ${row.action}
+                </td>
+
+              </tr>
+
+            `
+          )
+          .join('')}
+
+      </tbody>
+
+    </table>
+
+  `;
+
+}
+
+
+/* =====================================================
+ MARK: - Composition Root
+ ===================================================== */
+
+const adminApi =
+  new AdminApiRepository(
+    CONFIG.API_URL
+  );
+
+
+const adminUi =
+  new AdminUI();
+
+
+const adminLoginUseCase =
+  new AdminLoginUseCase(
+    adminApi
+  );
+
+
+const loadAdminUseCase =
+  new LoadAdminUseCase(
+    adminApi
+  );
+
+
+const saveProductUseCase =
+  new SaveProductUseCase(
+    adminApi
+  );
+
+
+const saveCategoryUseCase =
+  new SaveCategoryUseCase(
+    adminApi
+  );
+
+
+const inventoryAdjustmentUseCase =
+  new InventoryAdjustmentUseCase(
+    adminApi
+  );
+
+
+const adminController =
+  new AdminController(
+
+    adminApi,
+
+    adminLoginUseCase,
+
+    loadAdminUseCase,
+
+    saveProductUseCase,
+
+    saveCategoryUseCase,
+
+    inventoryAdjustmentUseCase,
+
+    adminUi
+
+  );
+
+
+/*
+ Only controller is exposed
+ to HTML inline handlers.
+ */
+
+window.adminController =
+  adminController;
+
+
+adminUi.connect(
+  adminController
+);
+
+
+adminUi.bindEvents();
+
+
+/* =====================================================
+ MARK: - Bootstrap
+ ===================================================== */
+
+if (
+  localStorage.getItem(
+    CONFIG.TOKEN_KEY
+  )
+) {
+
+  adminUi.hideLogin();
+
+  adminController.load();
+
+} else {
+
+  adminUi.showLogin();
+
+}
+
+</script>
+
+</body>
+
+</html>
+```
