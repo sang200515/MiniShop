@@ -2,8 +2,8 @@
 <html lang="vi">
 <head>
   <meta charset="UTF-8" />
-  <!-- Khóa zoom trên viewport -->
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no" />
+  <!-- Khóa zoom trên viewport và hỗ trợ full màn hình tai thỏ/dynamic island -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, viewport-fit=cover" />
   <meta name="theme-color" content="#4f46e5" />
   <title>Mini Store - Shopping Experience</title>
   
@@ -26,12 +26,11 @@
       --border-color: #e2e8f0;
       --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
       --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-      --shadow-lg: 0 10px 25px -5px rgba(0,0,0,0.08), 0 8px 10px -6px rgba(0,0,0,0.04);
+      --shadow-lg: 0 20px 25px -5px rgba(0,0,0,0.1), 0 10px 10px -5px rgba(0,0,0,0.04);
       --radius-sm: 8px;
       --radius-md: 12px;
       --radius-lg: 20px;
       
-      /* Tắt gesture zoom từ CSS */
       touch-action: pan-x pan-y;
     }
 
@@ -42,7 +41,6 @@
     }
 
     html, body {
-      /* Loại bỏ hoàn toàn double-tap delay và double-tap zoom */
       touch-action: manipulation;
       -webkit-text-size-adjust: 100%;
     }
@@ -55,7 +53,13 @@
       padding-bottom: 80px;
     }
 
-    body.no-scroll { overflow: hidden; }
+    /* Bug 2 fix: Khóa scroll body triệt để khi Modal mở */
+    body.no-scroll { 
+      overflow: hidden !important; 
+      position: fixed;
+      width: 100%;
+      height: 100%;
+    }
 
     button, input, textarea { font: inherit; }
     button { cursor: pointer; border: none; outline: none; background: transparent; }
@@ -69,16 +73,20 @@
       padding: 0 16px;
     }
 
-    /* Top Navigation Bar */
+    /* Bug 1 fix: Top Navigation Bar với Safe Area cho Dynamic Island / Notch */
     .topbar {
       position: sticky;
       top: 0;
       z-index: 40;
-      background: rgba(255, 255, 255, 0.85);
+      background: rgba(255, 255, 255, 0.88);
       backdrop-filter: blur(16px);
       -webkit-backdrop-filter: blur(16px);
       border-bottom: 1px solid var(--border-color);
-      padding: 12px 0;
+      /* Lấp đầy khoảng trống phía trên với env(safe-area-inset-top) */
+      padding-top: max(12px, env(safe-area-inset-top));
+      padding-bottom: 12px;
+      padding-left: max(16px, env(safe-area-inset-left));
+      padding-right: max(16px, env(safe-area-inset-right));
     }
 
     .topbar-inner {
@@ -436,7 +444,7 @@
       backdrop-filter: blur(16px);
       -webkit-backdrop-filter: blur(16px);
       border-top: 1px solid var(--border-color);
-      padding: 10px 20px;
+      padding: 10px 20px max(10px, env(safe-area-inset-bottom));
       display: flex;
       justify-content: space-around;
       align-items: center;
@@ -475,63 +483,60 @@
       border-radius: 99px;
     }
 
-    /* Sheet / Modal Drawer UX */
+    /* Bug 2 fix: Chuyển vị trí Modal ra giữa màn hình (Centered Modal Dialog) */
     .sheet-root {
       position: fixed;
       inset: 0;
       z-index: 100;
       pointer-events: none;
       visibility: hidden;
-      transition: visibility 0.3s;
+      opacity: 0;
+      transition: opacity 0.25s ease, visibility 0.25s;
+      display: grid;
+      place-items: center;
+      padding: 16px;
     }
 
     .sheet-root.is-open {
       pointer-events: auto;
       visibility: visible;
+      opacity: 1;
     }
 
     .sheet-backdrop {
       position: absolute;
       inset: 0;
-      background: rgba(15, 23, 42, 0.5);
-      backdrop-filter: blur(4px);
-      opacity: 0;
-      transition: opacity 0.3s ease;
+      background: rgba(15, 23, 42, 0.6);
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
     }
 
-    .sheet-root.is-open .sheet-backdrop { opacity: 1; }
-
     .sheet {
-      position: absolute;
-      left: 50%;
-      bottom: 0;
-      width: min(650px, 100%);
-      max-height: 90vh;
-      transform: translate(-50%, 100%);
+      position: relative;
+      width: min(600px, 100%);
+      max-height: 85vh;
       background: #fff;
-      border-radius: 24px 24px 0 0;
+      border-radius: var(--radius-lg);
       box-shadow: var(--shadow-lg);
       display: flex;
       flex-direction: column;
-      transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+      overflow: hidden;
+      transform: scale(0.95);
+      transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
-    .sheet-root.is-open .sheet { transform: translate(-50%, 0); }
-
-    .sheet-handle {
-      width: 40px;
-      height: 5px;
-      background: var(--border-color);
-      border-radius: 99px;
-      margin: 12px auto 4px;
+    .sheet-root.is-open .sheet {
+      transform: scale(1);
     }
 
+    /* Đã lược bỏ sheet-handle ở đáy do chuyển lên giữa màn hình */
     .sheet-header {
-      padding: 12px 20px;
+      padding: 16px 20px;
       display: flex;
       align-items: center;
       justify-content: space-between;
       border-bottom: 1px solid var(--border-color);
+      background: #fff;
     }
 
     .sheet-title { font-size: 18px; font-weight: 800; }
@@ -545,12 +550,18 @@
       color: var(--text-muted);
       display: grid;
       place-items: center;
+      transition: background 0.2s;
+    }
+    .btn-close-sheet:hover {
+      background: #e2e8f0;
+      color: var(--text-main);
     }
 
     .sheet-body {
-      padding: 16px 20px;
+      padding: 20px;
       overflow-y: auto;
-      max-height: calc(90vh - 150px);
+      max-height: calc(85vh - 140px);
+      -webkit-overflow-scrolling: touch;
     }
 
     /* Cart Items List */
@@ -766,11 +777,10 @@
     </div>
   </nav>
 
-  <!-- Sheet Drawer (Cart & Checkout) -->
+  <!-- Sheet / Centered Modal Drawer UX -->
   <div id="sheetRoot" class="sheet-root" aria-hidden="true">
     <div class="sheet-backdrop" data-action="close-sheet"></div>
     <section class="sheet" role="dialog" aria-modal="true">
-      <div class="sheet-handle"></div>
       <header class="sheet-header">
         <div>
           <h2 id="sheetTitle" class="sheet-title">Giỏ hàng</h2>
@@ -791,7 +801,6 @@
      * JS GUARD: CHỐNG DOUBLE TAP ZOOM & PINCH ZOOM TRÊN SAFARI / MOBILE
      * ========================================================= */
     (function preventZoom() {
-      // 1. Chống double tap zoom
       let lastTouchEnd = 0;
       document.addEventListener('touchend', function (event) {
         const now = Date.now();
@@ -801,7 +810,6 @@
         lastTouchEnd = now;
       }, { passive: false });
 
-      // 2. Chống pinch zoom (dùng 2 ngón tay thu phóng) trên Safari
       document.addEventListener('gesturestart', function (e) {
         e.preventDefault();
       });
@@ -885,7 +893,10 @@
         this.listeners = [];
       }
       subscribe(listener) { this.listeners.push(listener); return () => { this.listeners = this.listeners.filter(l => l !== listener); }; }
-      setState(patch) { this.state = { ...this.state, ...patch }; this.listeners.forEach(l => l(this.state)); }
+      setState(patch) { 
+        this.state = { ...this.state, ...patch }; 
+        this.listeners.forEach(l => l(this.state)); 
+      }
       getState() { return this.state; }
     }
 
@@ -1034,6 +1045,9 @@
       }
 
       render(state) {
+        // Bug 2 fix: Đồng bộ khóa scroll body khi modal mở hoặc đóng
+        document.body.classList.toggle('no-scroll', state.sheet.open);
+
         document.getElementById('storeName').textContent = state.settings.storeName || 'Mini Store';
         const totalCartCount = state.cart.reduce((s, i) => s + i.quantity, 0);
         document.getElementById('cartCountDesktop').textContent = totalCartCount;
