@@ -53,7 +53,7 @@
       padding-bottom: 80px;
     }
 
-    /* Bug 2 fix: Khóa scroll body triệt để khi Modal mở */
+    /* Lock scroll body when modal opens */
     body.no-scroll { 
       overflow: hidden !important; 
       position: fixed;
@@ -73,7 +73,7 @@
       padding: 0 16px;
     }
 
-    /* Bug 1 fix: Top Navigation Bar với Safe Area cho Dynamic Island / Notch */
+    /* Top Navigation Bar */
     .topbar {
       position: sticky;
       top: 0;
@@ -82,7 +82,6 @@
       backdrop-filter: blur(16px);
       -webkit-backdrop-filter: blur(16px);
       border-bottom: 1px solid var(--border-color);
-      /* Lấp đầy khoảng trống phía trên với env(safe-area-inset-top) */
       padding-top: max(12px, env(safe-area-inset-top));
       padding-bottom: 12px;
       padding-left: max(16px, env(safe-area-inset-left));
@@ -483,7 +482,7 @@
       border-radius: 99px;
     }
 
-    /* Bug 2 fix: Chuyển vị trí Modal ra giữa màn hình (Centered Modal Dialog) */
+    /* Sheet / Centered Modal Dialog UI */
     .sheet-root {
       position: fixed;
       inset: 0;
@@ -529,7 +528,6 @@
       transform: scale(1);
     }
 
-    /* Đã lược bỏ sheet-handle ở đáy do chuyển lên giữa màn hình */
     .sheet-header {
       padding: 16px 20px;
       display: flex;
@@ -537,6 +535,28 @@
       justify-content: space-between;
       border-bottom: 1px solid var(--border-color);
       background: #fff;
+    }
+
+    .sheet-header-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .btn-back-sheet {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: #f1f5f9;
+      color: var(--text-main);
+      transition: background 0.2s;
+    }
+
+    .btn-back-sheet:hover {
+      background: #e2e8f0;
     }
 
     .sheet-title { font-size: 18px; font-weight: 800; }
@@ -662,6 +682,22 @@
       box-shadow: 0 -4px 12px rgba(0,0,0,0.03);
     }
 
+    .summary-details {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin-bottom: 12px;
+      padding-bottom: 12px;
+      border-bottom: 1px dashed var(--border-color);
+      font-size: 13px;
+    }
+
+    .summary-row {
+      display: flex;
+      justify-content: space-between;
+      color: var(--text-muted);
+    }
+
     .footer-row {
       display: flex;
       align-items: center;
@@ -782,9 +818,14 @@
     <div class="sheet-backdrop" data-action="close-sheet"></div>
     <section class="sheet" role="dialog" aria-modal="true">
       <header class="sheet-header">
-        <div>
-          <h2 id="sheetTitle" class="sheet-title">Giỏ hàng</h2>
-          <p id="sheetSubtitle" class="sheet-subtitle">0 sản phẩm</p>
+        <div class="sheet-header-left">
+          <button id="btnBackSheet" class="btn-back-sheet hidden" type="button" data-action="back-to-cart" title="Quay lại giỏ hàng">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+          </button>
+          <div>
+            <h2 id="sheetTitle" class="sheet-title">Giỏ hàng</h2>
+            <p id="sheetSubtitle" class="sheet-subtitle">0 sản phẩm</p>
+          </div>
         </div>
         <button class="btn-close-sheet" type="button" data-action="close-sheet">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
@@ -820,7 +861,9 @@
      * ========================================================= */
     const CONFIG = {
       API_URL: 'https://script.google.com/macros/s/AKfycbwBmNWlCqustuCS6b_FBirEqg1pd8TmYgkA4u7yR26tn5itlFowpGi1Nk18LqvX740i/exec',
-      CART_STORAGE_KEY: 'mini-shop-cart'
+      CART_STORAGE_KEY: 'mini-shop-cart',
+      USER_INFO_STORAGE_KEY: 'mini-shop-user-info',
+      SHIPPING_FEE: 30000 // Thêm phí ship cố định 30k
     };
 
     class ApiRepository {
@@ -881,6 +924,20 @@
       }
     }
 
+    // Quản lý lưu và tự động khôi phục thông tin khách hàng từ LocalStorage
+    class LocalStorageUserRepository {
+      constructor(storageKey) { this.storageKey = storageKey; }
+      getUserInfo() {
+        try {
+          const raw = localStorage.getItem(this.storageKey);
+          return raw ? JSON.parse(raw) : { name: '', phone: '', address: '' };
+        } catch { return { name: '', phone: '', address: '' }; }
+      }
+      saveUserInfo(info) {
+        localStorage.setItem(this.storageKey, JSON.stringify(info));
+      }
+    }
+
     class AppStore {
       constructor() {
         this.state = {
@@ -905,6 +962,7 @@
         this.store = store;
         this.api = repos.api;
         this.cartRepo = repos.cart;
+        this.userRepo = repos.user;
       }
 
       async init() {
@@ -959,6 +1017,10 @@
         this.store.setState({ sheet: { open: false, view: 'cart' } });
       }
 
+      backToCart() {
+        this.store.setState({ sheet: { open: true, view: 'cart' } });
+      }
+
       async startCheckout(mode, items) {
         try {
           const quote = await this.api.quoteOrder(items);
@@ -973,9 +1035,18 @@
 
       async placeOrder(form) {
         this.store.setState({ submitting: true });
+        
+        // Lưu thông tin khách hàng vào LocalStorage cho lần sử dụng sau
+        this.userRepo.saveUserInfo({
+          name: form.name,
+          phone: form.phone,
+          address: form.address
+        });
+
         try {
           const items = this.store.getState().checkout.items;
           const res = await this.api.placeOrder({
+            customerName: form.name,
             phone: form.phone,
             address: form.address,
             note: form.note,
@@ -1016,6 +1087,7 @@
 
           if (action === 'open-cart') this.controller.openCart();
           if (action === 'close-sheet') this.controller.closeSheet();
+          if (action === 'back-to-cart') this.controller.backToCart();
           if (action === 'add-cart') this.controller.addToCart(id);
           if (action === 'buy-now') this.controller.buyNow(id);
           if (action === 'cart-minus') this.controller.updateCartQuantity(id, Number(actionBtn.dataset.qty) - 1);
@@ -1036,6 +1108,7 @@
           if (e.target.id === 'checkoutForm') {
             e.preventDefault();
             this.controller.placeOrder({
+              name: e.target.customerName.value,
               phone: e.target.phone.value,
               address: e.target.address.value,
               note: e.target.note.value
@@ -1045,7 +1118,7 @@
       }
 
       render(state) {
-        // Bug 2 fix: Đồng bộ khóa scroll body khi modal mở hoặc đóng
+        // Lock scroll body when modal is active
         document.body.classList.toggle('no-scroll', state.sheet.open);
 
         document.getElementById('storeName').textContent = state.settings.storeName || 'Mini Store';
@@ -1097,11 +1170,14 @@
         const sheetRoot = document.getElementById('sheetRoot');
         sheetRoot.classList.toggle('is-open', state.sheet.open);
 
+        const btnBack = document.getElementById('btnBackSheet');
+
         if (state.sheet.open) {
           const body = document.getElementById('sheetBody');
           const footer = document.getElementById('sheetFooter');
           
           if (state.sheet.view === 'cart') {
+            btnBack.classList.add('hidden'); // Ẩn nút quay lại khi đang ở giỏ hàng
             document.getElementById('sheetTitle').textContent = 'Giỏ hàng của bạn';
             document.getElementById('sheetSubtitle').textContent = `${totalCartCount} sản phẩm`;
             
@@ -1144,7 +1220,7 @@
               footer.innerHTML = `
                 <div class="footer-row">
                   <div>
-                    <div class="footer-total-label">Tổng cộng</div>
+                    <div class="footer-total-label">Tạm tính</div>
                     <div class="footer-total-price">${formatCurrency(total)}</div>
                   </div>
                   <button class="btn-primary-action" data-action="checkout-selected">Thanh toán</button>
@@ -1152,19 +1228,32 @@
               `;
             }
           } else if (state.sheet.view === 'checkout') {
+            // Yêu cầu 1: Hiển thị nút quay lại giỏ hàng
+            btnBack.classList.remove('hidden');
             document.getElementById('sheetTitle').textContent = 'Thông tin giao hàng';
-            document.getElementById('sheetSubtitle').textContent = 'Nhập địa chỉ nhận hàng';
+            document.getElementById('sheetSubtitle').textContent = 'Nhập thông tin nhận hàng';
             
+            // Yêu cầu 3: Lấy thông tin đã lưu từ LocalStorage để tự động điền
+            const savedUser = this.controller.userRepo.getUserInfo();
+
             const q = state.checkout.quote;
+            const subtotal = q ? q.total : 0;
+            const shippingFee = CONFIG.SHIPPING_FEE; // 30k
+            const grandTotal = subtotal + shippingFee; // Tổng thanh toán = Tạm tính + Phí ship
+
             body.innerHTML = `
               <form id="checkoutForm" class="form-card">
                 <div class="form-group">
+                  <label>Họ và tên *</label>
+                  <input type="text" name="customerName" placeholder="Nguyễn Văn A" value="${savedUser.name || ''}" required />
+                </div>
+                <div class="form-group">
                   <label>Số điện thoại *</label>
-                  <input type="tel" name="phone" placeholder="0901234567" required />
+                  <input type="tel" name="phone" placeholder="0901234567" value="${savedUser.phone || ''}" required />
                 </div>
                 <div class="form-group">
                   <label>Địa chỉ nhận hàng *</label>
-                  <textarea name="address" placeholder="Số nhà, đường, phường/xã..." required></textarea>
+                  <textarea name="address" placeholder="Số nhà, đường, phường/xã..." required>${savedUser.address || ''}</textarea>
                 </div>
                 <div class="form-group">
                   <label>Ghi chú</label>
@@ -1174,11 +1263,23 @@
             `;
 
             footer.classList.remove('hidden');
+            
+            // Yêu cầu 2: Hiển thị phí ship 30k trong mục tổng cộng
             footer.innerHTML = `
+              <div class="summary-details">
+                <div class="summary-row">
+                  <span>Tạm tính:</span>
+                  <span>${formatCurrency(subtotal)}</span>
+                </div>
+                <div class="summary-row">
+                  <span>Phí vận chuyển:</span>
+                  <span>${formatCurrency(shippingFee)}</span>
+                </div>
+              </div>
               <div class="footer-row">
                 <div>
                   <div class="footer-total-label">Tổng thanh toán</div>
-                  <div class="footer-total-price">${formatCurrency(q ? q.total : 0)}</div>
+                  <div class="footer-total-price">${formatCurrency(grandTotal)}</div>
                 </div>
                 <button class="btn-primary-action" type="submit" form="checkoutForm" ${state.submitting ? 'disabled' : ''}>
                   ${state.submitting ? 'Đang gửi...' : 'Đặt hàng COD'}
@@ -1186,6 +1287,7 @@
               </div>
             `;
           } else if (state.sheet.view === 'success') {
+            btnBack.classList.add('hidden');
             document.getElementById('sheetTitle').textContent = 'Đặt hàng thành công 🎉';
             document.getElementById('sheetSubtitle').textContent = '';
             body.innerHTML = `
@@ -1213,7 +1315,8 @@
     const store = new AppStore();
     const controller = new ShopController(store, {
       api: new ApiRepository(CONFIG.API_URL),
-      cart: new LocalStorageCartRepository(CONFIG.CART_STORAGE_KEY)
+      cart: new LocalStorageCartRepository(CONFIG.CART_STORAGE_KEY),
+      user: new LocalStorageUserRepository(CONFIG.USER_INFO_STORAGE_KEY)
     });
     const ui = new ShopUI(store, controller);
 
