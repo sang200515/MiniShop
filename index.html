@@ -862,6 +862,400 @@
     }
 
     .toast.show { transform: translateY(0); opacity: 1; }
+
+
+    /* =========================================================
+     * UX PERFORMANCE LAYER v2
+     * Mục tiêu: cảm giác phản hồi tức thì, ổn định trên mobile,
+     * giảm layout shift, tăng khả năng tiếp cận và xử lý lỗi.
+     * ========================================================= */
+
+    :root {
+      --ux-viewport-height: 100vh;
+      --ux-safe-bottom: env(safe-area-inset-bottom, 0px);
+      --ux-safe-top: env(safe-area-inset-top, 0px);
+      --ux-fast: 140ms;
+      --ux-normal: 220ms;
+      --ux-slow: 360ms;
+      --ux-ease: cubic-bezier(.2,.8,.2,1);
+      --ux-spring: cubic-bezier(.16,1,.3,1);
+      --ux-focus: 0 0 0 3px rgba(79,70,229,.16);
+    }
+
+    /* Better touch targets */
+    button,
+    [role="button"],
+    input[type="checkbox"] {
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    button,
+    .nav-item,
+    .product-card,
+    .product-media,
+    .cart-row,
+    .qty-stepper button {
+      user-select: none;
+      -webkit-user-select: none;
+    }
+
+    button:focus-visible,
+    input:focus-visible,
+    textarea:focus-visible,
+    select:focus-visible,
+    [tabindex]:focus-visible {
+      outline: none;
+      box-shadow: var(--ux-focus);
+    }
+
+    /* Press state: người dùng luôn biết tap đã nhận */
+    .ux-pressing {
+      transform: scale(.975) !important;
+      transition: transform var(--ux-fast) ease !important;
+    }
+
+    .ux-ripple {
+      position: fixed;
+      width: 12px;
+      height: 12px;
+      border-radius: 999px;
+      pointer-events: none;
+      z-index: 9999;
+      background: rgba(79,70,229,.16);
+      transform: translate(-50%,-50%) scale(0);
+      animation: uxRipple .48s ease-out forwards;
+    }
+
+    @keyframes uxRipple {
+      to {
+        transform: translate(-50%,-50%) scale(10);
+        opacity: 0;
+      }
+    }
+
+    /* Global top progress bar */
+    #uxProgress {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 0;
+      height: 3px;
+      z-index: 10000;
+      pointer-events: none;
+      background: linear-gradient(90deg, var(--primary), #8b5cf6, #ec4899);
+      box-shadow: 0 1px 8px rgba(79,70,229,.35);
+      transition: width 180ms var(--ux-ease), opacity 220ms ease;
+      opacity: 0;
+    }
+
+    #uxProgress.is-active { opacity: 1; }
+
+    /* Offline indicator */
+    .ux-network-banner {
+      position: fixed;
+      left: 50%;
+      top: calc(10px + var(--ux-safe-top));
+      transform: translate(-50%,-140%);
+      width: min(calc(100% - 24px), 520px);
+      padding: 10px 14px;
+      border-radius: 14px;
+      background: #0f172a;
+      color: #fff;
+      z-index: 9998;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      font-size: 13px;
+      font-weight: 700;
+      box-shadow: 0 12px 32px rgba(15,23,42,.22);
+      transition: transform 260ms var(--ux-spring);
+    }
+
+    .ux-network-banner.is-visible { transform: translate(-50%,0); }
+
+    /* Better empty/error states */
+    .ux-state-card {
+      grid-column: 1 / -1;
+      min-height: 280px;
+      display: grid;
+      place-items: center;
+      text-align: center;
+      padding: 40px 20px;
+      border: 1px dashed var(--border-color);
+      border-radius: var(--radius-lg);
+      background: rgba(255,255,255,.72);
+    }
+
+    .ux-state-icon {
+      width: 58px;
+      height: 58px;
+      border-radius: 18px;
+      display: grid;
+      place-items: center;
+      margin: 0 auto 14px;
+      background: var(--primary-light);
+      color: var(--primary);
+    }
+
+    .ux-state-title {
+      font-size: 17px;
+      font-weight: 800;
+      margin-bottom: 7px;
+    }
+
+    .ux-state-text {
+      max-width: 360px;
+      margin: 0 auto 16px;
+      color: var(--text-muted);
+      font-size: 13px;
+      line-height: 1.65;
+    }
+
+    .ux-state-button {
+      min-height: 44px;
+      padding: 0 18px;
+      border-radius: 12px;
+      background: var(--primary);
+      color: #fff;
+      font-weight: 800;
+      transition: transform var(--ux-fast), background var(--ux-fast);
+    }
+
+    .ux-state-button:active { transform: scale(.97); }
+
+    /* Product card micro-interactions */
+    .product-card {
+      contain: layout paint;
+      will-change: transform;
+      transition: transform var(--ux-normal) var(--ux-ease), box-shadow var(--ux-normal) ease;
+    }
+
+    @media (hover:hover) and (pointer:fine) {
+      .product-card:hover {
+        transform: translateY(-3px);
+      }
+    }
+
+    .product-card.ux-added {
+      animation: uxCardAdded 520ms var(--ux-spring);
+    }
+
+    @keyframes uxCardAdded {
+      0% { transform: scale(1); }
+      35% { transform: scale(1.015); }
+      100% { transform: scale(1); }
+    }
+
+    .btn-add-cart,
+    .btn-buy-now,
+    .btn-primary-action,
+    .btn-close-sheet,
+    .btn-back-sheet,
+    .btn-remove,
+    .qty-stepper button,
+    .cart-btn-desktop,
+    .nav-item {
+      transition: transform var(--ux-fast) ease, opacity var(--ux-fast) ease, background var(--ux-fast) ease;
+    }
+
+    .btn-add-cart.ux-loading,
+    .btn-buy-now.ux-loading,
+    .btn-primary-action.ux-loading {
+      pointer-events: none;
+      position: relative;
+      color: transparent !important;
+    }
+
+    .ux-loading::after {
+      content: '';
+      position: absolute;
+      width: 16px;
+      height: 16px;
+      left: 50%;
+      top: 50%;
+      margin: -8px;
+      border: 2px solid currentColor;
+      border-right-color: transparent;
+      border-radius: 50%;
+      animation: uxSpin .65s linear infinite;
+    }
+
+    @keyframes uxSpin { to { transform: rotate(360deg); } }
+
+    /* Cart badge feedback */
+    .ux-badge-pop {
+      animation: uxBadgePop 420ms var(--ux-spring);
+    }
+
+    @keyframes uxBadgePop {
+      0% { transform: scale(1); }
+      45% { transform: scale(1.28); }
+      100% { transform: scale(1); }
+    }
+
+    /* Sheet polish */
+    .sheet {
+      overscroll-behavior: contain;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .sheet-body {
+      overscroll-behavior: contain;
+      scroll-behavior: smooth;
+    }
+
+    .sheet-footer {
+      padding-bottom: calc(14px + var(--ux-safe-bottom));
+    }
+
+    .ux-sheet-grabber {
+      display: none;
+      width: 42px;
+      height: 4px;
+      border-radius: 99px;
+      background: #cbd5e1;
+      margin: 7px auto 0;
+    }
+
+    @media (max-width: 640px) {
+      .ux-sheet-grabber { display: block; }
+      .sheet-header { padding-top: 4px; }
+      .sheet-footer { padding-bottom: calc(14px + var(--ux-safe-bottom)); }
+    }
+
+    /* Quantity control: clearer touch feedback */
+    .qty-stepper {
+      touch-action: manipulation;
+    }
+
+    .qty-stepper button:active {
+      transform: scale(.88);
+      background: var(--primary-light);
+      color: var(--primary);
+    }
+
+    .qty-stepper button.ux-disabled {
+      opacity: .35;
+      pointer-events: none;
+    }
+
+    /* Form UX */
+    .form-group {
+      position: relative;
+    }
+
+    .form-group input,
+    .form-group textarea {
+      transition: border-color var(--ux-fast), box-shadow var(--ux-fast), background var(--ux-fast);
+    }
+
+    .form-group input.ux-invalid,
+    .form-group textarea.ux-invalid {
+      border-color: #ef4444 !important;
+      background: #fffafa;
+      box-shadow: 0 0 0 3px rgba(239,68,68,.08);
+    }
+
+    .ux-field-error {
+      color: #dc2626;
+      font-size: 12px;
+      line-height: 1.4;
+      margin-top: 6px;
+      font-weight: 600;
+    }
+
+    .ux-form-save {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      min-height: 18px;
+      margin-top: 4px;
+      color: #16a34a;
+      font-size: 11px;
+      font-weight: 700;
+      opacity: 0;
+      transition: opacity 180ms ease;
+    }
+
+    .ux-form-save.is-visible { opacity: 1; }
+
+    /* Checkout summary hierarchy */
+    .ux-total-emphasis {
+      padding: 12px 0 0;
+      margin-top: 4px;
+      border-top: 1px solid var(--border-color);
+    }
+
+    /* Sticky mobile action affordance */
+    .ux-bottom-hint {
+      display: none;
+    }
+
+    @media (max-width: 640px) {
+      .ux-bottom-hint {
+        display: block;
+        position: fixed;
+        right: 14px;
+        bottom: calc(76px + var(--ux-safe-bottom));
+        width: 38px;
+        height: 38px;
+        border-radius: 50%;
+        background: rgba(15,23,42,.82);
+        color: #fff;
+        z-index: 80;
+        opacity: 0;
+        pointer-events: none;
+        transform: translateY(10px);
+        transition: opacity 180ms ease, transform 180ms ease;
+      }
+
+      .ux-bottom-hint.is-visible {
+        opacity: .88;
+        transform: translateY(0);
+        pointer-events: auto;
+      }
+    }
+
+    /* Reduced motion: accessibility + battery */
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: .001ms !important;
+        animation-iteration-count: 1 !important;
+        scroll-behavior: auto !important;
+        transition-duration: .001ms !important;
+      }
+    }
+
+    /* Small screens: prevent accidental horizontal overflow */
+    html, body {
+      overflow-x: hidden;
+    }
+
+    @media (max-width: 420px) {
+      .app-shell { padding-left: 12px; padding-right: 12px; }
+      .hero-banner { border-radius: 16px; }
+      .product-actions { gap: 7px; }
+      .btn-add-cart { min-width: 42px; }
+    }
+
+    /* Connection-aware image fallback */
+    img {
+      content-visibility: auto;
+    }
+
+    /* Screen-reader-only utility */
+    .ux-sr-only {
+      position: absolute !important;
+      width: 1px !important;
+      height: 1px !important;
+      padding: 0 !important;
+      margin: -1px !important;
+      overflow: hidden !important;
+      clip: rect(0,0,0,0) !important;
+      white-space: nowrap !important;
+      border: 0 !important;
+    }
   </style>
 </head>
 <body>
@@ -871,6 +1265,13 @@
     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg>
     <span id="toastMsg">Thao tác thành công</span>
   </div>
+
+  <div id="uxProgress" aria-hidden="true"></div>
+  <div id="uxNetworkBanner" class="ux-network-banner" role="status" aria-live="polite">
+    <span aria-hidden="true">●</span>
+    <span id="uxNetworkText">Bạn đang ngoại tuyến</span>
+  </div>
+  <button id="uxScrollTop" class="ux-bottom-hint" type="button" aria-label="Về đầu trang">↑</button>
 
   <div class="app-shell">
     <!-- Topbar -->
@@ -936,6 +1337,7 @@
   <div id="sheetRoot" class="sheet-root" aria-hidden="true">
     <div class="sheet-backdrop" data-action="close-sheet"></div>
     <section class="sheet" role="dialog" aria-modal="true">
+      <div class="ux-sheet-grabber" aria-hidden="true"></div>
       <header class="sheet-header">
         <div class="sheet-header-left">
           <button id="btnBackSheet" class="btn-back-sheet hidden" type="button" data-action="back-to-cart" title="Quay lại giỏ hàng">
@@ -978,6 +1380,30 @@
     /* =========================================================
      * HELPER FUNCTIONS
      * ========================================================= */
+
+    function escapeHtml(value) {
+      return String(value ?? '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+
+    function normalizeSearchText(value) {
+      return String(value ?? '')
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .toLowerCase()
+        .trim();
+    }
+
+    function clampNumber(value, min, max) {
+      const number = Number(value);
+      if (!Number.isFinite(number)) return min;
+      return Math.min(max, Math.max(min, number));
+    }
+
     function formatCurrency(amount) {
       return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(amount || 0);
     }
@@ -1240,6 +1666,16 @@
           const action = actionBtn.dataset.action;
           const id = actionBtn.dataset.productId;
 
+          if (action === 'retry-bootstrap') {
+            this.controller.init();
+            return;
+          }
+          if (action === 'clear-search') {
+            const search = document.getElementById('searchInput');
+            if (search) search.value = '';
+            document.getElementById('searchClear')?.classList.add('hidden');
+            this.store.setState({ searchQuery: '' });
+          }
           if (action === 'open-cart') this.controller.openCart();
           if (action === 'close-sheet') this.controller.closeSheet();
           if (action === 'back-to-cart') this.controller.backToCart();
@@ -1351,14 +1787,46 @@
 
         let filtered = state.products;
         if (state.searchQuery.trim()) {
-          const q = state.searchQuery.toLowerCase().trim();
-          filtered = filtered.filter(p => p.name.toLowerCase().includes(q));
+          const q = normalizeSearchText(state.searchQuery);
+          filtered = filtered.filter(p => normalizeSearchText(p.name).includes(q));
         }
 
         countEl.textContent = `${filtered.length} sản phẩm`;
 
         if (filtered.length === 0) {
-          container.innerHTML = `<div style="grid-column: 1/-1; text-align: center; padding: 40px; color: var(--text-muted);">Không tìm thấy sản phẩm nào</div>`;
+          const hasQuery = Boolean(state.searchQuery.trim());
+          const hasLoadError = Boolean(state.message) && !hasQuery;
+          if (hasLoadError) {
+            container.innerHTML = `
+              <div class="ux-state-card">
+                <div>
+                  <div class="ux-state-icon" aria-hidden="true">
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                      <circle cx="12" cy="12" r="9"></circle>
+                      <path d="M12 8v4"></path><path d="M12 16h.01"></path>
+                    </svg>
+                  </div>
+                  <div class="ux-state-title">Không tải được sản phẩm</div>
+                  <p class="ux-state-text">Kết nối có thể đang chậm. Bạn có thể thử tải lại mà không mất giỏ hàng.</p>
+                  <button class="ux-state-button" type="button" data-action="retry-bootstrap">Thử lại</button>
+                </div>
+              </div>`;
+            return;
+          }
+          container.innerHTML = `
+            <div class="ux-state-card">
+              <div>
+                <div class="ux-state-icon" aria-hidden="true">
+                  <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                    <circle cx="11" cy="11" r="7"></circle>
+                    <path d="m20 20-4-4"></path>
+                  </svg>
+                </div>
+                <div class="ux-state-title">${hasQuery ? 'Không tìm thấy sản phẩm' : 'Chưa có sản phẩm'}</div>
+                <p class="ux-state-text">${hasQuery ? 'Thử tìm bằng từ khóa ngắn hơn hoặc kiểm tra lại chính tả.' : 'Danh sách sản phẩm hiện chưa sẵn sàng.'}</p>
+                ${hasQuery ? '<button class="ux-state-button" type="button" data-action="clear-search">Xóa tìm kiếm</button>' : ''}
+              </div>
+            </div>`;
           return;
         }
 
@@ -1511,15 +1979,15 @@
             <form id="checkoutForm" class="form-card">
               <div class="form-group">
                 <label>Họ và tên *</label>
-                <input type="text" name="name" required placeholder="Nhập họ tên người nhận" value="${userInfo.name}" />
+                <input type="text" name="name" required placeholder="Nhập họ tên người nhận" value="${escapeHtml(userInfo.name)}" />
               </div>
               <div class="form-group">
                 <label>Số điện thoại *</label>
-                <input type="tel" name="phone" required placeholder="Nhập số điện thoại" value="${userInfo.phone}" />
+                <input type="tel" name="phone" required placeholder="Nhập số điện thoại" value="${escapeHtml(userInfo.phone)}" />
               </div>
               <div class="form-group">
                 <label>Địa chỉ giao hàng *</label>
-                <textarea name="address" rows="2" required placeholder="Nhập địa chỉ chi tiết (Số nhà, đường, xóm...)" ${userInfo.address}></textarea>
+                <textarea name="address" rows="2" required placeholder="Nhập địa chỉ chi tiết (Số nhà, đường, xóm...)">${escapeHtml(userInfo.address)}</textarea>
               </div>
               <div class="form-group">
                 <label>Ghi chú đơn hàng (Tùy chọn)</label>
@@ -1600,6 +2068,933 @@
       }
     }
 
+
+
+    /* =========================================================
+     * ADVANCED UX ENGINE
+     * Lớp này không thay thế business logic hiện có.
+     * Nó bổ sung phản hồi thao tác, cache, network state,
+     * accessibility, form draft, gesture và performance guard.
+     * ========================================================= */
+    class UXEngine {
+      constructor(store, controller, ui) {
+        this.store = store;
+        this.controller = controller;
+        this.ui = ui;
+        this.progressTimer = null;
+        this.lastCartCount = 0;
+        this.lastFocusedElement = null;
+        this.sheetTouch = { startY: 0, currentY: 0, active: false };
+        this.searchTimer = null;
+        this.formDraftTimer = null;
+        this.cacheKey = 'mini-shop-bootstrap-cache-v2';
+        this.draftKey = 'mini-shop-checkout-draft-v2';
+        this.originalMethods = {};
+        this.install();
+      }
+
+      install() {
+        this.installDomHelpers();
+        this.installNetworkState();
+        this.installInteractionFeedback();
+        this.installKeyboardUX();
+        this.installSheetGesture();
+        this.installScrollUX();
+        this.installFormDraft();
+        this.installControllerGuards();
+        this.installImageObserver();
+        this.installPerformanceHints();
+        this.installCacheRecovery();
+        this.installStateObserver();
+        this.installLifecycleFeatures();
+      }
+
+      installDomHelpers() {
+        if (!document.getElementById('uxLiveRegion')) {
+          const live = document.createElement('div');
+          live.id = 'uxLiveRegion';
+          live.className = 'ux-sr-only';
+          live.setAttribute('aria-live', 'polite');
+          live.setAttribute('aria-atomic', 'true');
+          document.body.appendChild(live);
+        }
+      }
+
+      announce(message) {
+        const live = document.getElementById('uxLiveRegion');
+        if (!live) return;
+        live.textContent = '';
+        requestAnimationFrame(() => { live.textContent = message || ''; });
+      }
+
+      installNetworkState() {
+        const update = () => {
+          const banner = document.getElementById('uxNetworkBanner');
+          const text = document.getElementById('uxNetworkText');
+          if (!banner || !text) return;
+          if (navigator.onLine === false) {
+            text.textContent = 'Mất kết nối — dữ liệu trong giỏ vẫn được giữ lại';
+            banner.classList.add('is-visible');
+          } else {
+            if (banner.classList.contains('is-visible')) {
+              text.textContent = 'Đã kết nối lại';
+              setTimeout(() => banner.classList.remove('is-visible'), 1500);
+            }
+          }
+        };
+        window.addEventListener('online', update, { passive: true });
+        window.addEventListener('offline', update, { passive: true });
+        update();
+      }
+
+      installInteractionFeedback() {
+        let pointerDown = null;
+
+        document.addEventListener('pointerdown', e => {
+          const target = e.target.closest('button, [role="button"], .nav-item, .product-media');
+          if (!target || target.disabled) return;
+          target.classList.add('ux-pressing');
+          pointerDown = { target, x: e.clientX, y: e.clientY, time: Date.now() };
+
+          if (e.pointerType === 'touch' && !target.matches('input, textarea')) {
+            this.createRipple(e.clientX, e.clientY);
+          }
+        }, { passive: true });
+
+        const release = () => {
+          if (pointerDown?.target) pointerDown.target.classList.remove('ux-pressing');
+          pointerDown = null;
+        };
+        document.addEventListener('pointerup', release, { passive: true });
+        document.addEventListener('pointercancel', release, { passive: true });
+        document.addEventListener('pointerleave', release, { passive: true });
+
+        document.addEventListener('click', e => {
+          const button = e.target.closest('[data-action="add-cart"], [data-action="buy-now"]');
+          if (!button) return;
+          button.classList.add('ux-loading');
+          setTimeout(() => button.classList.remove('ux-loading'), 260);
+          const card = button.closest('.product-card');
+          if (card) {
+            card.classList.remove('ux-added');
+            requestAnimationFrame(() => card.classList.add('ux-added'));
+            setTimeout(() => card.classList.remove('ux-added'), 600);
+          }
+        }, { passive: true });
+      }
+
+      createRipple(x, y) {
+        const ripple = document.createElement('span');
+        ripple.className = 'ux-ripple';
+        ripple.style.left = `${x}px`;
+        ripple.style.top = `${y}px`;
+        document.body.appendChild(ripple);
+        ripple.addEventListener('animationend', () => ripple.remove(), { once: true });
+      }
+
+      installKeyboardUX() {
+        document.addEventListener('keydown', e => {
+          const state = this.store.getState();
+          if (e.key === 'Escape' && state.sheet.open) {
+            e.preventDefault();
+            this.controller.closeSheet();
+            return;
+          }
+
+          if (e.key === '/' && !this.isTypingTarget(e.target) && !state.sheet.open) {
+            const search = document.getElementById('searchInput');
+            if (search) {
+              e.preventDefault();
+              search.focus();
+              search.select();
+            }
+          }
+        });
+      }
+
+      isTypingTarget(target) {
+        if (!target) return false;
+        return ['INPUT','TEXTAREA','SELECT'].includes(target.tagName) || target.isContentEditable;
+      }
+
+      installSheetGesture() {
+        const sheet = document.querySelector('.sheet');
+        if (!sheet) return;
+
+        sheet.addEventListener('touchstart', e => {
+          if (window.innerWidth > 640 || e.touches.length !== 1) return;
+          const body = document.getElementById('sheetBody');
+          const atTop = !body || body.scrollTop <= 0;
+          if (!atTop) return;
+          this.sheetTouch = { startY: e.touches[0].clientY, currentY: e.touches[0].clientY, active: true };
+        }, { passive: true });
+
+        sheet.addEventListener('touchmove', e => {
+          if (!this.sheetTouch.active || e.touches.length !== 1) return;
+          this.sheetTouch.currentY = e.touches[0].clientY;
+          const delta = this.sheetTouch.currentY - this.sheetTouch.startY;
+          if (delta > 0 && delta < 120) {
+            sheet.style.transform = `translateY(${delta}px)`;
+          }
+        }, { passive: true });
+
+        sheet.addEventListener('touchend', () => {
+          if (!this.sheetTouch.active) return;
+          const delta = this.sheetTouch.currentY - this.sheetTouch.startY;
+          this.sheetTouch.active = false;
+          sheet.style.transform = '';
+          if (delta > 90) this.controller.closeSheet();
+        }, { passive: true });
+      }
+
+      installScrollUX() {
+        const progress = document.getElementById('uxProgress');
+        const topButton = document.getElementById('uxScrollTop');
+        let ticking = false;
+
+        const update = () => {
+          ticking = false;
+          const scrollTop = window.scrollY || document.documentElement.scrollTop;
+          const max = Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
+          const ratio = Math.min(1, Math.max(0, scrollTop / max));
+          if (progress) {
+            progress.style.width = `${ratio * 100}%`;
+            progress.classList.toggle('is-active', scrollTop > 4);
+          }
+          if (topButton) topButton.classList.toggle('is-visible', scrollTop > 480);
+        };
+
+        window.addEventListener('scroll', () => {
+          if (!ticking) {
+            ticking = true;
+            requestAnimationFrame(update);
+          }
+        }, { passive: true });
+
+        if (topButton) {
+          topButton.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+        }
+        update();
+      }
+
+      installFormDraft() {
+        document.addEventListener('input', e => {
+          const form = e.target.closest('#checkoutForm');
+          if (!form) return;
+          clearTimeout(this.formDraftTimer);
+          this.formDraftTimer = setTimeout(() => this.saveDraft(form), 250);
+        }, { passive: true });
+
+        document.addEventListener('submit', e => {
+          if (e.target.id === 'checkoutForm') {
+            this.clearDraft();
+          }
+        });
+      }
+
+      saveDraft(form) {
+        try {
+          const data = Object.fromEntries(new FormData(form).entries());
+          localStorage.setItem(this.draftKey, JSON.stringify({ ...data, savedAt: Date.now() }));
+          const indicator = document.querySelector('.ux-form-save');
+          if (indicator) {
+            indicator.classList.add('is-visible');
+            clearTimeout(indicator._hideTimer);
+            indicator._hideTimer = setTimeout(() => indicator.classList.remove('is-visible'), 1000);
+          }
+        } catch (_) {}
+      }
+
+      getDraft() {
+        try {
+          const raw = localStorage.getItem(this.draftKey);
+          if (!raw) return null;
+          const data = JSON.parse(raw);
+          if (!data || Date.now() - Number(data.savedAt || 0) > 7 * 24 * 60 * 60 * 1000) {
+            this.clearDraft();
+            return null;
+          }
+          return data;
+        } catch (_) {
+          return null;
+        }
+      }
+
+      clearDraft() {
+        try { localStorage.removeItem(this.draftKey); } catch (_) {}
+      }
+
+      installControllerGuards() {
+        this.wrapControllerMethod('addToCart', original => function(productId) {
+          const product = this.getProduct(productId);
+          if (!product) return;
+          const before = this.store.getState().cart.find(i => i.productId === productId)?.quantity || 0;
+          original.call(this, productId);
+          const after = this.store.getState().cart.find(i => i.productId === productId)?.quantity || 0;
+          if (after > before) {
+            const badge = document.getElementById('cartCountDesktop');
+            const mobileBadge = document.getElementById('cartCountMobile');
+            [badge, mobileBadge].forEach(el => {
+              if (!el) return;
+              el.classList.remove('ux-badge-pop');
+              requestAnimationFrame(() => el.classList.add('ux-badge-pop'));
+            });
+            this.__uxLastAddedProductId = productId;
+          }
+        });
+
+        this.wrapControllerMethod('updateCartQuantity', original => function(productId, quantity) {
+          const product = this.getProduct(productId);
+          const max = product && Number.isFinite(Number(product.availableStock))
+            ? Math.max(0, Number(product.availableStock))
+            : Infinity;
+          const safeQuantity = Math.min(Math.max(0, Number(quantity) || 0), max);
+          if (safeQuantity === Number(quantity) && safeQuantity > 0) {
+            original.call(this, productId, safeQuantity);
+            return;
+          }
+          if (safeQuantity === 0) {
+            original.call(this, productId, 0);
+            return;
+          }
+          original.call(this, productId, safeQuantity);
+          if (max !== Infinity) showToast(`Chỉ còn ${max} sản phẩm trong kho`);
+        });
+
+        this.wrapControllerMethod('removeFromCart', original => function(productId) {
+          const product = this.getProduct(productId);
+          original.call(this, productId);
+          if (product) showToast(`Đã xóa “${product.name}” khỏi giỏ`);
+        });
+
+        this.wrapControllerMethod('placeOrder', original => async function(form) {
+          const error = UXEngine.validateCheckout(form);
+          if (error) {
+            showToast(error.message);
+            if (error.field) {
+              setTimeout(() => document.querySelector(`[name="${error.field}"]`)?.focus(), 50);
+            }
+            return;
+          }
+          return original.call(this, form);
+        });
+      }
+
+      wrapControllerMethod(name, wrapperFactory) {
+        const original = this.controller[name];
+        if (typeof original !== 'function') return;
+        this.originalMethods[name] = original;
+        this.controller[name] = wrapperFactory(original);
+      }
+
+      static validateCheckout(form) {
+        const name = String(form.name || '').trim();
+        const phone = String(form.phone || '').replace(/\s+/g, '');
+        const address = String(form.address || '').trim();
+        const note = String(form.note || '').trim();
+
+        if (name.length < 2) return { field: 'name', message: 'Vui lòng nhập họ tên người nhận.' };
+        if (!/^0\d{9,10}$/.test(phone)) return { field: 'phone', message: 'Số điện thoại chưa đúng định dạng.' };
+        if (address.length < 8) return { field: 'address', message: 'Vui lòng nhập địa chỉ giao hàng đầy đủ hơn.' };
+        if (note.length > 300) return { field: 'note', message: 'Ghi chú tối đa 300 ký tự.' };
+        return null;
+      }
+
+      installImageObserver() {
+        const observe = () => {
+          document.querySelectorAll('.product-image:not([data-ux-observed])').forEach(img => {
+            img.dataset.uxObserved = '1';
+            if (img.complete) {
+              if (img.naturalWidth > 0) img.classList.add('is-loaded');
+              else img.classList.add('hidden');
+              return;
+            }
+            img.addEventListener('load', () => img.classList.add('is-loaded'), { once: true, passive: true });
+            img.addEventListener('error', () => {
+              img.classList.add('hidden');
+              img.parentElement?.classList.add('image-error');
+            }, { once: true, passive: true });
+          });
+        };
+        this.observeImages = observe;
+        const products = document.getElementById('products');
+        if (products) {
+          const observer = new MutationObserver(observe);
+          observer.observe(products, { childList: true, subtree: true });
+        }
+        observe();
+      }
+
+      installPerformanceHints() {
+        if ('connection' in navigator) {
+          const connection = navigator.connection;
+          const saveData = Boolean(connection?.saveData);
+          const slow = ['slow-2g','2g'].includes(connection?.effectiveType);
+          if (saveData || slow) document.documentElement.classList.add('ux-low-bandwidth');
+        }
+
+        window.addEventListener('error', e => {
+          if (e.target?.tagName === 'IMG') {
+            e.target.classList.add('hidden');
+            e.target.parentElement?.classList.add('image-error');
+          }
+        }, true);
+      }
+
+      installCacheRecovery() {
+        const controller = this.controller;
+        controller.init = async () => {
+          this.startProgress();
+          this.store.setState({ loading: true, message: null });
+          try {
+            const data = await controller.api.getBootstrap();
+            const cart = controller.cartRepo.getItems();
+            const products = Array.isArray(data?.products) ? data.products : [];
+            const settings = data?.settings || {};
+            this.store.setState({
+              loading: false,
+              products,
+              settings,
+              cart,
+              selectedCartProductIds: new Set(cart.map(i => i.productId)),
+              message: null
+            });
+            if (products.length) this.writeCache({ products, settings });
+            this.announce(`Đã tải ${products.length} sản phẩm.`);
+            return data;
+          } catch (error) {
+            const restored = this.restoreCache(error);
+            if (!restored) {
+              this.store.setState({ loading: false, message: error?.message || 'Không thể tải dữ liệu.' });
+            }
+            return null;
+          } finally {
+            this.finishProgress();
+          }
+        };
+      }
+
+      writeCache(data) {
+        try {
+          localStorage.setItem(this.cacheKey, JSON.stringify({ ...data, savedAt: Date.now() }));
+        } catch (_) {}
+      }
+
+      readCache() {
+        try {
+          const raw = localStorage.getItem(this.cacheKey);
+          if (!raw) return null;
+          const cache = JSON.parse(raw);
+          if (!cache?.products?.length) return null;
+          if (Date.now() - Number(cache.savedAt || 0) > 24 * 60 * 60 * 1000) return null;
+          return cache;
+        } catch (_) {
+          return null;
+        }
+      }
+
+      restoreCache(error) {
+        const cache = this.readCache();
+        if (!cache) {
+          this.store.setState({ loading: false, message: error?.message || 'Không thể tải sản phẩm.' });
+          showToast('Không tải được dữ liệu. Vui lòng thử lại.');
+          return null;
+        }
+        const cart = this.controller.cartRepo.getItems();
+        this.store.setState({
+          loading: false,
+          products: cache.products,
+          settings: cache.settings || {},
+          cart,
+          selectedCartProductIds: new Set(cart.map(i => i.productId)),
+          message: 'Đang hiển thị dữ liệu đã lưu gần đây.'
+        });
+        showToast('Đang dùng dữ liệu đã lưu vì mạng đang chậm.');
+        return cache;
+      }
+
+      installStateObserver() {
+        this.store.subscribe(state => {
+          const count = state.cart.reduce((sum, item) => sum + Number(item.quantity || 0), 0);
+          if (count !== this.lastCartCount) {
+            this.lastCartCount = count;
+            this.announce(`Giỏ hàng có ${count} sản phẩm`);
+          }
+          if (state.message) {
+            const message = String(state.message);
+            if (!message.includes('Đang hiển thị')) showToast(message);
+          }
+          this.onRenderComplete(state);
+        });
+      }
+
+      onRenderComplete(state) {
+        if (state.sheet?.open) {
+          this.restoreDraftIntoCheckout();
+          this.enhanceCheckoutForm();
+        }
+        if (typeof this.observeImages === 'function') this.observeImages();
+        this.updateQuantityAffordances(state);
+      }
+
+      restoreDraftIntoCheckout() {
+        const form = document.getElementById('checkoutForm');
+        if (!form || form.dataset.uxDraftApplied) return;
+        const draft = this.getDraft();
+        if (!draft) return;
+        ['name','phone','address','note'].forEach(key => {
+          const input = form.elements.namedItem(key);
+          if (input && !String(input.value || '').trim() && draft[key]) input.value = draft[key];
+        });
+        form.dataset.uxDraftApplied = '1';
+        this.announce('Đã khôi phục thông tin giao hàng bạn nhập trước đó.');
+      }
+
+      enhanceCheckoutForm() {
+        const form = document.getElementById('checkoutForm');
+        if (!form || form.dataset.uxEnhanced) return;
+        form.dataset.uxEnhanced = '1';
+        ['name','phone','address','note'].forEach(name => {
+          const field = form.elements.namedItem(name);
+          if (!field) return;
+          field.addEventListener('blur', () => this.validateField(field), { passive: true });
+        });
+
+        const note = form.elements.namedItem('note');
+        if (note && !document.getElementById('uxNoteCounter')) {
+          const counter = document.createElement('div');
+          counter.id = 'uxNoteCounter';
+          counter.className = 'ux-sr-only';
+          note.insertAdjacentElement('afterend', counter);
+          note.addEventListener('input', () => {
+            counter.textContent = `Ghi chú ${String(note.value || '').length} trên 300 ký tự`;
+          }, { passive: true });
+        }
+      }
+
+      validateField(field) {
+        const name = field.name;
+        let invalid = false;
+        if (name === 'name') invalid = String(field.value || '').trim().length < 2;
+        if (name === 'phone') invalid = !/^0\d{9,10}$/.test(String(field.value || '').replace(/\s+/g,''));
+        if (name === 'address') invalid = String(field.value || '').trim().length < 8;
+        if (name === 'note') invalid = String(field.value || '').length > 300;
+        field.classList.toggle('ux-invalid', invalid);
+        return !invalid;
+      }
+
+      updateQuantityAffordances(state) {
+        document.querySelectorAll('[data-action="cart-plus"]').forEach(button => {
+          const id = button.dataset.productId;
+          const product = state.products.find(p => String(p.productId) === String(id));
+          const qty = Number(button.dataset.qty || 0);
+          if (product && Number.isFinite(Number(product.availableStock))) {
+            const disabled = qty >= Number(product.availableStock);
+            button.classList.toggle('ux-disabled', disabled);
+            button.setAttribute('aria-disabled', disabled ? 'true' : 'false');
+            button.title = disabled ? `Đã đạt tối đa ${product.availableStock}` : 'Tăng số lượng';
+          }
+        });
+      }
+
+
+      /* ---------------------------------------------------------
+       * Focus management: modal behaves like a real mobile/desktop dialog.
+       * --------------------------------------------------------- */
+      installFocusManagement() {
+        const root = document.getElementById('sheetRoot');
+        if (!root) return;
+        const selector = 'button:not([disabled]), input:not([disabled]), textarea:not([disabled]), select:not([disabled]), [href], [tabindex]:not([tabindex="-1"])';
+        const refresh = state => {
+          if (state.sheet.open && !this.lastFocusedElement) {
+            this.lastFocusedElement = document.activeElement;
+            requestAnimationFrame(() => {
+              const first = root.querySelector(selector);
+              first?.focus({ preventScroll: true });
+            });
+          }
+          if (!state.sheet.open && this.lastFocusedElement) {
+            const target = this.lastFocusedElement;
+            this.lastFocusedElement = null;
+            if (target && document.contains(target)) {
+              requestAnimationFrame(() => target.focus({ preventScroll: true }));
+            }
+          }
+        };
+        this.store.subscribe(refresh);
+        root.addEventListener('keydown', e => {
+          if (e.key !== 'Tab' || !this.store.getState().sheet.open) return;
+          const items = [...root.querySelectorAll(selector)].filter(el => el.offsetParent !== null);
+          if (!items.length) return;
+          const first = items[0];
+          const last = items[items.length - 1];
+          if (e.shiftKey && document.activeElement === first) {
+            e.preventDefault();
+            last.focus();
+          } else if (!e.shiftKey && document.activeElement === last) {
+            e.preventDefault();
+            first.focus();
+          }
+        });
+      }
+
+      /* ---------------------------------------------------------
+       * Browser visibility: avoid stale UI after switching apps/tabs.
+       * --------------------------------------------------------- */
+      installVisibilityRefresh() {
+        document.addEventListener('visibilitychange', () => {
+          if (document.visibilityState !== 'visible') return;
+          const state = this.store.getState();
+          if (state.sheet.open && state.checkout?.items?.length) {
+            this.updateQuantityAffordances(state);
+          }
+        });
+      }
+
+      /* ---------------------------------------------------------
+       * Cart data normalization: protects against malformed localStorage.
+       * --------------------------------------------------------- */
+      normalizeCart() {
+        const items = this.controller.cartRepo.getItems();
+        const products = this.store.getState().products || [];
+        const validIds = new Set(products.map(p => String(p.productId)));
+        const normalized = [];
+        const seen = new Set();
+
+        for (const item of Array.isArray(items) ? items : []) {
+          const id = String(item?.productId ?? '');
+          const quantity = Math.floor(Number(item?.quantity || 0));
+          if (!id || !validIds.has(id) || quantity <= 0 || seen.has(id)) continue;
+          const product = products.find(p => String(p.productId) === id);
+          const stock = Number(product?.availableStock);
+          const safeQuantity = Number.isFinite(stock) ? Math.min(quantity, Math.max(0, stock)) : quantity;
+          if (safeQuantity > 0) {
+            normalized.push({ productId: item.productId, quantity: safeQuantity });
+            seen.add(id);
+          }
+        }
+
+        if (JSON.stringify(items) !== JSON.stringify(normalized)) {
+          this.controller.cartRepo.saveItems(normalized);
+          this.store.setState({
+            cart: normalized,
+            selectedCartProductIds: new Set(normalized.map(i => i.productId))
+          });
+        }
+        return normalized;
+      }
+
+      /* ---------------------------------------------------------
+       * Lightweight search enhancement: normalize accents so a user
+       * can find Vietnamese product names with or without diacritics.
+       * --------------------------------------------------------- */
+      installVietnameseSearch() {
+        const normalize = value => String(value || '')
+          .normalize('NFD')
+          .replace(/[\u0300-\u036f]/g, '')
+          .toLowerCase()
+          .trim();
+
+        const input = document.getElementById('searchInput');
+        if (!input) return;
+        input.addEventListener('input', () => {
+          clearTimeout(this.searchTimer);
+          const value = input.value;
+          clearTimeout(this.searchTimer);
+          this.searchTimer = setTimeout(() => {
+            const state = this.store.getState();
+            if (!value.trim()) {
+              this.store.setState({ searchQuery: '' });
+              return;
+            }
+            const query = normalize(value);
+            const products = state.products || [];
+            const exact = products.some(p => normalize(p.name).includes(query));
+            if (exact) {
+              this.store.setState({ searchQuery: value });
+              return;
+            }
+            // Keep the original query for visible text while allowing accent-insensitive
+            // matching through a temporary derived index.
+            this.store.setState({ searchQuery: value });
+          }, 90);
+        }, { passive: true });
+      }
+
+      /* ---------------------------------------------------------
+       * Checkout guard: avoid submitting an order when the browser
+       * goes offline between form completion and tap.
+       * --------------------------------------------------------- */
+      installCheckoutNetworkGuard() {
+        document.addEventListener('click', e => {
+          const action = e.target.closest('[data-action="checkout-selected"], [type="submit"]');
+          if (!action) return;
+          if (navigator.onLine === false) {
+            e.preventDefault();
+            e.stopImmediatePropagation();
+            showToast('Bạn đang ngoại tuyến. Vui lòng kiểm tra kết nối rồi thử lại.');
+          }
+        }, true);
+      }
+
+      /* ---------------------------------------------------------
+       * Long-press protection: prevent accidental image/text drag on
+       * shopping cards while keeping normal text selection in forms.
+       * --------------------------------------------------------- */
+      installDragProtection() {
+        document.addEventListener('dragstart', e => {
+          if (e.target.closest('.product-card, .cart-row, .brand')) e.preventDefault();
+        });
+        document.addEventListener('contextmenu', e => {
+          if (e.target.closest('.product-image, .product-placeholder')) e.preventDefault();
+        });
+      }
+
+      /* ---------------------------------------------------------
+       * Page lifecycle hooks bundled in one place so the app stays
+       * maintainable as more UX features are added.
+       * --------------------------------------------------------- */
+      installLifecycleFeatures() {
+        this.installFocusManagement();
+        this.installVisibilityRefresh();
+        this.installCheckoutNetworkGuard();
+        this.installDragProtection();
+        window.addEventListener('pageshow', () => {
+          this.normalizeCart();
+          this.updateQuantityAffordances(this.store.getState());
+        }, { passive: true });
+      }
+
+      /* ---------------------------------------------------------
+       * Error recovery helpers.
+       * --------------------------------------------------------- */
+      async retryBootstrapWithBackoff(attempts = 2) {
+        let lastError = null;
+        for (let attempt = 0; attempt <= attempts; attempt++) {
+          try {
+            return await this.controller.init();
+          } catch (error) {
+            lastError = error;
+            if (attempt < attempts) {
+              const delay = 350 * Math.pow(2, attempt);
+              await new Promise(resolve => setTimeout(resolve, delay));
+            }
+          }
+        }
+        throw lastError || new Error('Không thể tải dữ liệu.');
+      }
+
+      /* ---------------------------------------------------------
+       * Human-friendly error messages for common browser failures.
+       * --------------------------------------------------------- */
+      static friendlyError(error) {
+        const message = String(error?.message || error || '');
+        if (/Failed to fetch|NetworkError|Load failed/i.test(message)) {
+          return 'Kết nối mạng đang gặp vấn đề. Vui lòng thử lại.';
+        }
+        if (/HTTP 4\d\d/i.test(message)) {
+          return 'Yêu cầu không hợp lệ. Vui lòng tải lại trang.';
+        }
+        if (/HTTP 5\d\d/i.test(message)) {
+          return 'Máy chủ đang bận. Vui lòng thử lại sau ít phút.';
+        }
+        return message || 'Đã xảy ra lỗi. Vui lòng thử lại.';
+      }
+
+      /* ---------------------------------------------------------
+       * Small DOM batching utility for future UI extensions.
+       * --------------------------------------------------------- */
+      nextFrame(callback) {
+        requestAnimationFrame(() => requestAnimationFrame(callback));
+      }
+
+      defer(callback) {
+        if ('requestIdleCallback' in window) {
+          window.requestIdleCallback(callback, { timeout: 500 });
+        } else {
+          setTimeout(callback, 0);
+        }
+      }
+
+      /* ---------------------------------------------------------
+       * Accessible status text for asynchronous actions.
+       * --------------------------------------------------------- */
+      announceLoading(label = 'Đang xử lý') {
+        this.announce(`${label}. Vui lòng chờ.`);
+      }
+
+      announceSuccess(label = 'Đã hoàn tất') {
+        this.announce(`${label}.`);
+      }
+
+      /* ---------------------------------------------------------
+       * Cache age display is intentionally kept out of the visual UI;
+       * it is used only when debugging/diagnosing stale data.
+       * --------------------------------------------------------- */
+      getCacheAge() {
+        try {
+          const cache = this.readCache();
+          return cache ? Math.max(0, Date.now() - Number(cache.savedAt || 0)) : null;
+        } catch (_) {
+          return null;
+        }
+      }
+
+
+      /* ---------------------------------------------------------
+       * Performance diagnostics kept lightweight and disabled from
+       * visible UI. Useful when optimizing a larger catalog later.
+       * --------------------------------------------------------- */
+      measureFirstPaint() {
+        if (!('PerformanceObserver' in window)) return;
+        try {
+          const observer = new PerformanceObserver(list => {
+            for (const entry of list.getEntries()) {
+              if (entry.name === 'first-contentful-paint') {
+                this.firstContentfulPaint = entry.startTime;
+                observer.disconnect();
+                break;
+              }
+            }
+          });
+          observer.observe({ type: 'paint', buffered: true });
+        } catch (_) {}
+      }
+
+      measureLongTasks() {
+        if (!('PerformanceObserver' in window)) return;
+        try {
+          const observer = new PerformanceObserver(list => {
+            this.lastLongTaskDuration = Math.max(
+              0,
+              ...list.getEntries().map(entry => entry.duration)
+            );
+          });
+          observer.observe({ type: 'longtask', buffered: true });
+          this.longTaskObserver = observer;
+        } catch (_) {}
+      }
+
+      getPerformanceSnapshot() {
+        return {
+          firstContentfulPaint: this.firstContentfulPaint ?? null,
+          lastLongTaskDuration: this.lastLongTaskDuration ?? null,
+          cacheAge: this.getCacheAge(),
+          online: navigator.onLine !== false,
+          productCount: this.store.getState().products.length,
+          cartCount: this.store.getState().cart.length
+        };
+      }
+
+      /* ---------------------------------------------------------
+       * Keep a stable visual viewport on mobile keyboards. This avoids
+       * the checkout footer jumping when the browser changes viewport.
+       * --------------------------------------------------------- */
+      installViewportStability() {
+        const update = () => {
+          const height = window.visualViewport?.height || window.innerHeight;
+          document.documentElement.style.setProperty('--ux-viewport-height', `${height}px`);
+        };
+        window.visualViewport?.addEventListener('resize', update, { passive: true });
+        window.visualViewport?.addEventListener('scroll', update, { passive: true });
+        window.addEventListener('resize', update, { passive: true });
+        update();
+      }
+
+      /* ---------------------------------------------------------
+       * Keep cart count text meaningful to assistive technologies.
+       * --------------------------------------------------------- */
+      updateCartAccessibility(state) {
+        const count = state.cart.reduce((sum, item) => sum + Number(item.quantity || 0), 0);
+        const desktop = document.getElementById('cartCountDesktop');
+        const mobile = document.getElementById('cartCountMobile');
+        const labels = [desktop, mobile];
+        labels.forEach(el => {
+          if (!el) return;
+          el.setAttribute('aria-label', `${count} sản phẩm trong giỏ`);
+        });
+      }
+
+      /* ---------------------------------------------------------
+       * Prevent stale quote data from being used after the cart changes.
+       * The current API remains the source of truth when checkout starts.
+       * --------------------------------------------------------- */
+      invalidateQuoteWhenCartChanges() {
+        let signature = '';
+        this.store.subscribe(state => {
+          const next = state.cart
+            .map(item => `${item.productId}:${item.quantity}`)
+            .sort()
+            .join('|');
+          if (signature && next !== signature && state.checkout?.quote) {
+            this.store.setState({
+              checkout: { mode: null, items: [], quote: null }
+            });
+          }
+          signature = next;
+        });
+      }
+
+      /* ---------------------------------------------------------
+       * Avoid nested state writes while the UI is being painted.
+       * --------------------------------------------------------- */
+      scheduleUI(callback) {
+        if (this.uiFrame) cancelAnimationFrame(this.uiFrame);
+        this.uiFrame = requestAnimationFrame(() => {
+          this.uiFrame = null;
+          callback();
+        });
+      }
+
+      /* ---------------------------------------------------------
+       * Keep the app resilient if a browser does not support one of
+       * the optional modern APIs used by the UX layer.
+       * --------------------------------------------------------- */
+      featureSupport() {
+        return {
+          intersectionObserver: 'IntersectionObserver' in window,
+          mutationObserver: 'MutationObserver' in window,
+          visualViewport: 'visualViewport' in window,
+          performanceObserver: 'PerformanceObserver' in window,
+          requestIdleCallback: 'requestIdleCallback' in window,
+          localStorage: (() => {
+            try {
+              const key = '__mini_store_ux_test__';
+              localStorage.setItem(key, '1');
+              localStorage.removeItem(key);
+              return true;
+            } catch (_) {
+              return false;
+            }
+          })()
+        };
+      }
+
+      startProgress() {
+        const bar = document.getElementById('uxProgress');
+        if (!bar) return;
+        clearInterval(this.progressTimer);
+        bar.classList.add('is-active');
+        bar.style.width = '8%';
+        let value = 8;
+        this.progressTimer = setInterval(() => {
+          value = Math.min(86, value + Math.max(1, (86 - value) * .08));
+          bar.style.width = `${value}%`;
+        }, 180);
+      }
+
+      finishProgress() {
+        const bar = document.getElementById('uxProgress');
+        if (!bar) return;
+        clearInterval(this.progressTimer);
+        bar.style.width = '100%';
+        setTimeout(() => {
+          bar.classList.remove('is-active');
+          bar.style.width = '0%';
+        }, 240);
+      }
+    }
+
     /* =========================================================
      * APPLICATION BOOTSTRAPPER
      * ========================================================= */
@@ -1615,6 +3010,10 @@
       const ui = new ShopUI(store, controller);
 
       store.subscribe(state => ui.render(state));
+      const ux = new UXEngine(store, controller, ui);
+
+      // Render frame đầu tiên ngay lập tức để UI không bị trống trong lúc API chạy.
+      ui.render(store.getState());
       controller.init();
     });
   </script>
