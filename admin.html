@@ -195,7 +195,7 @@
       cursor: pointer;
     }
 
-    /* SEARCH INPUTS */
+    /* SEARCH INPUTS (General) */
     .search-box {
       position: relative;
       display: flex;
@@ -391,7 +391,7 @@
       transition: margin 0.3s ease;
     }
 
-    /* TOPBAR */
+    /* TOPBAR - GRID STRUCTURED */
     .topbar {
       display: grid;
       grid-template-columns: auto 1fr auto;
@@ -604,17 +604,40 @@
       z-index: 40;
     }
 
-    /* SEARCH MATCH HIGHLIGHT */
-    .search-section-title {
-      margin: 20px 0 10px 0;
-      font-size: 15px;
-      font-weight: 700;
-      color: #818cf8;
-      display: flex;
+    /* MOBILE BOTTOM NAV */
+    .mobile-bottom-nav {
+      display: none;
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 64px;
+      background: rgba(15, 23, 42, 0.9);
+      backdrop-filter: blur(16px);
+      border-top: 1px solid var(--glass-border);
+      z-index: 30;
+      justify-content: space-around;
       align-items: center;
-      gap: 8px;
+      padding: 0 8px;
     }
 
+    .mobile-nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      color: var(--text-muted);
+      font-size: 11px;
+      font-weight: 600;
+      background: transparent;
+      padding: 6px;
+    }
+
+    .mobile-nav-item.active {
+      color: var(--primary);
+    }
+
+    /* RESPONSIVE DESIGN */
     @media (max-width: 992px) {
       .topbar {
         grid-template-columns: 1fr auto;
@@ -646,6 +669,10 @@
       }
 
       .menu-toggle {
+        display: flex;
+      }
+
+      .mobile-bottom-nav {
         display: flex;
       }
 
@@ -692,6 +719,7 @@
     </div>
   </div>
 
+  <!-- Mobile Overlay -->
   <div id="mobileOverlay" class="mobile-overlay"></div>
 
   <!-- ADMIN APP -->
@@ -738,7 +766,7 @@
     <!-- CONTENT -->
     <main class="content">
 
-      <!-- TOPBAR WITH GLOBAL SEARCH -->
+      <!-- TOPBAR WITH CENTERED GLOBAL SEARCH -->
       <div class="topbar">
         <div class="topbar-left">
           <button id="menuToggle" class="menu-toggle">
@@ -747,7 +775,7 @@
           <div id="pageTitle" class="page-title">Dashboard</div>
         </div>
 
-        <!-- Global Search Input -->
+        <!-- Thanh Tìm Kiếm Toàn Cục (Căn giữa) -->
         <div class="global-search-container">
           <div class="search-box">
             <i data-lucide="search"></i>
@@ -791,7 +819,9 @@
           <div class="section-header">
             <div class="section-title" id="searchResultsTitle">Kết quả tìm kiếm toàn cục</div>
           </div>
-          <div class="section-body" id="searchResultsContent"></div>
+          <div class="section-body" id="searchResultsContent">
+            <!-- Nội dung tìm kiếm tổng hợp sẽ render ở đây -->
+          </div>
         </div>
       </section>
 
@@ -872,6 +902,7 @@
         <div class="section">
           <div class="section-header">
             <div class="section-title">Danh sách sản phẩm</div>
+            <!-- Search riêng cho tab Sản phẩm -->
             <div class="search-box" style="width: 250px;">
               <i data-lucide="search"></i>
               <input id="productsSearchInput" class="input" placeholder="Lọc sản phẩm...">
@@ -919,6 +950,7 @@
         <div class="section">
           <div class="section-header">
             <div class="section-title">Danh sách danh mục</div>
+            <!-- Search riêng cho tab Danh mục -->
             <div class="search-box" style="width: 250px;">
               <i data-lucide="search"></i>
               <input id="categoriesSearchInput" class="input" placeholder="Lọc danh mục...">
@@ -933,6 +965,7 @@
         <div class="section">
           <div class="section-header">
             <div class="section-title">Quản lý kho hàng (Inventory)</div>
+            <!-- Search riêng cho tab Kho hàng -->
             <div class="search-box" style="width: 250px;">
               <i data-lucide="search"></i>
               <input id="inventorySearchInput" class="input" placeholder="Lọc tồn kho...">
@@ -947,6 +980,7 @@
         <div class="section">
           <div class="section-header">
             <div class="section-title">Quản lý đơn hàng</div>
+            <!-- Search riêng cho tab Đơn hàng -->
             <div class="search-box" style="width: 250px;">
               <i data-lucide="search"></i>
               <input id="ordersSearchInput" class="input" placeholder="Lọc đơn hàng...">
@@ -961,6 +995,7 @@
         <div class="section">
           <div class="section-header">
             <div class="section-title">Danh sách khách hàng</div>
+            <!-- Search riêng cho tab Khách hàng -->
             <div class="search-box" style="width: 250px;">
               <i data-lucide="search"></i>
               <input id="customersSearchInput" class="input" placeholder="Lọc khách hàng...">
@@ -982,17 +1017,33 @@
     </main>
   </div>
 
+  <!-- Mobile Bottom Navigation -->
+  <div class="mobile-bottom-nav">
+    <button class="mobile-nav-item active" data-page="dashboard">
+      <i data-lucide="layout-dashboard"></i>
+      <span>Dashboard</span>
+    </button>
+    <button class="mobile-nav-item" data-page="products">
+      <i data-lucide="package"></i>
+      <span>Sản phẩm</span>
+    </button>
+    <button class="mobile-nav-item" data-page="orders">
+      <i data-lucide="shopping-cart"></i>
+      <span>Đơn hàng</span>
+    </button>
+    <button class="mobile-nav-item" data-page="inventory">
+      <i data-lucide="boxes"></i>
+      <span>Kho</span>
+    </button>
+  </div>
+
+  <!-- JavaScript Code logic -->
   <script>
+    /* Configuration */
     const CONFIG = {
       API_URL: 'https://script.google.com/macros/s/AKfycbxZZimUCvCIKSj1FBmKlag6gtf4mmaQxG3bPsAGe8QX0GUttRrDjz0Bm4rhV9GoGFvUKQ/exec',
       TOKEN_KEY: 'mini-shop-admin-token'
     };
-
-    /* Helper hàm chuẩn hóa chuỗi an toàn */
-    function cleanString(val) {
-      if (val === null || val === undefined) return '';
-      return String(val).toLowerCase().trim();
-    }
 
     /* API Repository */
     class AdminApiRepository {
@@ -1028,16 +1079,45 @@
         return data;
       }
 
-      login(password) { return this.request({ action: 'admin.login', password }); }
-      bootstrap(token) { return this.request({ action: 'admin.bootstrap', token }); }
-      saveProduct(token, data) { return this.request({ action: 'admin.products.save', token, ...data }); }
-      archiveProduct(token, productId) { return this.request({ action: 'admin.products.archive', token, productId }); }
-      saveCategory(token, data) { return this.request({ action: 'admin.categories.save', token, ...data }); }
-      adjustInventory(token, data) { return this.request({ action: 'admin.inventory.adjust', token, ...data }); }
-      updateOrderStatus(token, data) { return this.request({ action: 'admin.orders.status', token, ...data }); }
-      updatePaymentStatus(token, data) { return this.request({ action: 'admin.payments.status', token, ...data }); }
-      updateShipment(token, data) { return this.request({ action: 'admin.shipments.update', token, ...data }); }
-      saveSetting(token, data) { return this.request({ action: 'admin.settings.save', token, ...data }); }
+      login(password) {
+        return this.request({ action: 'admin.login', password });
+      }
+
+      bootstrap(token) {
+        return this.request({ action: 'admin.bootstrap', token });
+      }
+
+      saveProduct(token, data) {
+        return this.request({ action: 'admin.products.save', token, ...data });
+      }
+
+      archiveProduct(token, productId) {
+        return this.request({ action: 'admin.products.archive', token, productId });
+      }
+
+      saveCategory(token, data) {
+        return this.request({ action: 'admin.categories.save', token, ...data });
+      }
+
+      adjustInventory(token, data) {
+        return this.request({ action: 'admin.inventory.adjust', token, ...data });
+      }
+
+      updateOrderStatus(token, data) {
+        return this.request({ action: 'admin.orders.status', token, ...data });
+      }
+
+      updatePaymentStatus(token, data) {
+        return this.request({ action: 'admin.payments.status', token, ...data });
+      }
+
+      updateShipment(token, data) {
+        return this.request({ action: 'admin.shipments.update', token, ...data });
+      }
+
+      saveSetting(token, data) {
+        return this.request({ action: 'admin.settings.save', token, ...data });
+      }
     }
 
     /* UseCases */
@@ -1126,9 +1206,9 @@
         document.getElementById('clearCategoryButton').addEventListener('click', () => this.clearCategory());
         document.getElementById('saveCategoryButton').addEventListener('click', () => this.controller.saveCategory());
 
-        // Global Search Event
+        // Global Search
         document.getElementById('globalSearchInput').addEventListener('input', (e) => {
-          this.searchQueries.global = cleanString(e.target.value);
+          this.searchQueries.global = e.target.value.trim().toLowerCase();
           if (this.searchQueries.global.length > 0) {
             this.showPage('search-results');
             this.renderSearchResults();
@@ -1137,10 +1217,10 @@
           }
         });
 
-        // Tab Search Events
+        // Tab Specific Searches
         const bindTabSearch = (inputId, key, renderFn) => {
           document.getElementById(inputId)?.addEventListener('input', (e) => {
-            this.searchQueries[key] = cleanString(e.target.value);
+            this.searchQueries[key] = e.target.value.trim().toLowerCase();
             renderFn.call(this, this.data);
           });
         };
@@ -1151,6 +1231,7 @@
         bindTabSearch('ordersSearchInput', 'orders', this.renderOrders);
         bindTabSearch('customersSearchInput', 'customers', this.renderCustomers);
 
+        // Mobile sidebar events
         const menuToggle = document.getElementById('menuToggle');
         const sidebar = document.getElementById('sidebar');
         const mobileOverlay = document.getElementById('mobileOverlay');
@@ -1283,76 +1364,53 @@
         );
       }
 
-      /* LOGIC TOÀN CỤC HOÀN CHỈNH CHO SEARCH */
       renderSearchResults() {
         const q = this.searchQueries.global;
         if (!q || !this.data) return;
 
         document.getElementById('searchResultsTitle').textContent = `Kết quả tìm kiếm cho: "${q}"`;
 
-        // Match linh hoạt tất cả các key sản phẩm
         const matchedProducts = (this.data.products || []).filter(p =>
-          cleanString(p.name).includes(q) ||
-          cleanString(p.sku).includes(q) ||
-          cleanString(p.productId || p.id).includes(q) ||
-          cleanString(p.description).includes(q)
+          (p.name && p.name.toLowerCase().includes(q)) ||
+          (p.sku && p.sku.toLowerCase().includes(q)) ||
+          (p.productId && p.productId.toLowerCase().includes(q))
         );
 
-        // Match danh mục
         const matchedCategories = (this.data.categories || []).filter(c =>
-          cleanString(c.name).includes(q) ||
-          cleanString(c.slug).includes(q) ||
-          cleanString(c.categoryId || c.id).includes(q)
+          (c.name && c.name.toLowerCase().includes(q)) ||
+          (c.categoryId && c.categoryId.toLowerCase().includes(q))
         );
 
-        // Match đơn hàng
         const matchedOrders = (this.data.orders || []).filter(o =>
-          cleanString(o.orderCode || o.orderId || o.id).includes(q) ||
-          cleanString(o.customerName).includes(q) ||
-          cleanString(o.customerPhone).includes(q)
+          (o.orderCode && o.orderCode.toLowerCase().includes(q)) ||
+          (o.orderId && o.orderId.toLowerCase().includes(q)) ||
+          (o.customerName && o.customerName.toLowerCase().includes(q)) ||
+          (o.customerPhone && o.customerPhone.toLowerCase().includes(q))
         );
 
-        // Match khách hàng
         const matchedCustomers = (this.data.customers || []).filter(c =>
-          cleanString(c.name).includes(q) ||
-          cleanString(c.phone).includes(q) ||
-          cleanString(c.email).includes(q)
+          (c.name && c.name.toLowerCase().includes(q)) ||
+          (c.phone && c.phone.toLowerCase().includes(q)) ||
+          (c.email && c.email.toLowerCase().includes(q))
         );
 
         let html = '';
 
-        const totalMatches = matchedProducts.length + matchedCategories.length + matchedOrders.length + matchedCustomers.length;
+        // Products
+        html += `<h3 style="margin: 16px 0 8px 0; color: var(--primary);">Sản phẩm (${matchedProducts.length})</h3>`;
+        html += createSimpleTable(['ID', 'Tên SP', 'SKU', 'Giá'], matchedProducts.map(p => [p.productId, p.name, p.sku, formatCurrency(p.price)]));
 
-        if (totalMatches === 0) {
-          html = `<div style="padding: 32px; text-align: center; color: var(--text-muted);">
-                    <i data-lucide="search-x" style="width: 48px; height: 48px; margin-bottom: 12px; opacity:0.5;"></i>
-                    <p style="font-size: 16px;">Không tìm thấy dữ liệu trùng khớp với từ khóa "<strong>${escapeHtml(q)}</strong>"</p>
-                  </div>`;
-        } else {
-          // Render Sản phẩm
-          if (matchedProducts.length > 0) {
-            html += `<div class="search-section-title"><i data-lucide="package"></i> Sản phẩm (${matchedProducts.length})</div>`;
-            html += createSimpleTable(['ID', 'Tên SP', 'SKU', 'Giá'], matchedProducts.map(p => [p.productId || p.id, p.name, p.sku, formatCurrency(p.price)]));
-          }
+        // Categories
+        html += `<h3 style="margin: 24px 0 8px 0; color: var(--primary);">Danh mục (${matchedCategories.length})</h3>`;
+        html += createSimpleTable(['ID', 'Tên danh mục', 'Slug'], matchedCategories.map(c => [c.categoryId, c.name, c.slug]));
 
-          // Render Danh mục
-          if (matchedCategories.length > 0) {
-            html += `<div class="search-section-title"><i data-lucide="tags"></i> Danh mục (${matchedCategories.length})</div>`;
-            html += createSimpleTable(['ID', 'Tên danh mục', 'Slug'], matchedCategories.map(c => [c.categoryId || c.id, c.name, c.slug]));
-          }
+        // Orders
+        html += `<h3 style="margin: 24px 0 8px 0; color: var(--primary);">Đơn hàng (${matchedOrders.length})</h3>`;
+        html += createSimpleTable(['Mã đơn', 'Khách hàng', 'SĐT', 'Tổng tiền', 'Trạng thái'], matchedOrders.map(o => [o.orderCode || o.orderId, o.customerName, o.customerPhone, formatCurrency(o.total), o.status]));
 
-          // Render Đơn hàng
-          if (matchedOrders.length > 0) {
-            html += `<div class="search-section-title"><i data-lucide="shopping-cart"></i> Đơn hàng (${matchedOrders.length})</div>`;
-            html += createSimpleTable(['Mã đơn', 'Khách hàng', 'SĐT', 'Tổng tiền', 'Trạng thái'], matchedOrders.map(o => [o.orderCode || o.orderId || o.id, o.customerName, o.customerPhone, formatCurrency(o.total), o.status]));
-          }
-
-          // Render Khách hàng
-          if (matchedCustomers.length > 0) {
-            html += `<div class="search-section-title"><i data-lucide="users"></i> Khách hàng (${matchedCustomers.length})</div>`;
-            html += createSimpleTable(['Tên', 'SĐT', 'Email'], matchedCustomers.map(c => [c.name, c.phone, c.email]));
-          }
-        }
+        // Customers
+        html += `<h3 style="margin: 24px 0 8px 0; color: var(--primary);">Khách hàng (${matchedCustomers.length})</h3>`;
+        html += createSimpleTable(['Tên', 'SĐT', 'Email'], matchedCustomers.map(c => [c.name, c.phone, c.email]));
 
         document.getElementById('searchResultsContent').innerHTML = html;
         if (window.lucide) lucide.createIcons();
@@ -1360,14 +1418,14 @@
 
       renderProducts(data) {
         const q = this.searchQueries.products;
-        const categories = new Map(((data || this.data)?.categories || []).map(c => [c.categoryId || c.id, c.name]));
+        const categories = new Map(((data || this.data)?.categories || []).map(c => [c.categoryId, c.name]));
         
         let products = (data || this.data)?.products || [];
         if (q) {
           products = products.filter(p =>
-            cleanString(p.name).includes(q) ||
-            cleanString(p.sku).includes(q) ||
-            cleanString(p.productId || p.id).includes(q)
+            (p.name && p.name.toLowerCase().includes(q)) ||
+            (p.sku && p.sku.toLowerCase().includes(q)) ||
+            (p.productId && p.productId.toLowerCase().includes(q))
           );
         }
 
@@ -1389,7 +1447,7 @@
             <tbody>
               ${products.map(product => `
                 <tr>
-                  <td>${escapeHtml(product.productId || product.id)}</td>
+                  <td>${escapeHtml(product.productId)}</td>
                   <td>
                     <strong>${escapeHtml(product.name)}</strong><br>
                     <small style="color:var(--text-muted)">${escapeHtml(product.sku)}</small>
@@ -1398,11 +1456,11 @@
                   <td class="${Number(product.availableStock) <= 5 ? 'stock-low' : 'stock-ok'}">${product.stock}</td>
                   <td>${product.reservedStock}</td>
                   <td class="${Number(product.availableStock) <= 5 ? 'stock-low' : 'stock-ok'}">${product.availableStock}</td>
-                  <td>${escapeHtml(categories.get(product.categoryId || product.id) || '-')}</td>
+                  <td>${escapeHtml(categories.get(product.categoryId) || '-')}</td>
                   <td>${product.active ? '<span style="color:#4ade80">Có</span>' : '<span style="color:#f87171">Không</span>'}</td>
                   <td>
-                    <button class="button button-secondary" onclick="adminController.editProduct('${escapeJs(product.productId || product.id)}')">Sửa</button>
-                    ${product.active ? `<button class="button button-danger" onclick="adminController.archiveProduct('${escapeJs(product.productId || product.id)}')">Tắt</button>` : ''}
+                    <button class="button button-secondary" onclick="adminController.editProduct('${escapeJs(product.productId)}')">Sửa</button>
+                    ${product.active ? `<button class="button button-danger" onclick="adminController.archiveProduct('${escapeJs(product.productId)}')">Tắt</button>` : ''}
                   </td>
                 </tr>
               `).join('')}
@@ -1416,17 +1474,17 @@
         let categories = (data || this.data)?.categories || [];
         if (q) {
           categories = categories.filter(c =>
-            cleanString(c.name).includes(q) ||
-            cleanString(c.slug).includes(q) ||
-            cleanString(c.categoryId || c.id).includes(q)
+            (c.name && c.name.toLowerCase().includes(q)) ||
+            (c.slug && c.slug.toLowerCase().includes(q)) ||
+            (c.categoryId && c.categoryId.toLowerCase().includes(q))
           );
         }
 
         document.getElementById('categoriesTable').innerHTML = createSimpleTableWithActions(
           ['ID', 'Tên danh mục', 'Slug', 'Sắp xếp', 'Hoạt động'],
           categories.map(category => ({
-            values: [category.categoryId || category.id, category.name, category.slug, category.sortOrder, category.active ? 'Có' : 'Không'],
-            action: `<button class="button button-secondary" onclick="adminController.editCategory('${escapeJs(category.categoryId || category.id)}')">Sửa</button>`
+            values: [category.categoryId, category.name, category.slug, category.sortOrder, category.active ? 'Có' : 'Không'],
+            action: `<button class="button button-secondary" onclick="adminController.editCategory('${escapeJs(category.categoryId)}')">Sửa</button>`
           }))
         );
       }
@@ -1436,9 +1494,9 @@
         let products = (data || this.data)?.products || [];
         if (q) {
           products = products.filter(p =>
-            cleanString(p.name).includes(q) ||
-            cleanString(p.sku).includes(q) ||
-            cleanString(p.productId || p.id).includes(q)
+            (p.name && p.name.toLowerCase().includes(q)) ||
+            (p.sku && p.sku.toLowerCase().includes(q)) ||
+            (p.productId && p.productId.toLowerCase().includes(q))
           );
         }
 
@@ -1460,16 +1518,16 @@
                 <tr>
                   <td>
                     <strong>${escapeHtml(product.name)}</strong><br>
-                    <small style="color:var(--text-muted)">ID: ${escapeHtml(product.productId || product.id)}</small>
+                    <small style="color:var(--text-muted)">ID: ${escapeHtml(product.productId)}</small>
                   </td>
                   <td>${product.stock}</td>
                   <td>${product.reservedStock}</td>
                   <td>${product.availableStock}</td>
                   <td>
-                    <input id="inventory-delta-${escapeJs(product.productId || product.id)}" class="input" type="number" value="1" style="width:90px">
+                    <input id="inventory-delta-${escapeJs(product.productId)}" class="input" type="number" value="1" style="width:90px">
                   </td>
                   <td>
-                    <select id="inventory-type-${escapeJs(product.productId || product.id)}" class="input" style="width:140px">
+                    <select id="inventory-type-${escapeJs(product.productId)}" class="input" style="width:140px">
                       <option value="IMPORT">Nhập hàng</option>
                       <option value="ADJUSTMENT">Điều chỉnh</option>
                       <option value="RETURN">Trả hàng</option>
@@ -1477,7 +1535,7 @@
                     </select>
                   </td>
                   <td>
-                    <button class="button button-primary" onclick="adminController.adjustInventory('${escapeJs(product.productId || product.id)}')">Cập nhật</button>
+                    <button class="button button-primary" onclick="adminController.adjustInventory('${escapeJs(product.productId)}')">Cập nhật</button>
                   </td>
                 </tr>
               `).join('')}
@@ -1491,9 +1549,10 @@
         let orders = (data || this.data)?.orders || [];
         if (q) {
           orders = orders.filter(o =>
-            cleanString(o.orderCode || o.orderId || o.id).includes(q) ||
-            cleanString(o.customerName).includes(q) ||
-            cleanString(o.customerPhone).includes(q)
+            (o.orderCode && o.orderCode.toLowerCase().includes(q)) ||
+            (o.orderId && o.orderId.toLowerCase().includes(q)) ||
+            (o.customerName && o.customerName.toLowerCase().includes(q)) ||
+            (o.customerPhone && o.customerPhone.toLowerCase().includes(q))
           );
         }
 
@@ -1516,7 +1575,7 @@
               ${orders.map(order => `
                 <tr>
                   <td>
-                    <strong>${escapeHtml(order.orderCode || order.orderId || order.id)}</strong><br>
+                    <strong>${escapeHtml(order.orderCode || order.orderId)}</strong><br>
                     <small style="color:var(--text-muted)">${formatDate(order.createdDate)}</small>
                   </td>
                   <td>
@@ -1525,30 +1584,30 @@
                   </td>
                   <td>${formatCurrency(order.total)}</td>
                   <td>
-                    <select id="order-status-${escapeJs(order.orderId || order.id)}" class="input" style="width:130px">
+                    <select id="order-status-${escapeJs(order.orderId)}" class="input" style="width:130px">
                       ${['PENDING', 'CONFIRMED', 'SHIPPING', 'COMPLETED', 'CANCELLED'].map(s => `
                         <option value="${s}" ${order.status === s ? 'selected' : ''}>${s}</option>
                       `).join('')}
                     </select>
                   </td>
                   <td>
-                    <select id="payment-status-${escapeJs(order.orderId || order.id)}" class="input" style="width:130px">
+                    <select id="payment-status-${escapeJs(order.orderId)}" class="input" style="width:130px">
                       ${['PENDING', 'PAID', 'FAILED', 'REFUNDED', 'CANCELLED'].map(s => `
                         <option value="${s}" ${order.paymentStatus === s ? 'selected' : ''}>${s}</option>
                       `).join('')}
                     </select>
                   </td>
-                  <td><input id="carrier-${escapeJs(order.orderId || order.id)}" class="input" placeholder="Carrier" style="width:110px"></td>
-                  <td><input id="tracking-${escapeJs(order.orderId || order.id)}" class="input" placeholder="Tracking" style="width:130px"></td>
+                  <td><input id="carrier-${escapeJs(order.orderId)}" class="input" placeholder="Carrier" style="width:110px"></td>
+                  <td><input id="tracking-${escapeJs(order.orderId)}" class="input" placeholder="Tracking" style="width:130px"></td>
                   <td>
-                    <select id="shipping-status-${escapeJs(order.orderId || order.id)}" class="input" style="width:140px">
+                    <select id="shipping-status-${escapeJs(order.orderId)}" class="input" style="width:140px">
                       ${['PENDING', 'PICKED_UP', 'IN_TRANSIT', 'DELIVERED', 'RETURNED', 'CANCELLED'].map(s => `
                         <option value="${s}" ${order.shippingStatus === s ? 'selected' : ''}>${s}</option>
                       `).join('')}
                     </select>
                   </td>
                   <td>
-                    <button class="button button-primary" onclick="adminController.updateOrder('${escapeJs(order.orderId || order.id)}')">Update</button>
+                    <button class="button button-primary" onclick="adminController.updateOrder('${escapeJs(order.orderId)}')">Update</button>
                   </td>
                 </tr>
               `).join('')}
@@ -1562,9 +1621,9 @@
         let customers = (data || this.data)?.customers || [];
         if (q) {
           customers = customers.filter(c =>
-            cleanString(c.name).includes(q) ||
-            cleanString(c.phone).includes(q) ||
-            cleanString(c.email).includes(q)
+            (c.name && c.name.toLowerCase().includes(q)) ||
+            (c.phone && c.phone.toLowerCase().includes(q)) ||
+            (c.email && c.email.toLowerCase().includes(q))
           );
         }
 
@@ -1587,7 +1646,7 @@
         document.getElementById('productCategory').innerHTML = `
           <option value="">-- Chọn danh mục --</option>
           ${categories.map(c => `
-            <option value="${escapeHtml(c.categoryId \vert{}\vert{} c.id)}" ${(c.categoryId || c.id) === selectedId ? 'selected' : ''}>
+            <option value="${escapeHtml(c.categoryId)}" ${c.categoryId === selectedId ? 'selected' : ''}>
               ${escapeHtml(c.name)}
             </option>
           `).join('')}
@@ -1599,11 +1658,11 @@
 
       openProductForm(product) {
         document.getElementById('productForm').classList.remove('hidden');
-        document.getElementById('productId').value = product?.productId || product?.id || '';
+        document.getElementById('productId').value = product?.productId || '';
         document.getElementById('productName').value = product?.name || '';
         document.getElementById('productSku').value = product?.sku || '';
         document.getElementById('productSlug').value = product?.slug || '';
-        this.renderCategoryOptions(product?.categoryId || product?.id || '');
+        this.renderCategoryOptions(product?.categoryId || '');
         document.getElementById('productPrice').value = product?.price ?? '';
         document.getElementById('productComparePrice').value = product?.compareAtPrice ?? '';
         document.getElementById('productCostPrice').value = product?.costPrice ?? '';
@@ -1629,7 +1688,7 @@
       }
 
       editCategory(category) {
-        document.getElementById('categoryId').value = category.categoryId || category.id || '';
+        document.getElementById('categoryId').value = category.categoryId || '';
         document.getElementById('categoryName').value = category.name || '';
         document.getElementById('categorySlug').value = category.slug || '';
         document.getElementById('categorySortOrder').value = category.sortOrder || 0;
@@ -1720,7 +1779,7 @@
       }
 
       editProduct(productId) {
-        const product = (this.ui.data?.products || []).find(i => (i.productId || i.id) === productId);
+        const product = (this.ui.data?.products || []).find(i => i.productId === productId);
         if (!product) {
           this.ui.showGlobalMessage('Không tìm thấy sản phẩm');
           return;
@@ -1796,7 +1855,7 @@
       }
 
       editCategory(categoryId) {
-        const category = (this.ui.data?.categories || []).find(item => (item.categoryId || item.id) === categoryId);
+        const category = (this.ui.data?.categories || []).find(item => item.categoryId === categoryId);
         if (!category) {
           this.ui.showGlobalMessage('Không tìm thấy danh mục');
           return;
@@ -1805,7 +1864,7 @@
       }
     }
 
-    /* Helpers */
+    /* Helper Functions */
     function formatCurrency(value) {
       return Number(value || 0).toLocaleString('vi-VN') + ' ₫';
     }
@@ -1831,7 +1890,7 @@
     }
 
     function createSimpleTable(headers, rows) {
-      if (!rows.length) return `<div style="padding:16px 24px; text-align:center; color:var(--text-muted)">Không có dữ liệu phù hợp</div>`;
+      if (!rows.length) return `<div style="padding:24px; text-align:center; color:var(--text-muted)">Không tìm thấy dữ liệu</div>`;
       return `
         <table>
           <thead>
@@ -1847,7 +1906,7 @@
     }
 
     function createSimpleTableWithActions(headers, rows) {
-      if (!rows.length) return `<div style="padding:16px 24px; text-align:center; color:var(--text-muted)">Không có dữ liệu phù hợp</div>`;
+      if (!rows.length) return `<div style="padding:24px; text-align:center; color:var(--text-muted)">Không tìm thấy dữ liệu</div>`;
       return `
         <table>
           <thead>
@@ -1868,7 +1927,7 @@
       `;
     }
 
-    /* Initialize */
+    /* Composition Root & Initialization */
     const adminApi = new AdminApiRepository(CONFIG.API_URL);
     const adminUi = new AdminUI();
 
@@ -1904,5 +1963,4 @@
     });
   </script>
 </body>
-
 </html>
