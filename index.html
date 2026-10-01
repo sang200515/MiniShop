@@ -306,7 +306,7 @@
       transition: transform 0.4s ease;
     }
 
-    .product-card:hover .product-image {
+    .product-card:hover .product-image.is-loaded {
       transform: scale(1.06);
     }
 
@@ -408,29 +408,141 @@
 
     /* Skeleton Loading UI */
     .skeleton-card {
-      background: #fff;
+      background: var(--card-bg);
       border-radius: var(--radius-md);
       overflow: hidden;
       border: 1px solid var(--border-color);
+      pointer-events: none;
     }
+
     .skeleton-media {
+      position: relative;
       aspect-ratio: 1;
+      overflow: hidden;
       background: #e2e8f0;
-      animation: pulse 1.5s infinite ease-in-out;
     }
-    .skeleton-body { padding: 14px; }
+
+    .skeleton-shimmer {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        90deg,
+        transparent 0%,
+        rgba(255, 255, 255, 0.55) 50%,
+        transparent 100%
+      );
+      transform: translateX(-100%);
+      animation: shimmer 1.25s infinite;
+    }
+
+    .skeleton-body {
+      padding: 14px;
+    }
+
     .skeleton-line {
       height: 12px;
+      width: 100%;
       background: #e2e8f0;
       border-radius: 4px;
       margin-bottom: 8px;
-      animation: pulse 1.5s infinite ease-in-out;
+      position: relative;
+      overflow: hidden;
     }
-    .skeleton-line.short { width: 60%; }
 
-    @keyframes pulse {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.4; }
+    .skeleton-line.short {
+      width: 62%;
+    }
+
+    .skeleton-price {
+      width: 42%;
+      height: 18px;
+      margin-top: 12px;
+      margin-bottom: 12px;
+    }
+
+    .skeleton-actions {
+      display: grid;
+      grid-template-columns: 42px 1fr;
+      gap: 8px;
+    }
+
+    .skeleton-button {
+      height: 38px;
+      background: #e2e8f0;
+      border-radius: var(--radius-sm);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .skeleton-button::after,
+    .skeleton-line::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        90deg,
+        transparent 0%,
+        rgba(255, 255, 255, 0.55) 50%,
+        transparent 100%
+      );
+      transform: translateX(-100%);
+      animation: shimmer 1.25s infinite;
+    }
+
+    .product-media .image-skeleton {
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      background: #e2e8f0;
+      transition: opacity 0.2s ease;
+      pointer-events: none;
+    }
+
+    .product-media .image-skeleton::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        90deg,
+        transparent 0%,
+        rgba(255, 255, 255, 0.55) 50%,
+        transparent 100%
+      );
+      transform: translateX(-100%);
+      animation: shimmer 1.25s infinite;
+    }
+
+    .product-image {
+      position: relative;
+      z-index: 2;
+      opacity: 0;
+      transition: opacity 0.2s ease, transform 0.4s ease;
+    }
+
+    .product-image.is-loaded {
+      opacity: 1;
+    }
+
+    .product-image.is-loaded + .image-skeleton {
+      opacity: 0;
+      visibility: hidden;
+    }
+
+    .image-error .image-skeleton {
+      display: none;
+    }
+
+    @keyframes shimmer {
+      100% { transform: translateX(100%); }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .skeleton-shimmer,
+      .skeleton-line::after,
+      .skeleton-button::after,
+      .product-media .image-skeleton::after {
+        animation: none;
+      }
     }
 
     /* Floating Bottom Bar (Mobile UX) */
@@ -1215,13 +1327,22 @@
         if (!container) return;
 
         if (state.loading) {
-          countEl.textContent = 'Đang tải...';
-          container.innerHTML = Array(4).fill(0).map(() => `
-            <div class="skeleton-card">
-              <div class="skeleton-media"></div>
+          countEl.textContent = 'Đang tải sản phẩm...';
+
+          // Render nhiều skeleton hơn để giữ layout ổn định trên mobile/tablet/desktop.
+          container.innerHTML = Array(8).fill(0).map(() => `
+            <div class="skeleton-card" aria-hidden="true">
+              <div class="skeleton-media">
+                <div class="skeleton-shimmer"></div>
+              </div>
               <div class="skeleton-body">
                 <div class="skeleton-line"></div>
                 <div class="skeleton-line short"></div>
+                <div class="skeleton-line skeleton-price"></div>
+                <div class="skeleton-actions">
+                  <div class="skeleton-button"></div>
+                  <div class="skeleton-button"></div>
+                </div>
               </div>
             </div>
           `).join('');
@@ -1246,8 +1367,19 @@
           return `
             <article class="product-card">
               <div class="product-media" data-action="buy-now" data-product-id="${p.productId}">
-                ${p.imageUrl 
-                  ? `<img class="product-image" src="${p.imageUrl}" alt="${p.name}" loading="lazy" />`
+                ${p.imageUrl
+                  ? `
+                    <img
+                      class="product-image"
+                      src="${p.imageUrl}"
+                      alt="${p.name}"
+                      loading="lazy"
+                      decoding="async"
+                      onload="this.classList.add('is-loaded')"
+                      onerror="this.classList.add('hidden'); this.parentElement.classList.add('image-error'); this.parentElement.insertAdjacentHTML('beforeend', '<div class=\"product-placeholder\"><svg width=\"32\" height=\"32\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\"><rect x=\"3\" y=\"3\" width=\"18\" height=\"18\" rx=\"2\"/><circle cx=\"8.5\" cy=\"8.5\" r=\"1.5\"/><path d=\"m21 15-5-5L5 21\"/></svg></div>')"
+                    />
+                    <div class="image-skeleton" aria-hidden="true"></div>
+                  `
                   : `<div class="product-placeholder"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg></div>`
                 }
                 ${isOut ? `<div class="out-badge">Hết hàng</div>` : ''}
