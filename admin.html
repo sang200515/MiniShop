@@ -1,45 +1,67 @@
-```html
 <!DOCTYPE html>
 <html lang="vi">
 
 <head>
   <meta charset="UTF-8">
-
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
-  >
-
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Mini Shop Admin</title>
 
+  <!-- Google Fonts & Lucide Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest"></script>
+
   <style>
+    :root {
+      --primary: #6366f1;
+      --primary-hover: #4f46e5;
+      --primary-light: rgba(99, 102, 241, 0.15);
+      --bg-gradient: linear-gradient(135deg, #0f172a 0%, #1e1b4b 40%, #311042 70%, #0f172a 100%);
+      --glass-bg: rgba(255, 255, 255, 0.05);
+      --glass-bg-hover: rgba(255, 255, 255, 0.08);
+      --glass-border: rgba(255, 255, 255, 0.1);
+      --glass-card: rgba(30, 41, 59, 0.7);
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --text-dark: #0f172a;
+      --danger: #ef4444;
+      --danger-light: rgba(239, 68, 68, 0.15);
+      --success: #10b981;
+      --success-light: rgba(16, 185, 129, 0.15);
+      --warning: #f59e0b;
+      --sidebar-width: 260px;
+    }
+
     * {
       box-sizing: border-box;
-    }
-
-    html,
-    body {
       margin: 0;
       padding: 0;
-      font-family:
-        -apple-system,
-        BlinkMacSystemFont,
-        "Segoe UI",
-        sans-serif;
-
-      background: #f5f7fa;
-      color: #111827;
     }
 
-    button,
-    input,
-    textarea,
-    select {
-      font: inherit;
+    body {
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: #0f172a;
+      background-image: radial-gradient(at 0% 0%, rgba(99, 102, 241, 0.25) 0px, transparent 50%),
+                        radial-gradient(at 100% 0%, rgba(168, 85, 247, 0.25) 0px, transparent 50%),
+                        radial-gradient(at 100% 100%, rgba(236, 72, 153, 0.2) 0px, transparent 50%),
+                        radial-gradient(at 0% 100%, rgba(16, 185, 129, 0.15) 0px, transparent 50%);
+      background-attachment: fixed;
+      color: var(--text-main);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    button, input, textarea, select {
+      font-family: inherit;
+      font-size: 14px;
     }
 
     button {
       cursor: pointer;
+      transition: all 0.2s ease;
+      border: none;
+      outline: none;
     }
 
     button:disabled {
@@ -51,86 +73,85 @@
       display: none !important;
     }
 
-    .container {
-      width: 100%;
-    }
-
-    /* =================================================
-       LOGIN
-       ================================================= */
-
+    /* LOGIN PAGE */
     .login-page {
       min-height: 100vh;
-
       display: flex;
       align-items: center;
       justify-content: center;
-
       padding: 24px;
+      position: relative;
     }
 
     .login-card {
       width: 100%;
-      max-width: 400px;
+      max-width: 420px;
+      padding: 40px;
+      background: rgba(30, 41, 59, 0.8);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid var(--glass-border);
+      border-radius: 24px;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+    }
 
-      padding: 32px;
+    .login-brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 24px;
+    }
 
-      background: white;
-
-      border: 1px solid #e5e7eb;
-      border-radius: 16px;
-
-      box-shadow:
-        0 10px 30px rgba(0, 0, 0, 0.05);
+    .login-logo-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, var(--primary), #a855f7);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
     }
 
     .login-title {
-      margin: 0 0 8px;
-
-      font-size: 28px;
+      font-size: 24px;
       font-weight: 800;
+      letter-spacing: -0.5px;
     }
 
     .login-description {
-      margin: 0 0 24px;
-
-      color: #6b7280;
+      color: var(--text-muted);
+      margin-bottom: 28px;
+      font-size: 14px;
     }
 
-    /* =================================================
-       FORM
-       ================================================= */
-
+    /* FORM ELEMENTS */
     .form-group {
-      margin-bottom: 16px;
+      margin-bottom: 20px;
     }
 
     .label {
       display: block;
-
-      margin-bottom: 6px;
-
-      font-size: 14px;
+      margin-bottom: 8px;
+      font-size: 13px;
       font-weight: 600;
+      color: #cbd5e1;
     }
 
     .input {
       width: 100%;
-
-      padding: 11px 12px;
-
-      border:
-        1px solid #d1d5db;
-
-      border-radius: 8px;
-
-      background: white;
-
+      padding: 12px 16px;
+      border: 1px solid var(--glass-border);
+      border-radius: 12px;
+      background: rgba(15, 23, 42, 0.6);
+      color: white;
       outline: none;
+      transition: all 0.2s;
     }
 
     .input:focus {
-      border-color: #111827;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px var(--primary-light);
     }
 
     textarea.input {
@@ -138,242 +159,376 @@
       resize: vertical;
     }
 
+    select.input {
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%2394a3b8'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 14px center;
+      background-size: 16px;
+      padding-right: 40px;
+    }
+
+    select.input option {
+      background: #1e293b;
+      color: white;
+    }
+
     .checkbox-group {
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 10px;
+      margin-bottom: 16px;
+      cursor: pointer;
+    }
+
+    .checkbox-group input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      accent-color: var(--primary);
+      cursor: pointer;
     }
 
     .checkbox-group label {
       margin: 0;
+      font-size: 14px;
+      color: #e2e8f0;
+      cursor: pointer;
     }
 
-    /* =================================================
-       BUTTONS
-       ================================================= */
+    /* SEARCH INPUTS */
+    .search-box {
+      position: relative;
+      display: flex;
+      align-items: center;
+      width: 100%;
+    }
 
+    .search-box i,
+    .search-box svg {
+      position: absolute;
+      left: 16px;
+      color: var(--text-muted);
+      width: 18px;
+      height: 18px;
+      pointer-events: none;
+      transition: color 0.2s ease;
+    }
+
+    .search-box .input {
+      width: 100%;
+      height: 44px;
+      padding-left: 46px;
+      padding-right: 16px;
+      background: rgba(15, 23, 42, 0.65);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 14px;
+      color: #ffffff;
+      font-size: 14px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .search-box .input::placeholder {
+      color: #64748b;
+      font-size: 13.5px;
+    }
+
+    .search-box .input:focus {
+      background: rgba(15, 23, 42, 0.85);
+      border-color: #818cf8;
+      box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.25), 0 8px 20px rgba(0, 0, 0, 0.3);
+    }
+
+    .search-box:focus-within svg {
+      color: #818cf8;
+    }
+
+    .global-search-container {
+      width: 100%;
+      max-width: 520px;
+      justify-self: center;
+    }
+
+    /* BUTTONS */
     .button {
-      border: 0;
-      border-radius: 8px;
-
-      padding: 10px 14px;
-
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      border-radius: 12px;
+      padding: 11px 18px;
       font-weight: 600;
+      font-size: 14px;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
     .button-primary {
-      background: #111827;
+      background: linear-gradient(135deg, var(--primary), #4f46e5);
       color: white;
+      box-shadow: 0 4px 14px rgba(99, 102, 241, 0.4);
+    }
+
+    .button-primary:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px rgba(99, 102, 241, 0.6);
     }
 
     .button-secondary {
-      background: #e5e7eb;
-      color: #111827;
+      background: rgba(255, 255, 255, 0.08);
+      color: var(--text-main);
+      border: 1px solid var(--glass-border);
+    }
+
+    .button-secondary:hover {
+      background: rgba(255, 255, 255, 0.15);
     }
 
     .button-danger {
-      background: #fee2e2;
-      color: #991b1b;
+      background: var(--danger-light);
+      color: #fca5a5;
+      border: 1px solid rgba(239, 68, 68, 0.3);
     }
 
-    .button-success {
-      background: #dcfce7;
-      color: #166534;
+    .button-danger:hover {
+      background: rgba(239, 68, 68, 0.3);
     }
 
-    /* =================================================
-       APP
-       ================================================= */
-
+    /* APP LAYOUT & SIDEBAR */
     .app {
       min-height: 100vh;
-
       display: flex;
     }
 
     .sidebar {
-      width: 230px;
+      width: var(--sidebar-width);
       flex-shrink: 0;
-
       min-height: 100vh;
+      padding: 24px 16px;
+      background: rgba(15, 23, 42, 0.75);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-right: 1px solid var(--glass-border);
+      display: flex;
+      flex-direction: column;
+      position: fixed;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      z-index: 50;
+      transition: transform 0.3s ease;
+    }
 
-      padding: 20px;
+    .sidebar-brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 0 12px 28px 12px;
+    }
 
-      background: #111827;
+    .logo-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, var(--primary), #a855f7);
+      display: flex;
+      align-items: center;
+      justify-content: center;
       color: white;
     }
 
-    .logo {
-      margin-bottom: 28px;
-
-      font-size: 21px;
+    .logo-text {
+      font-size: 18px;
       font-weight: 800;
+      letter-spacing: -0.5px;
+      background: linear-gradient(135deg, #ffffff, #cbd5e1);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
     }
 
     .nav {
       display: flex;
       flex-direction: column;
       gap: 6px;
+      flex: 1;
     }
 
     .nav-button {
       width: 100%;
-
       border: 0;
-      border-radius: 8px;
-
-      padding: 11px 12px;
-
+      border-radius: 12px;
+      padding: 12px 14px;
       text-align: left;
-
       background: transparent;
-      color: #d1d5db;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 600;
+      transition: all 0.2s;
     }
 
-    .nav-button:hover,
+    .nav-button:hover {
+      background: var(--glass-bg-hover);
+      color: var(--text-main);
+    }
+
     .nav-button.active {
-      background: #374151;
+      background: linear-gradient(135deg, var(--primary), #4f46e5);
       color: white;
+      box-shadow: 0 4px 12px rgba(99, 102, 241, 0.35);
+    }
+
+    .nav-button i {
+      width: 20px;
+      height: 20px;
     }
 
     .content {
       min-width: 0;
       flex: 1;
-
-      padding: 24px;
+      padding: 32px;
+      margin-left: var(--sidebar-width);
+      transition: margin 0.3s ease;
     }
 
+    /* TOPBAR */
     .topbar {
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      align-items: center;
+      gap: 24px;
+      margin-bottom: 32px;
+    }
+
+    .topbar-left {
       display: flex;
       align-items: center;
-      justify-content: space-between;
-
       gap: 16px;
+    }
 
-      margin-bottom: 24px;
+    .menu-toggle {
+      display: none;
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      color: white;
+      padding: 10px;
+      border-radius: 12px;
     }
 
     .page-title {
       font-size: 28px;
       font-weight: 800;
+      letter-spacing: -0.5px;
+      white-space: nowrap;
     }
 
-    /* =================================================
-       MESSAGES
-       ================================================= */
-
+    /* MESSAGES */
     .message {
-      margin-bottom: 16px;
-      padding: 12px 14px;
-
-      border-radius: 8px;
+      margin-bottom: 24px;
+      padding: 14px 18px;
+      border-radius: 12px;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      backdrop-filter: blur(10px);
     }
 
     .message-error {
-      background: #fee2e2;
-      color: #991b1b;
+      background: var(--danger-light);
+      color: #fca5a5;
+      border: 1px solid rgba(239, 68, 68, 0.3);
     }
 
     .message-success {
-      background: #dcfce7;
-      color: #166534;
+      background: var(--success-light);
+      color: #6ee7b7;
+      border: 1px solid rgba(16, 185, 129, 0.3);
     }
 
-    /* =================================================
-       PAGES
-       ================================================= */
-
+    /* PAGES */
     .page {
       display: none;
+      animation: fadeIn 0.3s ease-in-out;
     }
 
     .page.active {
       display: block;
     }
 
-    /* =================================================
-       CARDS
-       ================================================= */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
 
+    /* CARDS */
     .cards {
       display: grid;
-
-      grid-template-columns:
-        repeat(
-          auto-fit,
-          minmax(180px, 1fr)
-        );
-
-      gap: 16px;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 20px;
+      margin-bottom: 32px;
     }
 
     .card {
-      padding: 18px;
-
-      background: white;
-
-      border:
-        1px solid #e5e7eb;
-
-      border-radius: 14px;
+      padding: 24px;
+      background: var(--glass-card);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid var(--glass-border);
+      border-radius: 20px;
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.2);
     }
 
     .card-label {
-      color: #6b7280;
-
-      font-size: 14px;
+      color: var(--text-muted);
+      font-size: 13px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
     }
 
     .card-value {
-      margin-top: 8px;
-
-      font-size: 25px;
+      margin-top: 10px;
+      font-size: 28px;
       font-weight: 800;
+      letter-spacing: -0.5px;
     }
 
-    /* =================================================
-       SECTION
-       ================================================= */
-
+    /* SECTIONS */
     .section {
-      margin-top: 24px;
-
-      background: white;
-
-      border:
-        1px solid #e5e7eb;
-
-      border-radius: 14px;
-
+      margin-top: 28px;
+      background: var(--glass-card);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid var(--glass-border);
+      border-radius: 20px;
       overflow: hidden;
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.2);
     }
 
     .section-header {
       display: flex;
       align-items: center;
       justify-content: space-between;
-
       gap: 12px;
-
-      padding: 16px;
-
-      border-bottom:
-        1px solid #e5e7eb;
+      padding: 20px 24px;
+      border-bottom: 1px solid var(--glass-border);
+      flex-wrap: wrap;
     }
 
     .section-title {
       font-size: 18px;
-      font-weight: 800;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 10px;
     }
 
     .section-body {
-      padding: 16px;
+      padding: 24px;
     }
 
-    /* =================================================
-       TABLE
-       ================================================= */
-
+    /* TABLE STYLING */
     .table-wrapper {
       width: 100%;
       overflow-x: auto;
@@ -381,56 +536,53 @@
 
     table {
       width: 100%;
-
       border-collapse: collapse;
+      text-align: left;
     }
 
-    th,
-    td {
-      padding: 12px 14px;
-
-      border-bottom:
-        1px solid #f0f0f0;
-
-      text-align: left;
-
+    th, td {
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--glass-border);
       white-space: nowrap;
-
       font-size: 14px;
     }
 
     th {
-      background: #f9fafb;
-
-      color: #6b7280;
-
+      background: rgba(15, 23, 42, 0.4);
+      color: var(--text-muted);
       font-weight: 700;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    tbody tr {
+      transition: background 0.15s;
+    }
+
+    tbody tr:hover {
+      background: rgba(255, 255, 255, 0.03);
     }
 
     .stock-low {
-      color: #b91c1c;
+      color: #f87171;
       font-weight: 800;
     }
 
     .stock-ok {
-      color: #166534;
+      color: #4ade80;
       font-weight: 700;
     }
 
-    /* =================================================
-       FORM GRID
-       ================================================= */
-
+    /* FORM GRID */
     .form-grid {
       display: grid;
-
-      grid-template-columns:
-        repeat(
-          2,
-          minmax(0, 1fr)
-        );
-
-      gap: 16px;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 20px;
     }
 
     .full {
@@ -439,48 +591,62 @@
 
     .button-row {
       display: flex;
-
-      gap: 8px;
-
-      margin-top: 16px;
+      gap: 12px;
+      margin-top: 24px;
     }
 
-    /* =================================================
-       MOBILE
-       ================================================= */
+    .mobile-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.6);
+      backdrop-filter: blur(4px);
+      z-index: 40;
+    }
 
-    @media (
-      max-width: 800px
-    ) {
+    /* SEARCH MATCH HIGHLIGHT */
+    .search-section-title {
+      margin: 20px 0 10px 0;
+      font-size: 15px;
+      font-weight: 700;
+      color: #818cf8;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
 
-      .app {
-        display: block;
+    @media (max-width: 992px) {
+      .topbar {
+        grid-template-columns: 1fr auto;
+        gap: 16px;
+        margin-bottom: 20px;
+      }
+
+      .global-search-container {
+        grid-column: 1 / -1;
+        max-width: 100%;
+        order: 3;
       }
 
       .sidebar {
-        width: 100%;
-        min-height: auto;
-
-        position: sticky;
-        top: 0;
-
-        z-index: 20;
+        transform: translateX(-100%);
       }
 
-      .nav {
-        flex-direction: row;
-
-        overflow-x: auto;
+      .sidebar.open {
+        transform: translateX(0);
       }
 
-      .nav-button {
-        width: auto;
-
-        white-space: nowrap;
+      .mobile-overlay.open {
+        display: block;
       }
 
       .content {
-        padding: 16px;
+        margin-left: 0;
+        padding: 20px 16px 80px 16px;
+      }
+
+      .menu-toggle {
+        display: flex;
       }
 
       .form-grid {
@@ -491,4060 +657,1252 @@
         grid-column: auto;
       }
 
-      .topbar {
-        align-items: flex-start;
-        flex-direction: column;
-      }
-
-      .topbar .button {
-        width: 100%;
+      .page-title {
+        font-size: 22px;
       }
     }
   </style>
-
 </head>
-
 
 <body>
 
+  <!-- LOGIN PAGE -->
+  <div id="loginPage" class="login-page">
+    <div class="login-card">
+      <div class="login-brand">
+        <div class="login-logo-icon">
+          <i data-lucide="shopping-bag"></i>
+        </div>
+        <div>
+          <h1 class="login-title">Mini Shop</h1>
+          <p class="login-description" style="margin:0">Admin Control Center</p>
+        </div>
+      </div>
 
-<!-- ===================================================
-     LOGIN
-==================================================== -->
+      <div id="loginError" class="message message-error hidden"></div>
 
-<div
-  id="loginPage"
-  class="login-page"
->
+      <div class="form-group">
+        <label class="label" for="loginPassword">Mật khẩu hệ thống</label>
+        <input id="loginPassword" class="input" type="password" placeholder="••••••••" autocomplete="current-password">
+      </div>
 
-  <div class="login-card">
-
-    <h1 class="login-title">
-      Mini Shop Admin
-    </h1>
-
-    <p class="login-description">
-      Đăng nhập quản trị
-    </p>
-
-
-    <div
-      id="loginError"
-      class="message message-error hidden"
-    ></div>
-
-
-    <div class="form-group">
-
-      <label
-        class="label"
-        for="loginPassword"
-      >
-        Password
-      </label>
-
-      <input
-        id="loginPassword"
-        class="input"
-        type="password"
-        autocomplete="current-password"
-      >
-
+      <button id="loginButton" class="button button-primary" style="width:100%">
+        <i data-lucide="log-in"></i> Đăng nhập
+      </button>
     </div>
-
-
-    <button
-      id="loginButton"
-      class="button button-primary"
-      style="width:100%"
-    >
-      Đăng nhập
-    </button>
-
   </div>
 
-</div>
+  <div id="mobileOverlay" class="mobile-overlay"></div>
 
+  <!-- ADMIN APP -->
+  <div id="app" class="app hidden">
 
-<!-- ===================================================
-     ADMIN APP
-==================================================== -->
-
-<div
-  id="app"
-  class="app hidden"
->
-
-
-  <!-- =================================================
-       SIDEBAR
-  ================================================== -->
-
-  <aside class="sidebar">
-
-    <div class="logo">
-      Mini Shop Admin
-    </div>
-
-
-    <nav class="nav">
-
-      <button
-        class="nav-button active"
-        data-page="dashboard"
-      >
-        Dashboard
-      </button>
-
-      <button
-        class="nav-button"
-        data-page="products"
-      >
-        Products
-      </button>
-
-      <button
-        class="nav-button"
-        data-page="categories"
-      >
-        Categories
-      </button>
-
-      <button
-        class="nav-button"
-        data-page="inventory"
-      >
-        Inventory
-      </button>
-
-      <button
-        class="nav-button"
-        data-page="orders"
-      >
-        Orders
-      </button>
-
-      <button
-        class="nav-button"
-        data-page="customers"
-      >
-        Customers
-      </button>
-
-      <button
-        class="nav-button"
-        data-page="settings"
-      >
-        Settings
-      </button>
-
-      <button
-        id="logoutButton"
-        class="nav-button"
-      >
-        Logout
-      </button>
-
-    </nav>
-
-  </aside>
-
-
-  <!-- =================================================
-       CONTENT
-  ================================================== -->
-
-  <main class="content">
-
-
-    <div class="topbar">
-
-      <div
-        id="pageTitle"
-        class="page-title"
-      >
-        Dashboard
-      </div>
-
-
-      <button
-        id="refreshButton"
-        class="button button-secondary"
-      >
-        Refresh
-      </button>
-
-    </div>
-
-
-    <div
-      id="globalMessage"
-      class="hidden"
-    ></div>
-
-
-    <!-- =================================================
-         DASHBOARD
-    ================================================== -->
-
-    <section
-      id="page-dashboard"
-      class="page active"
-    >
-
-      <div
-        id="dashboardCards"
-        class="cards"
-      ></div>
-
-
-      <div class="section">
-
-        <div class="section-header">
-
-          <div class="section-title">
-            Low Stock
-          </div>
-
+    <!-- SIDEBAR -->
+    <aside id="sidebar" class="sidebar">
+      <div class="sidebar-brand">
+        <div class="logo-icon">
+          <i data-lucide="store"></i>
         </div>
-
-
-        <div
-          id="dashboardLowStock"
-          class="table-wrapper"
-        ></div>
-
+        <div class="logo-text">Mini Shop</div>
       </div>
 
+      <nav class="nav">
+        <button class="nav-button active" data-page="dashboard">
+          <i data-lucide="layout-dashboard"></i> Dashboard
+        </button>
+        <button class="nav-button" data-page="products">
+          <i data-lucide="package"></i> Products
+        </button>
+        <button class="nav-button" data-page="categories">
+          <i data-lucide="tags"></i> Categories
+        </button>
+        <button class="nav-button" data-page="inventory">
+          <i data-lucide="boxes"></i> Inventory
+        </button>
+        <button class="nav-button" data-page="orders">
+          <i data-lucide="shopping-cart"></i> Orders
+        </button>
+        <button class="nav-button" data-page="customers">
+          <i data-lucide="users"></i> Customers
+        </button>
+        <button class="nav-button" data-page="settings">
+          <i data-lucide="settings"></i> Settings
+        </button>
+      </nav>
 
-      <div class="section">
+      <button id="logoutButton" class="nav-button" style="color: #f87171; margin-top: auto;">
+        <i data-lucide="log-out"></i> Logout
+      </button>
+    </aside>
 
-        <div class="section-header">
+    <!-- CONTENT -->
+    <main class="content">
 
-          <div class="section-title">
-            Recent Orders
-          </div>
-
-        </div>
-
-
-        <div
-          id="dashboardOrders"
-          class="table-wrapper"
-        ></div>
-
-      </div>
-
-    </section>
-
-
-    <!-- =================================================
-         PRODUCTS
-    ================================================== -->
-
-    <section
-      id="page-products"
-      class="page"
-    >
-
-
-      <div class="section">
-
-        <div class="section-header">
-
-          <div class="section-title">
-            Product
-          </div>
-
-
-          <button
-            id="newProductButton"
-            class="button button-primary"
-          >
-            + New Product
+      <!-- TOPBAR WITH GLOBAL SEARCH -->
+      <div class="topbar">
+        <div class="topbar-left">
+          <button id="menuToggle" class="menu-toggle">
+            <i data-lucide="menu"></i>
           </button>
-
+          <div id="pageTitle" class="page-title">Dashboard</div>
         </div>
 
-
-        <div
-          id="productForm"
-          class="section-body hidden"
-        >
-
-
-          <input
-            id="productId"
-            type="hidden"
-          >
-
-
-          <div class="form-grid">
-
-
-            <div class="form-group">
-
-              <label
-                class="label"
-                for="productName"
-              >
-                Name
-              </label>
-
-              <input
-                id="productName"
-                class="input"
-              >
-
-            </div>
-
-
-            <div class="form-group">
-
-              <label
-                class="label"
-                for="productSku"
-              >
-                SKU
-              </label>
-
-              <input
-                id="productSku"
-                class="input"
-              >
-
-            </div>
-
-
-            <div class="form-group">
-
-              <label
-                class="label"
-                for="productSlug"
-              >
-                Slug
-              </label>
-
-              <input
-                id="productSlug"
-                class="input"
-              >
-
-            </div>
-
-
-            <div class="form-group">
-
-              <label
-                class="label"
-                for="productCategory"
-              >
-                Category
-              </label>
-
-              <select
-                id="productCategory"
-                class="input"
-              ></select>
-
-            </div>
-
-
-            <div class="form-group">
-
-              <label
-                class="label"
-                for="productPrice"
-              >
-                Price
-              </label>
-
-              <input
-                id="productPrice"
-                class="input"
-                type="number"
-                min="0"
-              >
-
-            </div>
-
-
-            <div class="form-group">
-
-              <label
-                class="label"
-                for="productComparePrice"
-              >
-                Compare Price
-              </label>
-
-              <input
-                id="productComparePrice"
-                class="input"
-                type="number"
-                min="0"
-              >
-
-            </div>
-
-
-            <div class="form-group">
-
-              <label
-                class="label"
-                for="productCostPrice"
-              >
-                Cost Price
-              </label>
-
-              <input
-                id="productCostPrice"
-                class="input"
-                type="number"
-                min="0"
-              >
-
-            </div>
-
-
-            <div class="form-group">
-
-              <label
-                class="label"
-                for="productShippingFee"
-              >
-                Shipping Fee
-              </label>
-
-              <input
-                id="productShippingFee"
-                class="input"
-                type="number"
-                min="0"
-              >
-
-            </div>
-
-
-            <div class="form-group">
-
-              <label
-                class="label"
-                for="productInitialStock"
-              >
-                Initial Stock
-              </label>
-
-              <input
-                id="productInitialStock"
-                class="input"
-                type="number"
-                min="0"
-              >
-
-            </div>
-
-
-            <div class="form-group">
-
-              <label
-                class="label"
-                for="productImageUrl"
-              >
-                Image URL
-              </label>
-
-              <input
-                id="productImageUrl"
-                class="input"
-              >
-
-            </div>
-
-
-            <div class="form-group full">
-
-              <label
-                class="label"
-                for="productDescription"
-              >
-                Description
-              </label>
-
-              <textarea
-                id="productDescription"
-                class="input"
-              ></textarea>
-
-            </div>
-
-
-            <div class="checkbox-group">
-
-              <input
-                id="productActive"
-                type="checkbox"
-                checked
-              >
-
-              <label for="productActive">
-                Active
-              </label>
-
-            </div>
-
-
-            <div class="checkbox-group">
-
-              <input
-                id="productFeatured"
-                type="checkbox"
-              >
-
-              <label for="productFeatured">
-                Featured
-              </label>
-
-            </div>
-
+        <!-- Global Search Input -->
+        <div class="global-search-container">
+          <div class="search-box">
+            <i data-lucide="search"></i>
+            <input id="globalSearchInput" class="input" placeholder="Tìm kiếm mọi thứ (Sản phẩm, Đơn hàng, Khách hàng...)...">
           </div>
+        </div>
 
+        <button id="refreshButton" class="button button-secondary">
+          <i data-lucide="refresh-cw"></i> Làm mới
+        </button>
+      </div>
 
-          <div class="button-row">
+      <div id="globalMessage" class="hidden"></div>
 
-            <button
-              id="saveProductButton"
-              class="button button-primary"
-            >
-              Save Product
+      <!-- DASHBOARD PAGE -->
+      <section id="page-dashboard" class="page active">
+        <div id="dashboardCards" class="cards"></div>
+
+        <div class="section">
+          <div class="section-header">
+            <div class="section-title">
+              <i data-lucide="alert-triangle" style="color:#f59e0b"></i> Sản phẩm sắp hết hàng (Low Stock)
+            </div>
+          </div>
+          <div id="dashboardLowStock" class="table-wrapper"></div>
+        </div>
+
+        <div class="section">
+          <div class="section-header">
+            <div class="section-title">
+              <i data-lucide="clock" style="color:#6366f1"></i> Đơn hàng gần đây
+            </div>
+          </div>
+          <div id="dashboardOrders" class="table-wrapper"></div>
+        </div>
+      </section>
+
+      <!-- SEARCH RESULTS PAGE -->
+      <section id="page-search-results" class="page">
+        <div class="section">
+          <div class="section-header">
+            <div class="section-title" id="searchResultsTitle">Kết quả tìm kiếm toàn cục</div>
+          </div>
+          <div class="section-body" id="searchResultsContent"></div>
+        </div>
+      </section>
+
+      <!-- PRODUCTS PAGE -->
+      <section id="page-products" class="page">
+        <div class="section">
+          <div class="section-header">
+            <div class="section-title">Quản lý sản phẩm</div>
+            <button id="newProductButton" class="button button-primary">
+              <i data-lucide="plus"></i> Thêm sản phẩm
             </button>
-
-
-            <button
-              id="cancelProductButton"
-              class="button button-secondary"
-            >
-              Cancel
-            </button>
-
           </div>
 
-        </div>
-
-      </div>
-
-
-      <div class="section">
-
-        <div class="section-header">
-
-          <div class="section-title">
-            Products
-          </div>
-
-        </div>
-
-
-        <div
-          id="productsTable"
-          class="table-wrapper"
-        ></div>
-
-      </div>
-
-    </section>
-
-
-    <!-- =================================================
-         CATEGORIES
-    ================================================== -->
-
-    <section
-      id="page-categories"
-      class="page"
-    >
-
-      <div class="section">
-
-        <div class="section-header">
-
-          <div class="section-title">
-            Category
-          </div>
-
-          <button
-            id="clearCategoryButton"
-            class="button button-secondary"
-          >
-            Clear
-          </button>
-
-        </div>
-
-
-        <div class="section-body">
-
-
-          <div class="form-grid">
-
-            <div class="form-group">
-
-              <label
-                class="label"
-                for="categoryId"
-              >
-                Category ID
-              </label>
-
-              <input
-                id="categoryId"
-                class="input"
-              >
-
+          <div id="productForm" class="section-body hidden">
+            <input id="productId" type="hidden">
+            <div class="form-grid">
+              <div class="form-group">
+                <label class="label" for="productName">Tên sản phẩm</label>
+                <input id="productName" class="input">
+              </div>
+              <div class="form-group">
+                <label class="label" for="productSku">SKU</label>
+                <input id="productSku" class="input">
+              </div>
+              <div class="form-group">
+                <label class="label" for="productSlug">Slug</label>
+                <input id="productSlug" class="input">
+              </div>
+              <div class="form-group">
+                <label class="label" for="productCategory">Danh mục</label>
+                <select id="productCategory" class="input"></select>
+              </div>
+              <div class="form-group">
+                <label class="label" for="productPrice">Giá bán (VNĐ)</label>
+                <input id="productPrice" class="input" type="number" min="0">
+              </div>
+              <div class="form-group">
+                <label class="label" for="productComparePrice">Giá so sánh</label>
+                <input id="productComparePrice" class="input" type="number" min="0">
+              </div>
+              <div class="form-group">
+                <label class="label" for="productCostPrice">Giá vốn</label>
+                <input id="productCostPrice" class="input" type="number" min="0">
+              </div>
+              <div class="form-group">
+                <label class="label" for="productShippingFee">Phí vận chuyển</label>
+                <input id="productShippingFee" class="input" type="number" min="0">
+              </div>
+              <div class="form-group">
+                <label class="label" for="productInitialStock">Tồn kho ban đầu</label>
+                <input id="productInitialStock" class="input" type="number" min="0">
+              </div>
+              <div class="form-group">
+                <label class="label" for="productImageUrl">URL Hình ảnh</label>
+                <input id="productImageUrl" class="input">
+              </div>
+              <div class="form-group full">
+                <label class="label" for="productDescription">Mô tả sản phẩm</label>
+                <textarea id="productDescription" class="input"></textarea>
+              </div>
+              <div class="checkbox-group">
+                <input id="productActive" type="checkbox" checked>
+                <label for="productActive">Hoạt động (Active)</label>
+              </div>
+              <div class="checkbox-group">
+                <input id="productFeatured" type="checkbox">
+                <label for="productFeatured">Nổi bật (Featured)</label>
+              </div>
             </div>
 
-
-            <div class="form-group">
-
-              <label
-                class="label"
-                for="categoryName"
-              >
-                Name
-              </label>
-
-              <input
-                id="categoryName"
-                class="input"
-              >
-
+            <div class="button-row">
+              <button id="saveProductButton" class="button button-primary">Lưu sản phẩm</button>
+              <button id="cancelProductButton" class="button button-secondary">Hủy</button>
             </div>
+          </div>
+        </div>
 
-
-            <div class="form-group">
-
-              <label
-                class="label"
-                for="categorySlug"
-              >
-                Slug
-              </label>
-
-              <input
-                id="categorySlug"
-                class="input"
-              >
-
+        <div class="section">
+          <div class="section-header">
+            <div class="section-title">Danh sách sản phẩm</div>
+            <div class="search-box" style="width: 250px;">
+              <i data-lucide="search"></i>
+              <input id="productsSearchInput" class="input" placeholder="Lọc sản phẩm...">
             </div>
+          </div>
+          <div id="productsTable" class="table-wrapper"></div>
+        </div>
+      </section>
 
+      <!-- CATEGORIES PAGE -->
+      <section id="page-categories" class="page">
+        <div class="section">
+          <div class="section-header">
+            <div class="section-title">Danh mục sản phẩm</div>
+            <button id="clearCategoryButton" class="button button-secondary">Xóa form</button>
+          </div>
 
-            <div class="form-group">
-
-              <label
-                class="label"
-                for="categorySortOrder"
-              >
-                Sort Order
-              </label>
-
-              <input
-                id="categorySortOrder"
-                class="input"
-                type="number"
-              >
-
+          <div class="section-body">
+            <div class="form-grid">
+              <div class="form-group">
+                <label class="label" for="categoryId">Mã Danh Mục (ID)</label>
+                <input id="categoryId" class="input">
+              </div>
+              <div class="form-group">
+                <label class="label" for="categoryName">Tên danh mục</label>
+                <input id="categoryName" class="input">
+              </div>
+              <div class="form-group">
+                <label class="label" for="categorySlug">Slug</label>
+                <input id="categorySlug" class="input">
+              </div>
+              <div class="form-group">
+                <label class="label" for="categorySortOrder">Thứ tự sắp xếp</label>
+                <input id="categorySortOrder" class="input" type="number">
+              </div>
+              <div class="form-group full">
+                <label class="label" for="categoryDescription">Mô tả</label>
+                <textarea id="categoryDescription" class="input"></textarea>
+              </div>
             </div>
+            <button id="saveCategoryButton" class="button button-primary">Lưu danh mục</button>
+          </div>
+        </div>
 
-
-            <div class="form-group full">
-
-              <label
-                class="label"
-                for="categoryDescription"
-              >
-                Description
-              </label>
-
-              <textarea
-                id="categoryDescription"
-                class="input"
-              ></textarea>
-
+        <div class="section">
+          <div class="section-header">
+            <div class="section-title">Danh sách danh mục</div>
+            <div class="search-box" style="width: 250px;">
+              <i data-lucide="search"></i>
+              <input id="categoriesSearchInput" class="input" placeholder="Lọc danh mục...">
             </div>
-
           </div>
-
-
-          <button
-            id="saveCategoryButton"
-            class="button button-primary"
-          >
-            Save Category
-          </button>
-
+          <div id="categoriesTable" class="table-wrapper"></div>
         </div>
+      </section>
 
-      </div>
-
-
-      <div class="section">
-
-        <div
-          id="categoriesTable"
-          class="table-wrapper"
-        ></div>
-
-      </div>
-
-    </section>
-
-
-    <!-- =================================================
-         INVENTORY
-    ================================================== -->
-
-    <section
-      id="page-inventory"
-      class="page"
-    >
-
-      <div class="section">
-
-        <div class="section-header">
-
-          <div class="section-title">
-            Inventory Management
+      <!-- INVENTORY PAGE -->
+      <section id="page-inventory" class="page">
+        <div class="section">
+          <div class="section-header">
+            <div class="section-title">Quản lý kho hàng (Inventory)</div>
+            <div class="search-box" style="width: 250px;">
+              <i data-lucide="search"></i>
+              <input id="inventorySearchInput" class="input" placeholder="Lọc tồn kho...">
+            </div>
           </div>
-
+          <div id="inventoryTable" class="table-wrapper"></div>
         </div>
+      </section>
 
-
-        <div
-          id="inventoryTable"
-          class="table-wrapper"
-        ></div>
-
-      </div>
-
-    </section>
-
-
-    <!-- =================================================
-         ORDERS
-    ================================================== -->
-
-    <section
-      id="page-orders"
-      class="page"
-    >
-
-      <div class="section">
-
-        <div class="section-header">
-
-          <div class="section-title">
-            Orders
+      <!-- ORDERS PAGE -->
+      <section id="page-orders" class="page">
+        <div class="section">
+          <div class="section-header">
+            <div class="section-title">Quản lý đơn hàng</div>
+            <div class="search-box" style="width: 250px;">
+              <i data-lucide="search"></i>
+              <input id="ordersSearchInput" class="input" placeholder="Lọc đơn hàng...">
+            </div>
           </div>
-
+          <div id="ordersTable" class="table-wrapper"></div>
         </div>
+      </section>
 
-
-        <div
-          id="ordersTable"
-          class="table-wrapper"
-        ></div>
-
-      </div>
-
-    </section>
-
-
-    <!-- =================================================
-         CUSTOMERS
-    ================================================== -->
-
-    <section
-      id="page-customers"
-      class="page"
-    >
-
-      <div class="section">
-
-        <div class="section-header">
-
-          <div class="section-title">
-            Customers
+      <!-- CUSTOMERS PAGE -->
+      <section id="page-customers" class="page">
+        <div class="section">
+          <div class="section-header">
+            <div class="section-title">Danh sách khách hàng</div>
+            <div class="search-box" style="width: 250px;">
+              <i data-lucide="search"></i>
+              <input id="customersSearchInput" class="input" placeholder="Lọc khách hàng...">
+            </div>
           </div>
-
+          <div id="customersTable" class="table-wrapper"></div>
         </div>
+      </section>
 
-
-        <div
-          id="customersTable"
-          class="table-wrapper"
-        ></div>
-
-      </div>
-
-    </section>
-
-
-    <!-- =================================================
-         SETTINGS
-    ================================================== -->
-
-    <section
-      id="page-settings"
-      class="page"
-    >
-
-      <div class="section">
-
-        <div class="section-header">
-
-          <div class="section-title">
-            Store Settings
+      <!-- SETTINGS PAGE -->
+      <section id="page-settings" class="page">
+        <div class="section">
+          <div class="section-header">
+            <div class="section-title">Cấu hình cửa hàng</div>
           </div>
-
+          <div id="settingsContent" class="section-body"></div>
         </div>
-
-
-        <div
-          id="settingsContent"
-          class="section-body"
-        ></div>
-
-      </div>
-
-    </section>
-
-  </main>
-
-</div>
-
-
-<script>
-
-
-/* =====================================================
- MARK: - Configuration
- ===================================================== */
-
-const CONFIG = {
-
-  API_URL:
-    'https://script.google.com/macros/s/AKfycbxZZimUCvCIKSj1FBmKlag6gtf4mmaQxG3bPsAGe8QX0GUttRrDjz0Bm4rhV9GoGFvUKQ/exec',
-
-  TOKEN_KEY:
-    'mini-shop-admin-token'
-
-};
-
-
-/* =====================================================
- MARK: - API Repository
- ===================================================== */
-
-class AdminApiRepository {
-
-  constructor(
-    apiUrl
-  ) {
-
-    this.apiUrl =
-      apiUrl;
-  }
-
-
-  async request(
-    payload
-  ) {
-
-    const response =
-      await fetch(
-        this.apiUrl,
-        {
-          method: 'POST',
-
-          body:
-            JSON.stringify(
-              payload
-            )
-        }
-      );
-
-
-    if (!response.ok) {
-
-      throw new Error(
-        `HTTP ${response.status}`
-      );
-
-    }
-
-
-    const result =
-      await response.json();
-
-
-    if (!result.success) {
-
-      throw new Error(
-        result.error ||
-        'Request failed'
-      );
-
-    }
-
-
-    /*
-     Compatible with both:
-
-     {
-       success: true,
-       data: {...}
-     }
-
-     and the current nested admin response:
-
-     {
-       success: true,
-       data: {
-         success: true,
-         data: {...}
-       }
-     }
-    */
-
-    let data =
-      result.data;
-
-
-    if (
-      data &&
-      typeof data === 'object' &&
-      data.success === false
-    ) {
-
-      throw new Error(
-        data.error ||
-        'Admin request failed'
-      );
-
-    }
-
-
-    if (
-      data &&
-      typeof data === 'object' &&
-      data.success === true &&
-      Object.prototype.hasOwnProperty.call(
-        data,
-        'data'
-      )
-    ) {
-
-      data =
-        data.data;
-
-    }
-
-
-    return data;
-  }
-
-
-  login(
-    password
-  ) {
-
-    return this.request({
-
-      action:
-        'admin.login',
-
-      password
-
-    });
-
-  }
-
-
-  bootstrap(
-    token
-  ) {
-
-    return this.request({
-
-      action:
-        'admin.bootstrap',
-
-      token
-
-    });
-
-  }
-
-
-  saveProduct(
-    token,
-    data
-  ) {
-
-    return this.request({
-
-      action:
-        'admin.products.save',
-
-      token,
-
-      ...data
-
-    });
-
-  }
-
-
-  archiveProduct(
-    token,
-    productId
-  ) {
-
-    return this.request({
-
-      action:
-        'admin.products.archive',
-
-      token,
-
-      productId
-
-    });
-
-  }
-
-
-  saveCategory(
-    token,
-    data
-  ) {
-
-    return this.request({
-
-      action:
-        'admin.categories.save',
-
-      token,
-
-      ...data
-
-    });
-
-  }
-
-
-  adjustInventory(
-    token,
-    data
-  ) {
-
-    return this.request({
-
-      action:
-        'admin.inventory.adjust',
-
-      token,
-
-      ...data
-
-    });
-
-  }
-
-
-  updateOrderStatus(
-    token,
-    data
-  ) {
-
-    return this.request({
-
-      action:
-        'admin.orders.status',
-
-      token,
-
-      ...data
-
-    });
-
-  }
-
-
-  updatePaymentStatus(
-    token,
-    data
-  ) {
-
-    return this.request({
-
-      action:
-        'admin.payments.status',
-
-      token,
-
-      ...data
-
-    });
-
-  }
-
-
-  updateShipment(
-    token,
-    data
-  ) {
-
-    return this.request({
-
-      action:
-        'admin.shipments.update',
-
-      token,
-
-      ...data
-
-    });
-
-  }
-
-
-  saveSetting(
-    token,
-    data
-  ) {
-
-    return this.request({
-
-      action:
-        'admin.settings.save',
-
-      token,
-
-      ...data
-
-    });
-
-  }
-
-}
-
-
-/* =====================================================
- MARK: - UseCases
- ===================================================== */
-
-class AdminLoginUseCase {
-
-  constructor(
-    api
-  ) {
-
-    this.api =
-      api;
-  }
-
-
-  async execute(
-    password
-  ) {
-
-    if (
-      !password
-    ) {
-
-      throw new Error(
-        'Password is required'
-      );
-
-    }
-
-
-    const data =
-      await this.api.login(
-        password
-      );
-
-
-    if (
-      !data ||
-      !data.token
-    ) {
-
-      throw new Error(
-        'Login response is invalid'
-      );
-
-    }
-
-
-    localStorage.setItem(
-      CONFIG.TOKEN_KEY,
-      data.token
-    );
-
-
-    return data;
-  }
-
-}
-
-
-class LoadAdminUseCase {
-
-  constructor(
-    api
-  ) {
-
-    this.api =
-      api;
-  }
-
-
-  execute(
-    token
-  ) {
-
-    return this.api
-      .bootstrap(
-        token
-      );
-
-  }
-
-}
-
-
-class SaveProductUseCase {
-
-  constructor(
-    api
-  ) {
-
-    this.api =
-      api;
-  }
-
-
-  execute(
-    token,
-    data
-  ) {
-
-    if (
-      !String(
-        data.name || ''
-      ).trim()
-    ) {
-
-      throw new Error(
-        'Product name is required'
-      );
-
-    }
-
-
-    if (
-      !Number.isFinite(
-        Number(data.price)
-      ) ||
-      Number(data.price) < 0
-    ) {
-
-      throw new Error(
-        'Invalid price'
-      );
-
-    }
-
-
-    return this.api
-      .saveProduct(
-        token,
-        data
-      );
-
-  }
-
-}
-
-
-class SaveCategoryUseCase {
-
-  constructor(
-    api
-  ) {
-
-    this.api =
-      api;
-  }
-
-
-  execute(
-    token,
-    data
-  ) {
-
-    if (
-      !String(
-        data.name || ''
-      ).trim()
-    ) {
-
-      throw new Error(
-        'Category name is required'
-      );
-
-    }
-
-
-    return this.api
-      .saveCategory(
-        token,
-        data
-      );
-
-  }
-
-}
-
-
-class InventoryAdjustmentUseCase {
-
-  constructor(
-    api
-  ) {
-
-    this.api =
-      api;
-  }
-
-
-  execute(
-    token,
-    data
-  ) {
-
-    if (
-      !data.productId
-    ) {
-
-      throw new Error(
-        'Product ID is required'
-      );
-
-    }
-
-
-    if (
-      !Number.isInteger(
-        Number(data.delta)
-      ) ||
-      Number(data.delta) === 0
-    ) {
-
-      throw new Error(
-        'Inventory delta must be a non-zero integer'
-      );
-
-    }
-
-
-    if (
-      !String(
-        data.reason || ''
-      ).trim()
-    ) {
-
-      throw new Error(
-        'Reason is required'
-      );
-
-    }
-
-
-    return this.api
-      .adjustInventory(
-        token,
-        data
-      );
-
-  }
-
-}
-
-
-/* =====================================================
- MARK: - Admin UI
- ===================================================== */
-
-class AdminUI {
-
-  constructor() {
-
-    this.controller =
-      null;
-
-    this.data =
-      null;
-
-  }
-
-
-  connect(
-    controller
-  ) {
-
-    this.controller =
-      controller;
-
-  }
-
-
-  bindEvents() {
-
-    document
-      .getElementById(
-        'loginButton'
-      )
-      .addEventListener(
-        'click',
-        () =>
-          this.controller.login()
-      );
-
-
-    document
-      .getElementById(
-        'loginPassword'
-      )
-      .addEventListener(
-        'keydown',
-        event => {
-
-          if (
-            event.key ===
-            'Enter'
-          ) {
-
-            this.controller.login();
-
-          }
-
-        }
-      );
-
-
-    document
-      .getElementById(
-        'logoutButton'
-      )
-      .addEventListener(
-        'click',
-        () =>
-          this.controller.logout()
-      );
-
-
-    document
-      .getElementById(
-        'refreshButton'
-      )
-      .addEventListener(
-        'click',
-        () =>
-          this.controller.load()
-      );
-
-
-    document
-      .querySelectorAll(
-        '[data-page]'
-      )
-      .forEach(
-        button => {
-
-          button.addEventListener(
-            'click',
-            () =>
-              this.showPage(
-                button.dataset.page
-              )
-          );
-
-        }
-      );
-
-
-    document
-      .getElementById(
-        'newProductButton'
-      )
-      .addEventListener(
-        'click',
-        () =>
-          this.newProduct()
-      );
-
-
-    document
-      .getElementById(
-        'cancelProductButton'
-      )
-      .addEventListener(
-        'click',
-        () =>
-          this.closeProductForm()
-      );
-
-
-    document
-      .getElementById(
-        'saveProductButton'
-      )
-      .addEventListener(
-        'click',
-        () =>
-          this.controller.saveProduct()
-      );
-
-
-    document
-      .getElementById(
-        'clearCategoryButton'
-      )
-      .addEventListener(
-        'click',
-        () =>
-          this.clearCategory()
-      );
-
-
-    document
-      .getElementById(
-        'saveCategoryButton'
-      )
-      .addEventListener(
-        'click',
-        () =>
-          this.controller.saveCategory()
-      );
-
-  }
-
-
-  showLogin() {
-
-    document
-      .getElementById(
-        'loginPage'
-      )
-      .classList.remove(
-        'hidden'
-      );
-
-
-    document
-      .getElementById(
-        'app'
-      )
-      .classList.add(
-        'hidden'
-      );
-
-  }
-
-
-  hideLogin() {
-
-    document
-      .getElementById(
-        'loginPage'
-      )
-      .classList.add(
-        'hidden'
-      );
-
-
-    document
-      .getElementById(
-        'app'
-      )
-      .classList.remove(
-        'hidden'
-      );
-
-  }
-
-
-  showLoginError(
-    message
-  ) {
-
-    const element =
-      document
-        .getElementById(
-          'loginError'
-        );
-
-
-    element.textContent =
-      message;
-
-
-    element.classList.remove(
-      'hidden'
-    );
-
-  }
-
-
-  clearLoginError() {
-
-    document
-      .getElementById(
-        'loginError'
-      )
-      .classList.add(
-        'hidden'
-      );
-
-  }
-
-
-  showGlobalMessage(
-    message,
-    success = false
-  ) {
-
-    const element =
-      document
-        .getElementById(
-          'globalMessage'
-        );
-
-
-    if (
-      !message
-    ) {
-
-      element.className =
-        'hidden';
-
-      element.textContent =
-        '';
-
-      return;
-
-    }
-
-
-    element.className =
-      success
-        ? 'message message-success'
-        : 'message message-error';
-
-
-    element.textContent =
-      message;
-
-  }
-
-
-  showPage(
-    page
-  ) {
-
-    document
-      .querySelectorAll(
-        '.page'
-      )
-      .forEach(
-        element =>
-          element.classList.remove(
-            'active'
-          )
-      );
-
-
-    const target =
-      document
-        .getElementById(
-          `page-${page}`
-        );
-
-
-    if (target) {
-
-      target.classList.add(
-        'active'
-      );
-
-    }
-
-
-    document
-      .querySelectorAll(
-        '[data-page]'
-      )
-      .forEach(
-        button =>
-          button.classList.toggle(
-            'active',
-            button.dataset.page ===
-              page
-          )
-      );
-
-
-    const titles = {
-
-      dashboard:
-        'Dashboard',
-
-      products:
-        'Products',
-
-      categories:
-        'Categories',
-
-      inventory:
-        'Inventory',
-
-      orders:
-        'Orders',
-
-      customers:
-        'Customers',
-
-      settings:
-        'Settings'
-
+      </section>
+    </main>
+  </div>
+
+  <script>
+    const CONFIG = {
+      API_URL: 'https://script.google.com/macros/s/AKfycbxZZimUCvCIKSj1FBmKlag6gtf4mmaQxG3bPsAGe8QX0GUttRrDjz0Bm4rhV9GoGFvUKQ/exec',
+      TOKEN_KEY: 'mini-shop-admin-token'
     };
 
-
-    document
-      .getElementById(
-        'pageTitle'
-      )
-      .textContent =
-      titles[page] ||
-      page;
-
-  }
-
-
-  render(
-    data
-  ) {
-
-    this.data =
-      data;
-
-
-    this.renderDashboard(
-      data
-    );
-
-    this.renderProducts(
-      data
-    );
-
-    this.renderCategories(
-      data
-    );
-
-    this.renderInventory(
-      data
-    );
-
-    this.renderOrders(
-      data
-    );
-
-    this.renderCustomers(
-      data
-    );
-
-    this.renderSettings();
-
-  }
-
-
-  renderDashboard(
-    data
-  ) {
-
-    const summary =
-      data.summary ||
-      {};
-
-
-    const cards = [
-
-      [
-        'Products',
-        summary.totalProducts || 0
-      ],
-
-      [
-        'Active Products',
-        summary.activeProducts || 0
-      ],
-
-      [
-        'Low Stock',
-        summary.lowStockProducts || 0
-      ],
-
-      [
-        'Orders',
-        summary.totalOrders || 0
-      ],
-
-      [
-        'Pending',
-        summary.pendingOrders || 0
-      ],
-
-      [
-        'Shipping',
-        summary.shippingOrders || 0
-      ],
-
-      [
-        'Customers',
-        summary.totalCustomers || 0
-      ],
-
-      [
-        'Revenue',
-        formatCurrency(
-          summary.totalRevenue || 0
-        )
-      ]
-
-    ];
-
-
-    document
-      .getElementById(
-        'dashboardCards'
-      )
-      .innerHTML =
-      cards
-        .map(
-          card => `
-
-            <div class="card">
-
-              <div class="card-label">
-                ${escapeHtml(
-                  card[0]
-                )}
-              </div>
-
-              <div class="card-value">
-                ${escapeHtml(
-                  card[1]
-                )}
-              </div>
-
-            </div>
-
-          `
-        )
-        .join('');
-
-
-    const lowStock =
-      (data.products || [])
-        .filter(
-          product =>
-            product.active &&
-            Number(
-              product.availableStock
-            ) <= 5
-        );
-
-
-    document
-      .getElementById(
-        'dashboardLowStock'
-      )
-      .innerHTML =
-      createSimpleTable(
-        [
-          'Product',
-          'Stock',
-          'Reserved',
-          'Available'
-        ],
-
-        lowStock.map(
-          product => [
-
-            product.name,
-
-            product.stock,
-
-            product.reservedStock,
-
-            product.availableStock
-
-          ]
-        )
-      );
-
-
-    document
-      .getElementById(
-        'dashboardOrders'
-      )
-      .innerHTML =
-      createSimpleTable(
-        [
-          'Order',
-          'Customer',
-          'Total',
-          'Status',
-          'Created'
-        ],
-
-        (data.orders || [])
-          .slice(0, 10)
-          .map(
-            order => [
-
-              order.orderCode ||
-                order.orderId,
-
-              order.customerName,
-
-              formatCurrency(
-                order.total
-              ),
-
-              order.status,
-
-              formatDate(
-                order.createdDate
-              )
-
-            ]
-          )
-      );
-
-  }
-
-
-  renderProducts(
-    data
-  ) {
-
-    const categories =
-      new Map(
-        (data.categories || [])
-          .map(
-            category => [
-              category.categoryId,
-              category.name
-            ]
-          )
-      );
-
-
-    document
-      .getElementById(
-        'productsTable'
-      )
-      .innerHTML = `
-
-        <table>
-
-          <thead>
-
-            <tr>
-
-              <th>ID</th>
-
-              <th>Product</th>
-
-              <th>Price</th>
-
-              <th>Stock</th>
-
-              <th>Reserved</th>
-
-              <th>Available</th>
-
-              <th>Category</th>
-
-              <th>Active</th>
-
-              <th>Action</th>
-
-            </tr>
-
-          </thead>
-
-
-          <tbody>
-
-            ${(data.products || [])
-              .map(
-                product => `
-
-                  <tr>
-
-                    <td>
-                      ${escapeHtml(
-                        product.productId
-                      )}
-                    </td>
-
-
-                    <td>
-
-                      <strong>
-                        ${escapeHtml(
-                          product.name
-                        )}
-                      </strong>
-
-                      <br>
-
-                      <small>
-                        ${escapeHtml(
-                          product.sku
-                        )}
-                      </small>
-
-                    </td>
-
-
-                    <td>
-                      ${formatCurrency(
-                        product.price
-                      )}
-                    </td>
-
-
-                    <td
-                      class="${
-                        Number(
-                          product.availableStock
-                        ) <= 5
-                          ? 'stock-low'
-                          : 'stock-ok'
-                      }"
-                    >
-                      ${product.stock}
-                    </td>
-
-
-                    <td>
-                      ${product.reservedStock}
-                    </td>
-
-
-                    <td
-                      class="${
-                        Number(
-                          product.availableStock
-                        ) <= 5
-                          ? 'stock-low'
-                          : 'stock-ok'
-                      }"
-                    >
-                      ${product.availableStock}
-                    </td>
-
-
-                    <td>
-                      ${escapeHtml(
-                        categories.get(
-                          product.categoryId
-                        ) || ''
-                      )}
-                    </td>
-
-
-                    <td>
-                      ${
-                        product.active
-                          ? 'YES'
-                          : 'NO'
-                      }
-                    </td>
-
-
-                    <td>
-
-                      <button
-                        class="button button-secondary"
-                        onclick="adminController.editProduct('${escapeJs(
-                          product.productId
-                        )}')"
-                      >
-                        Edit
-                      </button>
-
-
-                      ${
-                        product.active
-                          ? `
-                            <button
-                              class="button button-danger"
-                              onclick="adminController.archiveProduct('${escapeJs(
-                                product.productId
-                              )}')"
-                            >
-                              Disable
-                            </button>
-                          `
-                          : ''
-                      }
-
-                    </td>
-
-                  </tr>
-
-                `
-              )
-              .join('')}
-
-          </tbody>
-
-        </table>
-
-      `;
-
-  }
-
-
-  renderCategories(
-    data
-  ) {
-
-    document
-      .getElementById(
-        'categoriesTable'
-      )
-      .innerHTML =
-      createSimpleTableWithActions(
-        [
-          'ID',
-          'Name',
-          'Slug',
-          'Sort',
-          'Active'
-        ],
-
-        (data.categories || [])
-          .map(
-            category => ({
-              values: [
-
-                category.categoryId,
-
-                category.name,
-
-                category.slug,
-
-                category.sortOrder,
-
-                category.active
-                  ? 'YES'
-                  : 'NO'
-
-              ],
-
-              action: `
-                <button
-                  class="button button-secondary"
-                  onclick="adminController.editCategory('${escapeJs(
-                    category.categoryId
-                  )}')"
-                >
-                  Edit
-                </button>
-              `
-            })
-          )
-      );
-
-  }
-
-
-  renderInventory(
-    data
-  ) {
-
-    document
-      .getElementById(
-        'inventoryTable'
-      )
-      .innerHTML = `
-
-        <table>
-
-          <thead>
-
-            <tr>
-
-              <th>Product</th>
-
-              <th>Stock</th>
-
-              <th>Reserved</th>
-
-              <th>Available</th>
-
-              <th>Delta</th>
-
-              <th>Type</th>
-
-              <th>Action</th>
-
-            </tr>
-
-          </thead>
-
-
-          <tbody>
-
-            ${(data.products || [])
-              .map(
-                product => `
-
-                  <tr>
-
-                    <td>
-
-                      ${escapeHtml(
-                        product.name
-                      )}
-
-                      <br>
-
-                      <small>
-                        ${escapeHtml(
-                          product.productId
-                        )}
-                      </small>
-
-                    </td>
-
-
-                    <td>
-                      ${product.stock}
-                    </td>
-
-
-                    <td>
-                      ${product.reservedStock}
-                    </td>
-
-
-                    <td>
-                      ${product.availableStock}
-                    </td>
-
-
-                    <td>
-
-                      <input
-                        id="inventory-delta-${escapeJs(
-                          product.productId
-                        )}"
-                        class="input"
-                        type="number"
-                        value="1"
-                        style="width:90px"
-                      >
-
-                    </td>
-
-
-                    <td>
-
-                      <select
-                        id="inventory-type-${escapeJs(
-                          product.productId
-                        )}"
-                        class="input"
-                        style="width:150px"
-                      >
-
-                        <option value="IMPORT">
-                          IMPORT
-                        </option>
-
-                        <option value="ADJUSTMENT">
-                          ADJUSTMENT
-                        </option>
-
-                        <option value="RETURN">
-                          RETURN
-                        </option>
-
-                        <option value="DAMAGE">
-                          DAMAGE
-                        </option>
-
-                      </select>
-
-                    </td>
-
-
-                    <td>
-
-                      <button
-                        class="button button-primary"
-                        onclick="adminController.adjustInventory('${escapeJs(
-                          product.productId
-                        )}')"
-                      >
-                        Apply
-                      </button>
-
-                    </td>
-
-                  </tr>
-
-                `
-              )
-              .join('')}
-
-          </tbody>
-
-        </table>
-
-      `;
-
-  }
-
-
-  renderOrders(
-    data
-  ) {
-
-    document
-      .getElementById(
-        'ordersTable'
-      )
-      .innerHTML = `
-
-        <table>
-
-          <thead>
-
-            <tr>
-
-              <th>Order</th>
-
-              <th>Customer</th>
-
-              <th>Total</th>
-
-              <th>Order Status</th>
-
-              <th>Payment</th>
-
-              <th>Carrier</th>
-
-              <th>Tracking</th>
-
-              <th>Shipping</th>
-
-              <th>Action</th>
-
-            </tr>
-
-          </thead>
-
-
-          <tbody>
-
-            ${(data.orders || [])
-              .map(
-                order => `
-
-                  <tr>
-
-                    <td>
-
-                      <strong>
-                        ${escapeHtml(
-                          order.orderCode ||
-                          order.orderId
-                        )}
-                      </strong>
-
-                      <br>
-
-                      <small>
-                        ${formatDate(
-                          order.createdDate
-                        )}
-                      </small>
-
-                    </td>
-
-
-                    <td>
-
-                      ${escapeHtml(
-                        order.customerName
-                      )}
-
-                      <br>
-
-                      ${escapeHtml(
-                        order.customerPhone
-                      )}
-
-                    </td>
-
-
-                    <td>
-                      ${formatCurrency(
-                        order.total
-                      )}
-                    </td>
-
-
-                    <td>
-
-                      <select
-                        id="order-status-${escapeJs(
-                          order.orderId
-                        )}"
-                        class="input"
-                        style="width:150px"
-                      >
-
-                        ${[
-                          'PENDING',
-                          'CONFIRMED',
-                          'SHIPPING',
-                          'COMPLETED',
-                          'CANCELLED'
-                        ]
-                          .map(
-                            status => `
-
-                              <option
-                                value="${status}"
-                                ${
-                                  order.status ===
-                                  status
-                                    ? 'selected'
-                                    : ''
-                                }
-                              >
-                                ${status}
-                              </option>
-
-                            `
-                          )
-                          .join('')}
-
-                      </select>
-
-                    </td>
-
-
-                    <td>
-
-                      <select
-                        id="payment-status-${escapeJs(
-                          order.orderId
-                        )}"
-                        class="input"
-                        style="width:130px"
-                      >
-
-                        ${[
-                          'PENDING',
-                          'PAID',
-                          'FAILED',
-                          'REFUNDED',
-                          'CANCELLED'
-                        ]
-                          .map(
-                            status => `
-
-                              <option
-                                value="${status}"
-                                ${
-                                  order.paymentStatus ===
-                                  status
-                                    ? 'selected'
-                                    : ''
-                                }
-                              >
-                                ${status}
-                              </option>
-
-                            `
-                          )
-                          .join('')}
-
-                      </select>
-
-                    </td>
-
-
-                    <td>
-
-                      <input
-                        id="carrier-${escapeJs(
-                          order.orderId
-                        )}"
-                        class="input"
-                        placeholder="Carrier"
-                        style="width:120px"
-                      >
-
-                    </td>
-
-
-                    <td>
-
-                      <input
-                        id="tracking-${escapeJs(
-                          order.orderId
-                        )}"
-                        class="input"
-                        placeholder="Tracking"
-                        style="width:150px"
-                      >
-
-                    </td>
-
-
-                    <td>
-
-                      <select
-                        id="shipping-status-${escapeJs(
-                          order.orderId
-                        )}"
-                        class="input"
-                        style="width:150px"
-                      >
-
-                        ${[
-                          'PENDING',
-                          'PICKED_UP',
-                          'IN_TRANSIT',
-                          'DELIVERED',
-                          'RETURNED',
-                          'CANCELLED'
-                        ]
-                          .map(
-                            status => `
-
-                              <option
-                                value="${status}"
-                                ${
-                                  order.shippingStatus ===
-                                  status
-                                    ? 'selected'
-                                    : ''
-                                }
-                              >
-                                ${status}
-                              </option>
-
-                            `
-                          )
-                          .join('')}
-
-                      </select>
-
-                    </td>
-
-
-                    <td>
-
-                      <button
-                        class="button button-primary"
-                        onclick="adminController.updateOrder('${escapeJs(
-                          order.orderId
-                        )}')"
-                      >
-                        Update
-                      </button>
-
-                    </td>
-
-                  </tr>
-
-                `
-              )
-              .join('')}
-
-          </tbody>
-
-        </table>
-
-      `;
-
-  }
-
-
-  renderCustomers(
-    data
-  ) {
-
-    document
-      .getElementById(
-        'customersTable'
-      )
-      .innerHTML =
-      createSimpleTable(
-        [
-          'Name',
-          'Phone',
-          'Email',
-          'Orders',
-          'Spent',
-          'Created'
-        ],
-
-        (data.customers || [])
-          .map(
-            customer => [
-
-              customer.name,
-
-              customer.phone,
-
-              customer.email,
-
-              customer.totalOrders,
-
-              formatCurrency(
-                customer.totalSpent
-              ),
-
-              formatDate(
-                customer.createdDate
-              )
-
-            ]
-          )
-      );
-
-  }
-
-
-  renderSettings() {
-
-    document
-      .getElementById(
-        'settingsContent'
-      )
-      .innerHTML = `
-
-        <p style="color:#6b7280">
-
-          Settings API đã được chuẩn bị
-          ở backend.
-
-          Phần editor chi tiết sẽ dùng
-          cùng Admin Settings UseCase.
-
-        </p>
-
-      `;
-
-  }
-
-
-  renderCategoryOptions(
-    selectedId
-  ) {
-
-    const categories =
-      this.data?.categories || [];
-
-
-    document
-      .getElementById(
-        'productCategory'
-      )
-      .innerHTML = `
-
-        <option value="">
-          -- None --
-        </option>
-
-        ${categories
-          .map(
-            category => `
-
-              <option
-                value="${escapeHtml(
-                  category.categoryId
-                )}"
-                ${
-                  category.categoryId ===
-                  selectedId
-                    ? 'selected'
-                    : ''
-                }
-              >
-                ${escapeHtml(
-                  category.name
-                )}
-              </option>
-
-            `
-          )
-          .join('')}
-
-      `;
-
-  }
-
-
-  newProduct() {
-
-    this.openProductForm(
-      null
-    );
-
-  }
-
-
-  editProduct(
-    product
-  ) {
-
-    this.openProductForm(
-      product
-    );
-
-  }
-
-
-  openProductForm(
-    product
-  ) {
-
-    document
-      .getElementById(
-        'productForm'
-      )
-      .classList.remove(
-        'hidden'
-      );
-
-
-    document
-      .getElementById(
-        'productId'
-      )
-      .value =
-      product?.productId || '';
-
-
-    document
-      .getElementById(
-        'productName'
-      )
-      .value =
-      product?.name || '';
-
-
-    document
-      .getElementById(
-        'productSku'
-      )
-      .value =
-      product?.sku || '';
-
-
-    document
-      .getElementById(
-        'productSlug'
-      )
-      .value =
-      product?.slug || '';
-
-
-    this.renderCategoryOptions(
-      product?.categoryId || ''
-    );
-
-
-    document
-      .getElementById(
-        'productPrice'
-      )
-      .value =
-      product?.price ?? '';
-
-
-    document
-      .getElementById(
-        'productComparePrice'
-      )
-      .value =
-      product?.compareAtPrice ?? '';
-
-
-    document
-      .getElementById(
-        'productCostPrice'
-      )
-      .value =
-      product?.costPrice ?? '';
-
-
-    document
-      .getElementById(
-        'productShippingFee'
-      )
-      .value =
-      product?.shippingFee ?? '';
-
-
-    document
-      .getElementById(
-        'productInitialStock'
-      )
-      .value =
-      product
-        ? ''
-        : 0;
-
-
-    document
-      .getElementById(
-        'productInitialStock'
-      )
-      .disabled =
-      !!product;
-
-
-    document
-      .getElementById(
-        'productImageUrl'
-      )
-      .value =
-      product?.imageUrl || '';
-
-
-    document
-      .getElementById(
-        'productDescription'
-      )
-      .value =
-      product?.description || '';
-
-
-    document
-      .getElementById(
-        'productActive'
-      )
-      .checked =
-      product
-        ? product.active
-        : true;
-
-
-    document
-      .getElementById(
-        'productFeatured'
-      )
-      .checked =
-      product
-        ? product.featured
-        : false;
-
-  }
-
-
-  closeProductForm() {
-
-    document
-      .getElementById(
-        'productForm'
-      )
-      .classList.add(
-        'hidden'
-      );
-
-  }
-
-
-  clearCategory() {
-
-    document
-      .getElementById(
-        'categoryId'
-      )
-      .value = '';
-
-    document
-      .getElementById(
-        'categoryName'
-      )
-      .value = '';
-
-    document
-      .getElementById(
-        'categorySlug'
-      )
-      .value = '';
-
-    document
-      .getElementById(
-        'categorySortOrder'
-      )
-      .value = '';
-
-    document
-      .getElementById(
-        'categoryDescription'
-      )
-      .value = '';
-
-  }
-
-
-  editCategory(
-    category
-  ) {
-
-    document
-      .getElementById(
-        'categoryId'
-      )
-      .value =
-      category.categoryId || '';
-
-    document
-      .getElementById(
-        'categoryName'
-      )
-      .value =
-      category.name || '';
-
-    document
-      .getElementById(
-        'categorySlug'
-      )
-      .value =
-      category.slug || '';
-
-    document
-      .getElementById(
-        'categorySortOrder'
-      )
-      .value =
-      category.sortOrder || 0;
-
-    document
-      .getElementById(
-        'categoryDescription'
-      )
-      .value =
-      category.description || '';
-
-    this.showPage(
-      'categories'
-    );
-
-  }
-
-}
-
-
-/* =====================================================
- MARK: - Controller
- ===================================================== */
-
-class AdminController {
-
-  constructor(
-    api,
-    loginUseCase,
-    loadUseCase,
-    saveProductUseCase,
-    saveCategoryUseCase,
-    inventoryUseCase,
-    ui
-  ) {
-
-    this.api =
-      api;
-
-    this.loginUseCase =
-      loginUseCase;
-
-    this.loadUseCase =
-      loadUseCase;
-
-    this.saveProductUseCase =
-      saveProductUseCase;
-
-    this.saveCategoryUseCase =
-      saveCategoryUseCase;
-
-    this.inventoryUseCase =
-      inventoryUseCase;
-
-    this.ui =
-      ui;
-
-  }
-
-
-  get token() {
-
-    return localStorage.getItem(
-      CONFIG.TOKEN_KEY
-    );
-
-  }
-
-
-  async login() {
-
-    const password =
-      document
-        .getElementById(
-          'loginPassword'
-        )
-        .value;
-
-
-    this.ui.clearLoginError();
-
-
-    try {
-
-      await this.loginUseCase
-        .execute(
-          password
-        );
-
-
-      this.ui.hideLogin();
-
-
-      await this.load();
-
-
-    } catch (error) {
-
-      this.ui.showLoginError(
-        error.message
-      );
-
+    /* Helper hàm chuẩn hóa chuỗi an toàn */
+    function cleanString(val) {
+      if (val === null || val === undefined) return '';
+      return String(val).toLowerCase().trim();
     }
 
-  }
-
-
-  logout() {
-
-    localStorage.removeItem(
-      CONFIG.TOKEN_KEY
-    );
-
-
-    this.ui.showLogin();
-
-  }
-
-
-  async load() {
-
-    const token =
-      this.token;
-
-
-    if (!token) {
-
-      this.ui.showLogin();
-
-      return;
-
-    }
-
-
-    try {
-
-      const data =
-        await this.loadUseCase
-          .execute(
-            token
-          );
-
-
-      this.ui.render(
-        data
-      );
-
-
-    } catch (error) {
-
-      const message =
-        String(
-          error.message || ''
-        );
-
-
-      if (
-        message.includes(
-          'expired'
-        ) ||
-        message.includes(
-          'authentication'
-        )
-      ) {
-
-        this.logout();
-
-        return;
-
+    /* API Repository */
+    class AdminApiRepository {
+      constructor(apiUrl) {
+        this.apiUrl = apiUrl;
       }
 
+      async request(payload) {
+        const response = await fetch(this.apiUrl, {
+          method: 'POST',
+          body: JSON.stringify(payload)
+        });
 
-      this.ui.showGlobalMessage(
-        message
-      );
+        if (!response.ok) {
+          throw new Error(`HTTP error ${response.status}`);
+        }
 
+        const result = await response.json();
+
+        if (!result.success) {
+          throw new Error(result.error || 'Yêu cầu thất bại');
+        }
+
+        let data = result.data;
+        if (data && typeof data === 'object' && data.success === false) {
+          throw new Error(data.error || 'Admin request failed');
+        }
+
+        if (data && typeof data === 'object' && data.success === true && Object.prototype.hasOwnProperty.call(data, 'data')) {
+          data = data.data;
+        }
+
+        return data;
+      }
+
+      login(password) { return this.request({ action: 'admin.login', password }); }
+      bootstrap(token) { return this.request({ action: 'admin.bootstrap', token }); }
+      saveProduct(token, data) { return this.request({ action: 'admin.products.save', token, ...data }); }
+      archiveProduct(token, productId) { return this.request({ action: 'admin.products.archive', token, productId }); }
+      saveCategory(token, data) { return this.request({ action: 'admin.categories.save', token, ...data }); }
+      adjustInventory(token, data) { return this.request({ action: 'admin.inventory.adjust', token, ...data }); }
+      updateOrderStatus(token, data) { return this.request({ action: 'admin.orders.status', token, ...data }); }
+      updatePaymentStatus(token, data) { return this.request({ action: 'admin.payments.status', token, ...data }); }
+      updateShipment(token, data) { return this.request({ action: 'admin.shipments.update', token, ...data }); }
+      saveSetting(token, data) { return this.request({ action: 'admin.settings.save', token, ...data }); }
     }
 
-  }
-
-
-  async saveProduct() {
-
-    const data = {
-
-      productId:
-        document
-          .getElementById(
-            'productId'
-          )
-          .value
-          .trim(),
-
-      name:
-        document
-          .getElementById(
-            'productName'
-          )
-          .value
-          .trim(),
-
-      sku:
-        document
-          .getElementById(
-            'productSku'
-          )
-          .value
-          .trim(),
-
-      slug:
-        document
-          .getElementById(
-            'productSlug'
-          )
-          .value
-          .trim(),
-
-      categoryId:
-        document
-          .getElementById(
-            'productCategory'
-          )
-          .value,
-
-      price:
-        Number(
-          document
-            .getElementById(
-              'productPrice'
-            )
-            .value
-        ),
-
-      compareAtPrice:
-        Number(
-          document
-            .getElementById(
-              'productComparePrice'
-            )
-            .value
-        ) || 0,
-
-      costPrice:
-        Number(
-          document
-            .getElementById(
-              'productCostPrice'
-            )
-            .value
-        ) || 0,
-
-      shippingFee:
-        Number(
-          document
-            .getElementById(
-              'productShippingFee'
-            )
-            .value
-        ) || 0,
-
-      initialStock:
-        Number(
-          document
-            .getElementById(
-              'productInitialStock'
-            )
-            .value
-        ) || 0,
-
-      imageUrl:
-        document
-          .getElementById(
-            'productImageUrl'
-          )
-          .value
-          .trim(),
-
-      description:
-        document
-          .getElementById(
-            'productDescription'
-          )
-          .value,
-
-      active:
-        document
-          .getElementById(
-            'productActive'
-          )
-          .checked,
-
-      featured:
-        document
-          .getElementById(
-            'productFeatured'
-          )
-          .checked
-
-    };
-
-
-    try {
-
-      await this.saveProductUseCase
-        .execute(
-          this.token,
-          data
-        );
-
-
-      this.ui.closeProductForm();
-
-
-      await this.load();
-
-
-      this.ui.showGlobalMessage(
-        'Product saved successfully',
-        true
-      );
-
-
-    } catch (error) {
-
-      this.ui.showGlobalMessage(
-        error.message
-      );
-
+    /* UseCases */
+    class AdminLoginUseCase {
+      constructor(api) { this.api = api; }
+      async execute(password) {
+        if (!password) throw new Error('Vui lòng nhập mật khẩu');
+        const data = await this.api.login(password);
+        if (!data || !data.token) throw new Error('Phản hồi đăng nhập không hợp lệ');
+        localStorage.setItem(CONFIG.TOKEN_KEY, data.token);
+        return data;
+      }
     }
 
-  }
-
-
-  editProduct(
-    productId
-  ) {
-
-    const product =
-      (this.ui.data?.products || [])
-        .find(
-          item =>
-            item.productId ===
-            productId
-        );
-
-
-    if (!product) {
-
-      this.ui.showGlobalMessage(
-        'Product not found'
-      );
-
-      return;
-
+    class LoadAdminUseCase {
+      constructor(api) { this.api = api; }
+      execute(token) { return this.api.bootstrap(token); }
     }
 
-
-    this.ui.showPage(
-      'products'
-    );
-
-
-    this.ui.editProduct(
-      product
-    );
-
-  }
-
-
-  async archiveProduct(
-    productId
-  ) {
-
-    if (
-      !confirm(
-        'Disable this product?'
-      )
-    ) {
-
-      return;
-
+    class SaveProductUseCase {
+      constructor(api) { this.api = api; }
+      execute(token, data) {
+        if (!String(data.name || '').trim()) throw new Error('Tên sản phẩm là bắt buộc');
+        if (!Number.isFinite(Number(data.price)) || Number(data.price) < 0) throw new Error('Giá sản phẩm không hợp lệ');
+        return this.api.saveProduct(token, data);
+      }
     }
 
-
-    try {
-
-      await this.api
-        .archiveProduct(
-          this.token,
-          productId
-        );
-
-
-      await this.load();
-
-
-      this.ui.showGlobalMessage(
-        'Product disabled',
-        true
-      );
-
-
-    } catch (error) {
-
-      this.ui.showGlobalMessage(
-        error.message
-      );
-
+    class SaveCategoryUseCase {
+      constructor(api) { this.api = api; }
+      execute(token, data) {
+        if (!String(data.name || '').trim()) throw new Error('Tên danh mục là bắt buộc');
+        return this.api.saveCategory(token, data);
+      }
     }
 
-  }
-
-
-  async adjustInventory(
-    productId
-  ) {
-
-    const delta =
-      Number(
-        document
-          .getElementById(
-            `inventory-delta-${productId}`
-          )
-          .value
-      );
-
-
-    const type =
-      document
-        .getElementById(
-          `inventory-type-${productId}`
-        )
-        .value;
-
-
-    const reason =
-      prompt(
-        'Inventory reason'
-      );
-
-
-    if (!reason) {
-
-      return;
-
+    class InventoryAdjustmentUseCase {
+      constructor(api) { this.api = api; }
+      execute(token, data) {
+        if (!data.productId) throw new Error('Thiếu Mã Sản Phẩm');
+        if (!Number.isInteger(Number(data.delta)) || Number(data.delta) === 0) throw new Error('Số lượng thay đổi phải là số nguyên khác 0');
+        if (!String(data.reason || '').trim()) throw new Error('Vui lòng nhập lý do thay đổi kho');
+        return this.api.adjustInventory(token, data);
+      }
     }
 
+    /* Admin UI */
+    class AdminUI {
+      constructor() {
+        this.controller = null;
+        this.data = null;
+        this.searchQueries = {
+          global: '',
+          products: '',
+          categories: '',
+          inventory: '',
+          orders: '',
+          customers: ''
+        };
+      }
 
-    try {
+      connect(controller) {
+        this.controller = controller;
+      }
 
-      await this.inventoryUseCase
-        .execute(
-          this.token,
-          {
-            productId,
+      bindEvents() {
+        document.getElementById('loginButton').addEventListener('click', () => this.controller.login());
+        document.getElementById('loginPassword').addEventListener('keydown', e => {
+          if (e.key === 'Enter') this.controller.login();
+        });
 
-            delta,
+        document.getElementById('logoutButton').addEventListener('click', () => this.controller.logout());
+        document.getElementById('refreshButton').addEventListener('click', () => this.controller.load());
 
-            type,
+        document.querySelectorAll('[data-page]').forEach(button => {
+          button.addEventListener('click', () => {
+            this.showPage(button.dataset.page);
+            this.closeMobileSidebar();
+          });
+        });
 
-            reason
+        document.getElementById('newProductButton').addEventListener('click', () => this.newProduct());
+        document.getElementById('cancelProductButton').addEventListener('click', () => this.closeProductForm());
+        document.getElementById('saveProductButton').addEventListener('click', () => this.controller.saveProduct());
+
+        document.getElementById('clearCategoryButton').addEventListener('click', () => this.clearCategory());
+        document.getElementById('saveCategoryButton').addEventListener('click', () => this.controller.saveCategory());
+
+        // Global Search Event
+        document.getElementById('globalSearchInput').addEventListener('input', (e) => {
+          this.searchQueries.global = cleanString(e.target.value);
+          if (this.searchQueries.global.length > 0) {
+            this.showPage('search-results');
+            this.renderSearchResults();
+          } else if (document.getElementById('page-search-results').classList.contains('active')) {
+            this.showPage('dashboard');
           }
+        });
+
+        // Tab Search Events
+        const bindTabSearch = (inputId, key, renderFn) => {
+          document.getElementById(inputId)?.addEventListener('input', (e) => {
+            this.searchQueries[key] = cleanString(e.target.value);
+            renderFn.call(this, this.data);
+          });
+        };
+
+        bindTabSearch('productsSearchInput', 'products', this.renderProducts);
+        bindTabSearch('categoriesSearchInput', 'categories', this.renderCategories);
+        bindTabSearch('inventorySearchInput', 'inventory', this.renderInventory);
+        bindTabSearch('ordersSearchInput', 'orders', this.renderOrders);
+        bindTabSearch('customersSearchInput', 'customers', this.renderCustomers);
+
+        const menuToggle = document.getElementById('menuToggle');
+        const sidebar = document.getElementById('sidebar');
+        const mobileOverlay = document.getElementById('mobileOverlay');
+
+        if (menuToggle) {
+          menuToggle.addEventListener('click', () => {
+            sidebar.classList.toggle('open');
+            mobileOverlay.classList.toggle('open');
+          });
+        }
+
+        if (mobileOverlay) {
+          mobileOverlay.addEventListener('click', () => this.closeMobileSidebar());
+        }
+      }
+
+      closeMobileSidebar() {
+        document.getElementById('sidebar')?.classList.remove('open');
+        document.getElementById('mobileOverlay')?.classList.remove('open');
+      }
+
+      showLogin() {
+        document.getElementById('loginPage').classList.remove('hidden');
+        document.getElementById('app').classList.add('hidden');
+      }
+
+      hideLogin() {
+        document.getElementById('loginPage').classList.add('hidden');
+        document.getElementById('app').classList.remove('hidden');
+      }
+
+      showLoginError(message) {
+        const element = document.getElementById('loginError');
+        element.textContent = message;
+        element.classList.remove('hidden');
+      }
+
+      clearLoginError() {
+        document.getElementById('loginError').classList.add('hidden');
+      }
+
+      showGlobalMessage(message, success = false) {
+        const element = document.getElementById('globalMessage');
+        if (!message) {
+          element.className = 'hidden';
+          element.textContent = '';
+          return;
+        }
+        element.className = success ? 'message message-success' : 'message message-error';
+        element.textContent = message;
+
+        setTimeout(() => {
+          element.className = 'hidden';
+        }, 5000);
+      }
+
+      showPage(page) {
+        document.querySelectorAll('.page').forEach(el => el.classList.remove('active'));
+        const target = document.getElementById(`page-${page}`);
+        if (target) target.classList.add('active');
+
+        document.querySelectorAll('[data-page]').forEach(btn => {
+          btn.classList.toggle('active', btn.dataset.page === page);
+        });
+
+        const titles = {
+          dashboard: 'Dashboard',
+          'search-results': 'Kết quả tìm kiếm',
+          products: 'Sản phẩm',
+          categories: 'Danh mục',
+          inventory: 'Kho hàng',
+          orders: 'Đơn hàng',
+          customers: 'Khách hàng',
+          settings: 'Cài đặt'
+        };
+
+        document.getElementById('pageTitle').textContent = titles[page] || page;
+      }
+
+      render(data) {
+        this.data = data;
+        this.renderDashboard(data);
+        this.renderProducts(data);
+        this.renderCategories(data);
+        this.renderInventory(data);
+        this.renderOrders(data);
+        this.renderCustomers(data);
+        this.renderSettings();
+        if (this.searchQueries.global) {
+          this.renderSearchResults();
+        }
+        if (window.lucide) lucide.createIcons();
+      }
+
+      renderDashboard(data) {
+        const summary = data.summary || {};
+        const cards = [
+          ['Tổng sản phẩm', summary.totalProducts || 0],
+          ['SP Hoạt động', summary.activeProducts || 0],
+          ['SP Cần nhập (Low)', summary.lowStockProducts || 0],
+          ['Tổng đơn hàng', summary.totalOrders || 0],
+          ['Đơn chờ xử lý', summary.pendingOrders || 0],
+          ['Đang giao hàng', summary.shippingOrders || 0],
+          ['Khách hàng', summary.totalCustomers || 0],
+          ['Doanh thu', formatCurrency(summary.totalRevenue || 0)]
+        ];
+
+        document.getElementById('dashboardCards').innerHTML = cards.map(card => `
+          <div class="card">
+            <div class="card-label">${escapeHtml(card[0])}</div>
+            <div class="card-value">${escapeHtml(card[1])}</div>
+          </div>
+        `).join('');
+
+        const lowStock = (data.products || []).filter(p => p.active && Number(p.availableStock) <= 5);
+        document.getElementById('dashboardLowStock').innerHTML = createSimpleTable(
+          ['Tên sản phẩm', 'Tổng kho', 'Đã đặt', 'Khả dụng'],
+          lowStock.map(p => [p.name, p.stock, p.reservedStock, p.availableStock])
         );
 
+        document.getElementById('dashboardOrders').innerHTML = createSimpleTable(
+          ['Mã đơn', 'Khách hàng', 'Tổng tiền', 'Trạng thái', 'Ngày tạo'],
+          (data.orders || []).slice(0, 10).map(o => [
+            o.orderCode || o.orderId,
+            o.customerName,
+            formatCurrency(o.total),
+            o.status,
+            formatDate(o.createdDate)
+          ])
+        );
+      }
 
-      await this.load();
+      /* LOGIC TOÀN CỤC HOÀN CHỈNH CHO SEARCH */
+      renderSearchResults() {
+        const q = this.searchQueries.global;
+        if (!q || !this.data) return;
 
+        document.getElementById('searchResultsTitle').textContent = `Kết quả tìm kiếm cho: "${q}"`;
 
-      this.ui.showGlobalMessage(
-        'Inventory updated successfully',
-        true
-      );
+        // Match linh hoạt tất cả các key sản phẩm
+        const matchedProducts = (this.data.products || []).filter(p =>
+          cleanString(p.name).includes(q) ||
+          cleanString(p.sku).includes(q) ||
+          cleanString(p.productId || p.id).includes(q) ||
+          cleanString(p.description).includes(q)
+        );
 
+        // Match danh mục
+        const matchedCategories = (this.data.categories || []).filter(c =>
+          cleanString(c.name).includes(q) ||
+          cleanString(c.slug).includes(q) ||
+          cleanString(c.categoryId || c.id).includes(q)
+        );
 
-    } catch (error) {
+        // Match đơn hàng
+        const matchedOrders = (this.data.orders || []).filter(o =>
+          cleanString(o.orderCode || o.orderId || o.id).includes(q) ||
+          cleanString(o.customerName).includes(q) ||
+          cleanString(o.customerPhone).includes(q)
+        );
 
-      this.ui.showGlobalMessage(
-        error.message
-      );
+        // Match khách hàng
+        const matchedCustomers = (this.data.customers || []).filter(c =>
+          cleanString(c.name).includes(q) ||
+          cleanString(c.phone).includes(q) ||
+          cleanString(c.email).includes(q)
+        );
 
-    }
+        let html = '';
 
-  }
+        const totalMatches = matchedProducts.length + matchedCategories.length + matchedOrders.length + matchedCustomers.length;
 
-
-  async updateOrder(
-    orderId
-  ) {
-
-    try {
-
-      const status =
-        document
-          .getElementById(
-            `order-status-${orderId}`
-          )
-          .value;
-
-
-      const paymentStatus =
-        document
-          .getElementById(
-            `payment-status-${orderId}`
-          )
-          .value;
-
-
-      const carrier =
-        document
-          .getElementById(
-            `carrier-${orderId}`
-          )
-          .value
-          .trim();
-
-
-      const trackingNumber =
-        document
-          .getElementById(
-            `tracking-${orderId}`
-          )
-          .value
-          .trim();
-
-
-      const shippingStatus =
-        document
-          .getElementById(
-            `shipping-status-${orderId}`
-          )
-          .value;
-
-
-      /*
-       Order
-      */
-
-      await this.api
-        .updateOrderStatus(
-          this.token,
-          {
-            orderId,
-
-            status
+        if (totalMatches === 0) {
+          html = `<div style="padding: 32px; text-align: center; color: var(--text-muted);">
+                    <i data-lucide="search-x" style="width: 48px; height: 48px; margin-bottom: 12px; opacity:0.5;"></i>
+                    <p style="font-size: 16px;">Không tìm thấy dữ liệu trùng khớp với từ khóa "<strong>${escapeHtml(q)}</strong>"</p>
+                  </div>`;
+        } else {
+          // Render Sản phẩm
+          if (matchedProducts.length > 0) {
+            html += `<div class="search-section-title"><i data-lucide="package"></i> Sản phẩm (${matchedProducts.length})</div>`;
+            html += createSimpleTable(['ID', 'Tên SP', 'SKU', 'Giá'], matchedProducts.map(p => [p.productId || p.id, p.name, p.sku, formatCurrency(p.price)]));
           }
-        );
 
-
-      /*
-       Payment
-      */
-
-      await this.api
-        .updatePaymentStatus(
-          this.token,
-          {
-            orderId,
-
-            status:
-              paymentStatus
+          // Render Danh mục
+          if (matchedCategories.length > 0) {
+            html += `<div class="search-section-title"><i data-lucide="tags"></i> Danh mục (${matchedCategories.length})</div>`;
+            html += createSimpleTable(['ID', 'Tên danh mục', 'Slug'], matchedCategories.map(c => [c.categoryId || c.id, c.name, c.slug]));
           }
-        );
 
-
-      /*
-       Shipment
-      */
-
-      await this.api
-        .updateShipment(
-          this.token,
-          {
-            orderId,
-
-            carrier,
-
-            trackingNumber,
-
-            status:
-              shippingStatus
+          // Render Đơn hàng
+          if (matchedOrders.length > 0) {
+            html += `<div class="search-section-title"><i data-lucide="shopping-cart"></i> Đơn hàng (${matchedOrders.length})</div>`;
+            html += createSimpleTable(['Mã đơn', 'Khách hàng', 'SĐT', 'Tổng tiền', 'Trạng thái'], matchedOrders.map(o => [o.orderCode || o.orderId || o.id, o.customerName, o.customerPhone, formatCurrency(o.total), o.status]));
           }
-        );
 
-
-      await this.load();
-
-
-      this.ui.showGlobalMessage(
-        'Order updated successfully',
-        true
-      );
-
-
-    } catch (error) {
-
-      this.ui.showGlobalMessage(
-        error.message
-      );
-
-    }
-
-  }
-
-
-  async saveCategory() {
-
-    const data = {
-
-      categoryId:
-        document
-          .getElementById(
-            'categoryId'
-          )
-          .value
-          .trim(),
-
-      name:
-        document
-          .getElementById(
-            'categoryName'
-          )
-          .value
-          .trim(),
-
-      slug:
-        document
-          .getElementById(
-            'categorySlug'
-          )
-          .value
-          .trim(),
-
-      description:
-        document
-          .getElementById(
-            'categoryDescription'
-          )
-          .value,
-
-      sortOrder:
-        Number(
-          document
-            .getElementById(
-              'categorySortOrder'
-            )
-            .value
-        ) || 0,
-
-      active:
-        true
-
-    };
-
-
-    try {
-
-      await this.saveCategoryUseCase
-        .execute(
-          this.token,
-          data
-        );
-
-
-      await this.load();
-
-
-      this.ui.clearCategory();
-
-
-      this.ui.showGlobalMessage(
-        'Category saved successfully',
-        true
-      );
-
-
-    } catch (error) {
-
-      this.ui.showGlobalMessage(
-        error.message
-      );
-
-    }
-
-  }
-
-
-  editCategory(
-    categoryId
-  ) {
-
-    const category =
-      (this.ui.data?.categories || [])
-        .find(
-          item =>
-            item.categoryId ===
-            categoryId
-        );
-
-
-    if (!category) {
-
-      this.ui.showGlobalMessage(
-        'Category not found'
-      );
-
-      return;
-
-    }
-
-
-    this.ui.editCategory(
-      category
-    );
-
-  }
-
-}
-
-
-/* =====================================================
- MARK: - Helper
- ===================================================== */
-
-function formatCurrency(
-  value
-) {
-
-  return Number(
-    value || 0
-  )
-    .toLocaleString(
-      'vi-VN'
-    ) + ' ₫';
-
-}
-
-
-function formatDate(
-  value
-) {
-
-  if (!value) {
-    return '';
-  }
-
-
-  const date =
-    new Date(value);
-
-
-  if (
-    Number.isNaN(
-      date.getTime()
-    )
-  ) {
-
-    return '';
-
-  }
-
-
-  return date.toLocaleString(
-    'vi-VN'
-  );
-
-}
-
-
-function escapeHtml(
-  value
-) {
-
-  return String(
-    value ?? ''
-  )
-    .replaceAll(
-      '&',
-      '&amp;'
-    )
-    .replaceAll(
-      '<',
-      '&lt;'
-    )
-    .replaceAll(
-      '>',
-      '&gt;'
-    )
-    .replaceAll(
-      '"',
-      '&quot;'
-    )
-    .replaceAll(
-      "'",
-      '&#039;'
-    );
-
-}
-
-
-function escapeJs(
-  value
-) {
-
-  return String(
-    value ?? ''
-  )
-    .replaceAll(
-      '\\',
-      '\\\\'
-    )
-    .replaceAll(
-      "'",
-      "\\'"
-    );
-
-}
-
-
-function createSimpleTable(
-  headers,
-  rows
-) {
-
-  if (
-    !rows.length
-  ) {
-
-    return `
-      <div style="padding:24px">
-        No data
-      </div>
-    `;
-
-  }
-
-
-  return `
-
-    <table>
-
-      <thead>
-
-        <tr>
-
-          ${headers
-            .map(
-              header =>
-                `
-                <th>
-                  ${escapeHtml(
-                    header
-                  )}
-                </th>
-                `
-            )
-            .join('')}
-
-        </tr>
-
-      </thead>
-
-
-      <tbody>
-
-        ${rows
-          .map(
-            row => `
-
+          // Render Khách hàng
+          if (matchedCustomers.length > 0) {
+            html += `<div class="search-section-title"><i data-lucide="users"></i> Khách hàng (${matchedCustomers.length})</div>`;
+            html += createSimpleTable(['Tên', 'SĐT', 'Email'], matchedCustomers.map(c => [c.name, c.phone, c.email]));
+          }
+        }
+
+        document.getElementById('searchResultsContent').innerHTML = html;
+        if (window.lucide) lucide.createIcons();
+      }
+
+      renderProducts(data) {
+        const q = this.searchQueries.products;
+        const categories = new Map(((data || this.data)?.categories || []).map(c => [c.categoryId || c.id, c.name]));
+        
+        let products = (data || this.data)?.products || [];
+        if (q) {
+          products = products.filter(p =>
+            cleanString(p.name).includes(q) ||
+            cleanString(p.sku).includes(q) ||
+            cleanString(p.productId || p.id).includes(q)
+          );
+        }
+
+        document.getElementById('productsTable').innerHTML = `
+          <table>
+            <thead>
               <tr>
-
-                ${row
-                  .map(
-                    value =>
-                      `
-                      <td>
-                        ${escapeHtml(
-                          value
-                        )}
-                      </td>
-                      `
-                  )
-                  .join('')}
-
+                <th>ID</th>
+                <th>Sản phẩm</th>
+                <th>Giá bán</th>
+                <th>Tổng kho</th>
+                <th>Đã đặt</th>
+                <th>Khả dụng</th>
+                <th>Danh mục</th>
+                <th>Active</th>
+                <th>Hành động</th>
               </tr>
+            </thead>
+            <tbody>
+              ${products.map(product => `
+                <tr>
+                  <td>${escapeHtml(product.productId || product.id)}</td>
+                  <td>
+                    <strong>${escapeHtml(product.name)}</strong><br>
+                    <small style="color:var(--text-muted)">${escapeHtml(product.sku)}</small>
+                  </td>
+                  <td>${formatCurrency(product.price)}</td>
+                  <td class="${Number(product.availableStock) <= 5 ? 'stock-low' : 'stock-ok'}">${product.stock}</td>
+                  <td>${product.reservedStock}</td>
+                  <td class="${Number(product.availableStock) <= 5 ? 'stock-low' : 'stock-ok'}">${product.availableStock}</td>
+                  <td>${escapeHtml(categories.get(product.categoryId || product.id) || '-')}</td>
+                  <td>${product.active ? '<span style="color:#4ade80">Có</span>' : '<span style="color:#f87171">Không</span>'}</td>
+                  <td>
+                    <button class="button button-secondary" onclick="adminController.editProduct('${escapeJs(product.productId || product.id)}')">Sửa</button>
+                    ${product.active ? `<button class="button button-danger" onclick="adminController.archiveProduct('${escapeJs(product.productId || product.id)}')">Tắt</button>` : ''}
+                  </td>
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
+        `;
+      }
 
-            `
-          )
-          .join('')}
+      renderCategories(data) {
+        const q = this.searchQueries.categories;
+        let categories = (data || this.data)?.categories || [];
+        if (q) {
+          categories = categories.filter(c =>
+            cleanString(c.name).includes(q) ||
+            cleanString(c.slug).includes(q) ||
+            cleanString(c.categoryId || c.id).includes(q)
+          );
+        }
 
-      </tbody>
+        document.getElementById('categoriesTable').innerHTML = createSimpleTableWithActions(
+          ['ID', 'Tên danh mục', 'Slug', 'Sắp xếp', 'Hoạt động'],
+          categories.map(category => ({
+            values: [category.categoryId || category.id, category.name, category.slug, category.sortOrder, category.active ? 'Có' : 'Không'],
+            action: `<button class="button button-secondary" onclick="adminController.editCategory('${escapeJs(category.categoryId || category.id)}')">Sửa</button>`
+          }))
+        );
+      }
 
-    </table>
+      renderInventory(data) {
+        const q = this.searchQueries.inventory;
+        let products = (data || this.data)?.products || [];
+        if (q) {
+          products = products.filter(p =>
+            cleanString(p.name).includes(q) ||
+            cleanString(p.sku).includes(q) ||
+            cleanString(p.productId || p.id).includes(q)
+          );
+        }
 
-  `;
-
-}
-
-
-function createSimpleTableWithActions(
-  headers,
-  rows
-) {
-
-  if (
-    !rows.length
-  ) {
-
-    return `
-      <div style="padding:24px">
-        No data
-      </div>
-    `;
-
-  }
-
-
-  return `
-
-    <table>
-
-      <thead>
-
-        <tr>
-
-          ${headers
-            .map(
-              header =>
-                `
-                <th>
-                  ${escapeHtml(
-                    header
-                  )}
-                </th>
-                `
-            )
-            .join('')}
-
-          <th>
-            Action
-          </th>
-
-        </tr>
-
-      </thead>
-
-
-      <tbody>
-
-        ${rows
-          .map(
-            row => `
-
+        document.getElementById('inventoryTable').innerHTML = `
+          <table>
+            <thead>
               <tr>
-
-                ${row.values
-                  .map(
-                    value =>
-                      `
-                      <td>
-                        ${escapeHtml(
-                          value
-                        )}
-                      </td>
-                      `
-                  )
-                  .join('')}
-
-                <td>
-                  ${row.action}
-                </td>
-
+                <th>Sản phẩm</th>
+                <th>Tổng kho</th>
+                <th>Đã đặt</th>
+                <th>Khả dụng</th>
+                <th>Điều chỉnh</th>
+                <th>Loại</th>
+                <th>Thực thi</th>
               </tr>
+            </thead>
+            <tbody>
+              ${products.map(product => `
+                <tr>
+                  <td>
+                    <strong>${escapeHtml(product.name)}</strong><br>
+                    <small style="color:var(--text-muted)">ID: ${escapeHtml(product.productId || product.id)}</small>
+                  </td>
+                  <td>${product.stock}</td>
+                  <td>${product.reservedStock}</td>
+                  <td>${product.availableStock}</td>
+                  <td>
+                    <input id="inventory-delta-${escapeJs(product.productId || product.id)}" class="input" type="number" value="1" style="width:90px">
+                  </td>
+                  <td>
+                    <select id="inventory-type-${escapeJs(product.productId || product.id)}" class="input" style="width:140px">
+                      <option value="IMPORT">Nhập hàng</option>
+                      <option value="ADJUSTMENT">Điều chỉnh</option>
+                      <option value="RETURN">Trả hàng</option>
+                      <option value="DAMAGE">Hàng lỗi</option>
+                    </select>
+                  </td>
+                  <td>
+                    <button class="button button-primary" onclick="adminController.adjustInventory('${escapeJs(product.productId || product.id)}')">Cập nhật</button>
+                  </td>
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
+        `;
+      }
 
-            `
-          )
-          .join('')}
+      renderOrders(data) {
+        const q = this.searchQueries.orders;
+        let orders = (data || this.data)?.orders || [];
+        if (q) {
+          orders = orders.filter(o =>
+            cleanString(o.orderCode || o.orderId || o.id).includes(q) ||
+            cleanString(o.customerName).includes(q) ||
+            cleanString(o.customerPhone).includes(q)
+          );
+        }
 
-      </tbody>
+        document.getElementById('ordersTable').innerHTML = `
+          <table>
+            <thead>
+              <tr>
+                <th>Mã đơn</th>
+                <th>Khách hàng</th>
+                <th>Tổng tiền</th>
+                <th>Trạng thái đơn</th>
+                <th>Thanh toán</th>
+                <th>Đơn vị VC</th>
+                <th>Mã vận đơn</th>
+                <th>Giao hàng</th>
+                <th>Lưu</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${orders.map(order => `
+                <tr>
+                  <td>
+                    <strong>${escapeHtml(order.orderCode || order.orderId || order.id)}</strong><br>
+                    <small style="color:var(--text-muted)">${formatDate(order.createdDate)}</small>
+                  </td>
+                  <td>
+                    ${escapeHtml(order.customerName)}<br>
+                    <small style="color:var(--text-muted)">${escapeHtml(order.customerPhone)}</small>
+                  </td>
+                  <td>${formatCurrency(order.total)}</td>
+                  <td>
+                    <select id="order-status-${escapeJs(order.orderId || order.id)}" class="input" style="width:130px">
+                      ${['PENDING', 'CONFIRMED', 'SHIPPING', 'COMPLETED', 'CANCELLED'].map(s => `
+                        <option value="${s}" ${order.status === s ? 'selected' : ''}>${s}</option>
+                      `).join('')}
+                    </select>
+                  </td>
+                  <td>
+                    <select id="payment-status-${escapeJs(order.orderId || order.id)}" class="input" style="width:130px">
+                      ${['PENDING', 'PAID', 'FAILED', 'REFUNDED', 'CANCELLED'].map(s => `
+                        <option value="${s}" ${order.paymentStatus === s ? 'selected' : ''}>${s}</option>
+                      `).join('')}
+                    </select>
+                  </td>
+                  <td><input id="carrier-${escapeJs(order.orderId || order.id)}" class="input" placeholder="Carrier" style="width:110px"></td>
+                  <td><input id="tracking-${escapeJs(order.orderId || order.id)}" class="input" placeholder="Tracking" style="width:130px"></td>
+                  <td>
+                    <select id="shipping-status-${escapeJs(order.orderId || order.id)}" class="input" style="width:140px">
+                      ${['PENDING', 'PICKED_UP', 'IN_TRANSIT', 'DELIVERED', 'RETURNED', 'CANCELLED'].map(s => `
+                        <option value="${s}" ${order.shippingStatus === s ? 'selected' : ''}>${s}</option>
+                      `).join('')}
+                    </select>
+                  </td>
+                  <td>
+                    <button class="button button-primary" onclick="adminController.updateOrder('${escapeJs(order.orderId || order.id)}')">Update</button>
+                  </td>
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
+        `;
+      }
 
-    </table>
+      renderCustomers(data) {
+        const q = this.searchQueries.customers;
+        let customers = (data || this.data)?.customers || [];
+        if (q) {
+          customers = customers.filter(c =>
+            cleanString(c.name).includes(q) ||
+            cleanString(c.phone).includes(q) ||
+            cleanString(c.email).includes(q)
+          );
+        }
 
-  `;
+        document.getElementById('customersTable').innerHTML = createSimpleTable(
+          ['Họ tên', 'Số điện thoại', 'Email', 'Tổng đơn', 'Tổng chi tiêu', 'Ngày tạo'],
+          customers.map(c => [
+            c.name, c.phone, c.email, c.totalOrders, formatCurrency(c.totalSpent), formatDate(c.createdDate)
+          ])
+        );
+      }
 
-}
+      renderSettings() {
+        document.getElementById('settingsContent').innerHTML = `
+          <p style="color:var(--text-muted)">Cấu hình cửa hàng hệ thống backend Apps Script đã sẵn sàng.</p>
+        `;
+      }
 
+      renderCategoryOptions(selectedId) {
+        const categories = this.data?.categories || [];
+        document.getElementById('productCategory').innerHTML = `
+          <option value="">-- Chọn danh mục --</option>
+          ${categories.map(c => `
+            <option value="${escapeHtml(c.categoryId \vert{}\vert{} c.id)}" ${(c.categoryId || c.id) === selectedId ? 'selected' : ''}>
+              ${escapeHtml(c.name)}
+            </option>
+          `).join('')}
+        `;
+      }
 
-/* =====================================================
- MARK: - Composition Root
- ===================================================== */
+      newProduct() { this.openProductForm(null); }
+      editProduct(product) { this.openProductForm(product); }
 
-const adminApi =
-  new AdminApiRepository(
-    CONFIG.API_URL
-  );
+      openProductForm(product) {
+        document.getElementById('productForm').classList.remove('hidden');
+        document.getElementById('productId').value = product?.productId || product?.id || '';
+        document.getElementById('productName').value = product?.name || '';
+        document.getElementById('productSku').value = product?.sku || '';
+        document.getElementById('productSlug').value = product?.slug || '';
+        this.renderCategoryOptions(product?.categoryId || product?.id || '');
+        document.getElementById('productPrice').value = product?.price ?? '';
+        document.getElementById('productComparePrice').value = product?.compareAtPrice ?? '';
+        document.getElementById('productCostPrice').value = product?.costPrice ?? '';
+        document.getElementById('productShippingFee').value = product?.shippingFee ?? '';
+        document.getElementById('productInitialStock').value = product ? '' : 0;
+        document.getElementById('productInitialStock').disabled = !!product;
+        document.getElementById('productImageUrl').value = product?.imageUrl || '';
+        document.getElementById('productDescription').value = product?.description || '';
+        document.getElementById('productActive').checked = product ? product.active : true;
+        document.getElementById('productFeatured').checked = product ? product.featured : false;
+      }
 
+      closeProductForm() {
+        document.getElementById('productForm').classList.add('hidden');
+      }
 
-const adminUi =
-  new AdminUI();
+      clearCategory() {
+        document.getElementById('categoryId').value = '';
+        document.getElementById('categoryName').value = '';
+        document.getElementById('categorySlug').value = '';
+        document.getElementById('categorySortOrder').value = '';
+        document.getElementById('categoryDescription').value = '';
+      }
 
+      editCategory(category) {
+        document.getElementById('categoryId').value = category.categoryId || category.id || '';
+        document.getElementById('categoryName').value = category.name || '';
+        document.getElementById('categorySlug').value = category.slug || '';
+        document.getElementById('categorySortOrder').value = category.sortOrder || 0;
+        document.getElementById('categoryDescription').value = category.description || '';
+        this.showPage('categories');
+      }
+    }
 
-const adminLoginUseCase =
-  new AdminLoginUseCase(
-    adminApi
-  );
+    /* Controller */
+    class AdminController {
+      constructor(api, loginUseCase, loadUseCase, saveProductUseCase, saveCategoryUseCase, inventoryUseCase, ui) {
+        this.api = api;
+        this.loginUseCase = loginUseCase;
+        this.loadUseCase = loadUseCase;
+        this.saveProductUseCase = saveProductUseCase;
+        this.saveCategoryUseCase = saveCategoryUseCase;
+        this.inventoryUseCase = inventoryUseCase;
+        this.ui = ui;
+      }
 
+      get token() {
+        return localStorage.getItem(CONFIG.TOKEN_KEY);
+      }
 
-const loadAdminUseCase =
-  new LoadAdminUseCase(
-    adminApi
-  );
+      async login() {
+        const password = document.getElementById('loginPassword').value;
+        this.ui.clearLoginError();
+        try {
+          await this.loginUseCase.execute(password);
+          this.ui.hideLogin();
+          await this.load();
+        } catch (error) {
+          this.ui.showLoginError(error.message);
+        }
+      }
 
+      logout() {
+        localStorage.removeItem(CONFIG.TOKEN_KEY);
+        this.ui.showLogin();
+      }
 
-const saveProductUseCase =
-  new SaveProductUseCase(
-    adminApi
-  );
+      async load() {
+        const token = this.token;
+        if (!token) {
+          this.ui.showLogin();
+          return;
+        }
 
+        try {
+          const data = await this.loadUseCase.execute(token);
+          this.ui.render(data);
+        } catch (error) {
+          const message = String(error.message || '');
+          if (message.includes('expired') || message.includes('authentication')) {
+            this.logout();
+            return;
+          }
+          this.ui.showGlobalMessage(message);
+        }
+      }
 
-const saveCategoryUseCase =
-  new SaveCategoryUseCase(
-    adminApi
-  );
+      async saveProduct() {
+        const data = {
+          productId: document.getElementById('productId').value.trim(),
+          name: document.getElementById('productName').value.trim(),
+          sku: document.getElementById('productSku').value.trim(),
+          slug: document.getElementById('productSlug').value.trim(),
+          categoryId: document.getElementById('productCategory').value,
+          price: Number(document.getElementById('productPrice').value),
+          compareAtPrice: Number(document.getElementById('productComparePrice').value) || 0,
+          costPrice: Number(document.getElementById('productCostPrice').value) || 0,
+          shippingFee: Number(document.getElementById('productShippingFee').value) || 0,
+          initialStock: Number(document.getElementById('productInitialStock').value) || 0,
+          imageUrl: document.getElementById('productImageUrl').value.trim(),
+          description: document.getElementById('productDescription').value,
+          active: document.getElementById('productActive').checked,
+          featured: document.getElementById('productFeatured').checked
+        };
 
+        try {
+          await this.saveProductUseCase.execute(this.token, data);
+          this.ui.closeProductForm();
+          await this.load();
+          this.ui.showGlobalMessage('Đã lưu sản phẩm thành công!', true);
+        } catch (error) {
+          this.ui.showGlobalMessage(error.message);
+        }
+      }
 
-const inventoryAdjustmentUseCase =
-  new InventoryAdjustmentUseCase(
-    adminApi
-  );
+      editProduct(productId) {
+        const product = (this.ui.data?.products || []).find(i => (i.productId || i.id) === productId);
+        if (!product) {
+          this.ui.showGlobalMessage('Không tìm thấy sản phẩm');
+          return;
+        }
+        this.ui.showPage('products');
+        this.ui.editProduct(product);
+      }
 
+      async archiveProduct(productId) {
+        if (!confirm('Bạn có chắc muốn vô hiệu hóa sản phẩm này?')) return;
+        try {
+          await this.api.archiveProduct(this.token, productId);
+          await this.load();
+          this.ui.showGlobalMessage('Đã vô hiệu hóa sản phẩm thành công', true);
+        } catch (error) {
+          this.ui.showGlobalMessage(error.message);
+        }
+      }
 
-const adminController =
-  new AdminController(
+      async adjustInventory(productId) {
+        const delta = Number(document.getElementById(`inventory-delta-${productId}`).value);
+        const type = document.getElementById(`inventory-type-${productId}`).value;
+        const reason = prompt('Nhập lý do thay đổi tồn kho:');
 
-    adminApi,
+        if (!reason) return;
 
-    adminLoginUseCase,
+        try {
+          await this.inventoryUseCase.execute(this.token, { productId, delta, type, reason });
+          await this.load();
+          this.ui.showGlobalMessage('Cập nhật tồn kho thành công', true);
+        } catch (error) {
+          this.ui.showGlobalMessage(error.message);
+        }
+      }
 
-    loadAdminUseCase,
+      async updateOrder(orderId) {
+        try {
+          const status = document.getElementById(`order-status-${orderId}`).value;
+          const paymentStatus = document.getElementById(`payment-status-${orderId}`).value;
+          const carrier = document.getElementById(`carrier-${orderId}`).value.trim();
+          const trackingNumber = document.getElementById(`tracking-${orderId}`).value.trim();
+          const shippingStatus = document.getElementById(`shipping-status-${orderId}`).value;
 
-    saveProductUseCase,
+          await this.api.updateOrderStatus(this.token, { orderId, status });
+          await this.api.updatePaymentStatus(this.token, { orderId, status: paymentStatus });
+          await this.api.updateShipment(this.token, { orderId, carrier, trackingNumber, status: shippingStatus });
 
-    saveCategoryUseCase,
+          await this.load();
+          this.ui.showGlobalMessage('Cập nhật đơn hàng thành công!', true);
+        } catch (error) {
+          this.ui.showGlobalMessage(error.message);
+        }
+      }
 
-    inventoryAdjustmentUseCase,
+      async saveCategory() {
+        const data = {
+          categoryId: document.getElementById('categoryId').value.trim(),
+          name: document.getElementById('categoryName').value.trim(),
+          slug: document.getElementById('categorySlug').value.trim(),
+          description: document.getElementById('categoryDescription').value,
+          sortOrder: Number(document.getElementById('categorySortOrder').value) || 0,
+          active: true
+        };
 
-    adminUi
+        try {
+          await this.saveCategoryUseCase.execute(this.token, data);
+          await this.load();
+          this.ui.clearCategory();
+          this.ui.showGlobalMessage('Lưu danh mục thành công', true);
+        } catch (error) {
+          this.ui.showGlobalMessage(error.message);
+        }
+      }
 
-  );
+      editCategory(categoryId) {
+        const category = (this.ui.data?.categories || []).find(item => (item.categoryId || item.id) === categoryId);
+        if (!category) {
+          this.ui.showGlobalMessage('Không tìm thấy danh mục');
+          return;
+        }
+        this.ui.editCategory(category);
+      }
+    }
 
+    /* Helpers */
+    function formatCurrency(value) {
+      return Number(value || 0).toLocaleString('vi-VN') + ' ₫';
+    }
 
-/*
- Only controller is exposed
- to HTML inline handlers.
- */
+    function formatDate(value) {
+      if (!value) return '';
+      const date = new Date(value);
+      if (Number.isNaN(date.getTime())) return '';
+      return date.toLocaleString('vi-VN');
+    }
 
-window.adminController =
-  adminController;
+    function escapeHtml(value) {
+      return String(value ?? '')
+        .replaceAll('&', '&amp;')
+        .replaceAll('<', '&lt;')
+        .replaceAll('>', '&gt;')
+        .replaceAll('"', '&quot;')
+        .replaceAll("'", '&#039;');
+    }
 
+    function escapeJs(value) {
+      return String(value ?? '').replaceAll('\\', '\\\\').replaceAll("'", "\\'");
+    }
 
-adminUi.connect(
-  adminController
-);
+    function createSimpleTable(headers, rows) {
+      if (!rows.length) return `<div style="padding:16px 24px; text-align:center; color:var(--text-muted)">Không có dữ liệu phù hợp</div>`;
+      return `
+        <table>
+          <thead>
+            <tr>${headers.map(h => `<th>${escapeHtml(h)}</th>`).join('')}</tr>
+          </thead>
+          <tbody>
+            ${rows.map(row => `
+              <tr>${row.map(val => `<td>${escapeHtml(val)}</td>`).join('')}</tr>
+            `).join('')}
+          </tbody>
+        </table>
+      `;
+    }
 
+    function createSimpleTableWithActions(headers, rows) {
+      if (!rows.length) return `<div style="padding:16px 24px; text-align:center; color:var(--text-muted)">Không có dữ liệu phù hợp</div>`;
+      return `
+        <table>
+          <thead>
+            <tr>
+              ${headers.map(h => `<th>${escapeHtml(h)}</th>`).join('')}
+              <th>Hành động</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${rows.map(row => `
+              <tr>
+                ${row.values.map(val => `<td>${escapeHtml(val)}</td>`).join('')}
+                <td>${row.action}</td>
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>
+      `;
+    }
 
-adminUi.bindEvents();
+    /* Initialize */
+    const adminApi = new AdminApiRepository(CONFIG.API_URL);
+    const adminUi = new AdminUI();
 
+    const adminLoginUseCase = new AdminLoginUseCase(adminApi);
+    const loadAdminUseCase = new LoadAdminUseCase(adminApi);
+    const saveProductUseCase = new SaveProductUseCase(adminApi);
+    const saveCategoryUseCase = new SaveCategoryUseCase(adminApi);
+    const inventoryAdjustmentUseCase = new InventoryAdjustmentUseCase(adminApi);
 
-/* =====================================================
- MARK: - Bootstrap
- ===================================================== */
+    const adminController = new AdminController(
+      adminApi,
+      adminLoginUseCase,
+      loadAdminUseCase,
+      saveProductUseCase,
+      saveCategoryUseCase,
+      inventoryAdjustmentUseCase,
+      adminUi
+    );
 
-if (
-  localStorage.getItem(
-    CONFIG.TOKEN_KEY
-  )
-) {
+    window.adminController = adminController;
+    adminUi.connect(adminController);
+    adminUi.bindEvents();
 
-  adminUi.hideLogin();
+    if (localStorage.getItem(CONFIG.TOKEN_KEY)) {
+      adminUi.hideLogin();
+      adminController.load();
+    } else {
+      adminUi.showLogin();
+    }
 
-  adminController.load();
-
-} else {
-
-  adminUi.showLogin();
-
-}
-
-</script>
-
+    window.addEventListener('DOMContentLoaded', () => {
+      if (window.lucide) lucide.createIcons();
+    });
+  </script>
 </body>
 
 </html>
-```
