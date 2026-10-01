@@ -2183,7 +2183,251 @@ textarea.input {
   .section,.card { box-shadow:none !important; border:1px solid #d1d5db !important; break-inside:avoid; }
   .page { display:block !important; animation:none !important; }
 }
-  </style>
+  
+/* =========================================================
+   MOBILE / IPHONE + DARK MODE HARDENING
+   ========================================================= */
+:root,
+html,
+html[data-admin-theme="light"],
+html[data-admin-theme="dark"] {
+  color-scheme: dark !important;
+  --ux-bg: #0b1120 !important;
+  --ux-surface: #111827 !important;
+  --ux-border: #253047 !important;
+  --ux-text: #f8fafc !important;
+}
+
+html[data-admin-theme="light"] body,
+body:not(.ux-dark) {
+  background: #0b1120 !important;
+  color: #e5e7eb !important;
+}
+
+body.ux-dark,
+body.ux-dark .content,
+body.ux-dark .main,
+body.ux-dark .page,
+body.ux-dark .section,
+body.ux-dark .card,
+body.ux-dark .table-wrapper,
+body.ux-dark .form-card,
+body.ux-dark .settings-card {
+  background-color: #0b1120 !important;
+  color: #e5e7eb !important;
+}
+
+body.ux-dark .section,
+body.ux-dark .card,
+body.ux-dark .table-wrapper,
+body.ux-dark .form-card,
+body.ux-dark .settings-card {
+  background: #111827 !important;
+  border-color: #253047 !important;
+}
+
+body.ux-dark input,
+body.ux-dark select,
+body.ux-dark textarea,
+body.ux-dark .input {
+  background: #0f172a !important;
+  color: #f8fafc !important;
+  border-color: #334155 !important;
+  -webkit-text-fill-color: #f8fafc !important;
+}
+
+body.ux-dark input::placeholder,
+body.ux-dark textarea::placeholder {
+  color: #94a3b8 !important;
+  opacity: 1 !important;
+}
+
+/* Never let the mobile backdrop sit above the sidebar. */
+#mobileOverlay {
+  z-index: 1990 !important;
+}
+#sidebar {
+  z-index: 2000 !important;
+  isolation: isolate;
+  -webkit-overflow-scrolling: touch;
+}
+#menuToggle {
+  z-index: 2100 !important;
+  position: relative;
+}
+
+@media (max-width: 900px) {
+  html, body {
+    min-width: 0 !important;
+    width: 100% !important;
+    overflow-x: hidden !important;
+    background: #0b1120 !important;
+  }
+
+  #app {
+    min-height: 100dvh !important;
+    background: #0b1120 !important;
+  }
+
+  .sidebar,
+  #sidebar {
+    width: min(86vw, 320px) !important;
+    max-width: 320px !important;
+    background: #0f172a !important;
+    color: #f8fafc !important;
+    box-shadow: 18px 0 50px rgba(0,0,0,.45) !important;
+    opacity: 1 !important;
+    filter: none !important;
+    transform: translateX(-105%);
+    transition: transform .22s ease !important;
+    pointer-events: none;
+  }
+
+  .sidebar.open,
+  #sidebar.open {
+    transform: translateX(0) !important;
+    opacity: 1 !important;
+    pointer-events: auto !important;
+    visibility: visible !important;
+  }
+
+  .sidebar *,
+  #sidebar * {
+    opacity: 1 !important;
+    visibility: visible !important;
+  }
+
+  #mobileOverlay {
+    position: fixed !important;
+    inset: 0 !important;
+    background: rgba(2,6,23,.68) !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    opacity: 0 !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+    transition: opacity .2s ease !important;
+  }
+
+  #mobileOverlay.open {
+    opacity: 1 !important;
+    visibility: visible !important;
+    pointer-events: auto !important;
+  }
+
+  .topbar {
+    position: sticky !important;
+    top: 0 !important;
+    z-index: 1500 !important;
+    min-height: 58px !important;
+    background: rgba(15,23,42,.96) !important;
+    border-color: #253047 !important;
+  }
+
+  .content {
+    width: 100% !important;
+    min-width: 0 !important;
+    padding: 14px !important;
+    background: #0b1120 !important;
+  }
+
+  .page-title {
+    color: #f8fafc !important;
+    font-size: 20px !important;
+  }
+
+  .section-title,
+  .card-value,
+  label,
+  th,
+  td,
+  p,
+  span {
+    -webkit-text-fill-color: currentColor;
+  }
+
+  .section-title,
+  .card-value,
+  .page-title {
+    color: #f8fafc !important;
+  }
+
+  .section-subtitle,
+  .muted,
+  .text-muted {
+    color: #94a3b8 !important;
+  }
+
+  .table-wrapper {
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+    scrollbar-width: thin;
+  }
+
+  .table-wrapper table {
+    min-width: 720px;
+  }
+
+  .button,
+  button,
+  input,
+  select,
+  textarea {
+    min-height: 42px;
+  }
+
+  button {
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+  }
+
+  .form-grid,
+  .grid-2,
+  .grid-3,
+  .grid-4 {
+    grid-template-columns: 1fr !important;
+  }
+
+  .ux-toast-region {
+    left: 12px !important;
+    right: 12px !important;
+    bottom: calc(12px + env(safe-area-inset-bottom)) !important;
+    width: auto !important;
+  }
+
+  .ux-toast {
+    width: 100% !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .content {
+    padding: 10px !important;
+  }
+
+  .topbar {
+    padding-left: 10px !important;
+    padding-right: 10px !important;
+  }
+
+  .page-title {
+    font-size: 18px !important;
+  }
+
+  .section,
+  .card,
+  .form-card {
+    border-radius: 12px !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #sidebar,
+  #mobileOverlay {
+    transition: none !important;
+  }
+}
+</style>
 </head>
 
 <body>
@@ -3752,12 +3996,11 @@ textarea.input {
   }
 
   function toggleTheme() {
-    const current = document.documentElement.dataset.adminTheme || 'light';
-    const next = current === 'dark' ? 'light' : 'dark';
+    const next = 'dark';
     document.documentElement.dataset.adminTheme = next;
     localStorage.setItem(UX.storage.theme, next);
     applyTheme(next);
-    toast(next === 'dark' ? 'Đã chuyển sang giao diện tối.' : 'Đã chuyển sang giao diện sáng.', 'success');
+    toast('Đang sử dụng giao diện tối.', 'success');
   }
 
   function applyTheme(theme) {
@@ -3782,7 +4025,8 @@ textarea.input {
   }
 
   function installTheme() {
-    const saved = localStorage.getItem(UX.storage.theme) || 'light';
+    const saved = 'dark';
+    localStorage.setItem(UX.storage.theme, saved);
     document.documentElement.dataset.adminTheme = saved;
     applyTheme(saved);
   }
