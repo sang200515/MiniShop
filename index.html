@@ -2,229 +2,305 @@
 <html lang="vi">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="theme-color" content="#ee4d2d" />
-  <title>Mini Shop</title>
+  <!-- Khóa zoom trên viewport -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no" />
+  <meta name="theme-color" content="#4f46e5" />
+  <title>Mini Store - Shopping Experience</title>
+  
+  <!-- Google Fonts: Plus Jakarta Sans -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
   <style>
     :root {
-      --brand: #ee4d2d;
-      --brand-dark: #d93f22;
-      --brand-soft: #fff1ed;
-      --text: #222;
-      --muted: #8b8b8b;
-      --border: #ececec;
-      --bg: #f5f5f5;
-      --card: #fff;
-      --success: #16a34a;
-      --danger: #dc2626;
-      --shadow: 0 8px 28px rgba(0, 0, 0, .08);
-      --radius: 14px;
+      --primary: #4f46e5;
+      --primary-hover: #4338ca;
+      --primary-light: #eef2ff;
+      --accent: #f59e0b;
+      --accent-soft: #fef3c7;
+      --text-main: #0f172a;
+      --text-muted: #64748b;
+      --bg-main: #f8fafc;
+      --card-bg: #ffffff;
+      --border-color: #e2e8f0;
+      --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+      --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+      --shadow-lg: 0 10px 25px -5px rgba(0,0,0,0.08), 0 8px 10px -6px rgba(0,0,0,0.04);
+      --radius-sm: 8px;
+      --radius-md: 12px;
+      --radius-lg: 20px;
+      
+      /* Tắt gesture zoom từ CSS */
+      touch-action: pan-x pan-y;
     }
 
-    * { box-sizing: border-box; }
+    * { 
+      box-sizing: border-box; 
+      margin: 0; 
+      padding: 0; 
+    }
 
-    html { scroll-behavior: smooth; }
+    html, body {
+      /* Loại bỏ hoàn toàn double-tap delay và double-tap zoom */
+      touch-action: manipulation;
+      -webkit-text-size-adjust: 100%;
+    }
 
     body {
-      margin: 0;
-      background: var(--bg);
-      color: var(--text);
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background-color: var(--bg-main);
+      color: var(--text-main);
+      font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
       -webkit-font-smoothing: antialiased;
+      padding-bottom: 80px;
     }
 
     body.no-scroll { overflow: hidden; }
 
     button, input, textarea { font: inherit; }
-    button { cursor: pointer; }
-    button:disabled { cursor: not-allowed; opacity: .5; }
-
+    button { cursor: pointer; border: none; outline: none; background: transparent; }
+    button:disabled { cursor: not-allowed; opacity: 0.5; }
     .hidden { display: none !important; }
 
+    /* Layout Shell */
     .app-shell {
-      width: min(1240px, 100%);
+      max-width: 1200px;
       margin: 0 auto;
-      padding: 0 16px 96px;
+      padding: 0 16px;
     }
 
+    /* Top Navigation Bar */
     .topbar {
       position: sticky;
       top: 0;
-      z-index: 50;
-      margin: 0 -16px;
-      padding: 12px 16px 10px;
-      background: rgba(245, 245, 245, .94);
-      backdrop-filter: blur(14px);
-      -webkit-backdrop-filter: blur(14px);
-      border-bottom: 1px solid rgba(0,0,0,.04);
+      z-index: 40;
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border-color);
+      padding: 12px 0;
     }
 
     .topbar-inner {
       display: flex;
       align-items: center;
-      gap: 12px;
-      width: min(1240px, 100%);
-      margin: 0 auto;
+      justify-content: space-between;
+      gap: 16px;
     }
 
     .brand {
-      min-width: max-content;
-      font-weight: 900;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 800;
       font-size: 20px;
-      letter-spacing: -.4px;
-      color: var(--brand);
+      color: var(--primary);
+      text-decoration: none;
+      letter-spacing: -0.5px;
+    }
+
+    .brand-logo {
+      width: 36px;
+      height: 36px;
+      background: linear-gradient(135deg, var(--primary), #818cf8);
+      color: #fff;
+      border-radius: 10px;
+      display: grid;
+      place-items: center;
+      box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
     }
 
     .search-wrap {
       position: relative;
       flex: 1;
-      min-width: 0;
+      max-width: 500px;
     }
 
-    .search-wrap svg {
+    .search-icon {
       position: absolute;
       left: 14px;
       top: 50%;
       transform: translateY(-50%);
-      color: #999;
+      color: var(--text-muted);
       pointer-events: none;
     }
 
     .search-input {
       width: 100%;
       height: 44px;
-      border: 1px solid #dedede;
-      border-radius: 12px;
-      padding: 0 42px 0 42px;
-      outline: none;
-      background: #fff;
-      transition: .18s ease;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 0 40px 0 42px;
+      background: #f1f5f9;
+      color: var(--text-main);
+      font-size: 14px;
+      transition: all 0.2s ease;
     }
 
     .search-input:focus {
-      border-color: var(--brand);
-      box-shadow: 0 0 0 3px rgba(238, 77, 45, .08);
+      background: #fff;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.1);
+      outline: none;
     }
 
     .search-clear {
       position: absolute;
-      right: 8px;
-      top: 7px;
-      width: 30px;
-      height: 30px;
-      border: 0;
+      right: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 24px;
+      height: 24px;
       border-radius: 50%;
-      background: #f1f1f1;
-      color: #777;
+      background: var(--border-color);
+      color: var(--text-muted);
       display: grid;
       place-items: center;
     }
 
-    .cart-icon-btn {
-      position: relative;
-      flex: 0 0 auto;
-      width: 44px;
-      height: 44px;
-      border: 0;
-      border-radius: 50%;
-      background: var(--brand);
+    .cart-btn-desktop {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 16px;
+      border-radius: var(--radius-md);
+      background: var(--primary-light);
+      color: var(--primary);
+      font-weight: 700;
+      font-size: 14px;
+      transition: all 0.2s ease;
+    }
+
+    @media (max-width: 767px) {
+      .hidden-mobile { display: none !important; }
+    }
+
+    .cart-btn-desktop:hover {
+      background: var(--primary);
       color: #fff;
-      display: grid;
-      place-items: center;
-      box-shadow: 0 6px 18px rgba(238,77,45,.24);
     }
 
-    .cart-count {
-      position: absolute;
-      top: -3px;
-      right: -2px;
-      min-width: 19px;
-      height: 19px;
-      padding: 0 5px;
-      border-radius: 999px;
-      display: grid;
-      place-items: center;
-      background: #fff;
-      color: var(--brand);
-      border: 2px solid var(--brand);
-      font-size: 11px;
+    .cart-badge {
+      background: var(--primary);
+      color: #fff;
+      font-size: 12px;
+      padding: 2px 8px;
+      border-radius: 99px;
       font-weight: 800;
-      line-height: 1;
     }
 
-    .hero {
-      padding: 22px 0 14px;
+    .cart-btn-desktop:hover .cart-badge {
+      background: #fff;
+      color: var(--primary);
+    }
+
+    /* Hero Banner */
+    .hero-banner {
+      margin: 20px 0;
+      border-radius: var(--radius-lg);
+      background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+      color: #fff;
+      padding: 32px 28px;
+      position: relative;
+      overflow: hidden;
+      box-shadow: var(--shadow-lg);
+    }
+
+    .hero-banner::after {
+      content: '';
+      position: absolute;
+      right: -20px;
+      bottom: -20px;
+      width: 200px;
+      height: 200px;
+      background: rgba(255,255,255,0.1);
+      border-radius: 50%;
+      pointer-events: none;
     }
 
     .hero-title {
-      margin: 0;
-      font-size: clamp(22px, 3.6vw, 30px);
-      line-height: 1.1;
-      font-weight: 900;
-      letter-spacing: -.7px;
+      font-size: clamp(22px, 4vw, 32px);
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      margin-bottom: 8px;
     }
 
-    .hero-subtitle {
-      margin: 8px 0 0;
-      color: var(--muted);
+    .hero-desc {
       font-size: 14px;
+      opacity: 0.9;
+      max-width: 480px;
+      line-height: 1.5;
     }
 
+    /* Section Head */
     .section-head {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 12px;
-      margin: 14px 0 12px;
+      margin: 24px 0 16px;
     }
 
     .section-title {
-      margin: 0;
-      font-size: 18px;
-      font-weight: 900;
+      font-size: 20px;
+      font-weight: 800;
+      letter-spacing: -0.3px;
     }
 
     .result-count {
-      color: var(--muted);
+      color: var(--text-muted);
       font-size: 13px;
+      font-weight: 600;
     }
 
-    .message {
-      margin: 12px 0;
-      padding: 12px 14px;
-      border-radius: 10px;
-      font-size: 14px;
-    }
-
-    .message-error { background: #fff0f0; color: #a61b1b; }
-
+    /* Products Grid */
     .products {
       display: grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 8px;
+      gap: 16px;
     }
 
+    @media (min-width: 640px) {
+      .products { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; }
+    }
+    @media (min-width: 1024px) {
+      .products { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 24px; }
+    }
+
+    /* Product Card UI */
     .product-card {
-      position: relative;
-      min-width: 0;
+      background: var(--card-bg);
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border-color);
       overflow: hidden;
-      background: var(--card);
-      border-radius: 10px;
-      box-shadow: 0 1px 3px rgba(0,0,0,.06);
+      display: flex;
+      flex-direction: column;
+      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+    }
+
+    .product-card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-lg);
+      border-color: rgba(79, 70, 229, 0.3);
     }
 
     .product-media {
       position: relative;
-      aspect-ratio: 1 / 1;
-      background: #f0f0f0;
+      aspect-ratio: 1;
+      background: #f1f5f9;
       overflow: hidden;
+      cursor: pointer;
     }
 
     .product-image {
       width: 100%;
       height: 100%;
       object-fit: cover;
-      display: block;
+      transition: transform 0.4s ease;
+    }
+
+    .product-card:hover .product-image {
+      transform: scale(1.06);
     }
 
     .product-placeholder {
@@ -232,530 +308,477 @@
       height: 100%;
       display: grid;
       place-items: center;
-      color: #bcbcbc;
-    }
-
-    .discount-badge {
-      position: absolute;
-      top: 8px;
-      left: 8px;
-      padding: 4px 6px;
-      border-radius: 5px;
-      background: #ffd9d0;
-      color: var(--brand);
-      font-size: 10px;
-      font-weight: 900;
+      color: var(--text-muted);
     }
 
     .out-badge {
       position: absolute;
-      right: 8px;
-      top: 8px;
-      padding: 4px 6px;
-      border-radius: 5px;
-      background: rgba(0,0,0,.62);
+      inset: 0;
+      background: rgba(15, 23, 42, 0.6);
+      backdrop-filter: blur(2px);
       color: #fff;
-      font-size: 10px;
-      font-weight: 800;
+      display: grid;
+      place-items: center;
+      font-size: 13px;
+      font-weight: 700;
     }
 
-    .product-content { padding: 9px 9px 10px; }
+    .product-content {
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+    }
 
     .product-name {
-      min-height: 38px;
+      font-size: 14px;
+      font-weight: 700;
+      line-height: 1.4;
+      color: var(--text-main);
       display: -webkit-box;
       -webkit-line-clamp: 2;
       -webkit-box-orient: vertical;
       overflow: hidden;
-      font-size: 13px;
-      line-height: 1.45;
-      font-weight: 700;
+      min-height: 40px;
+      margin-bottom: 8px;
+      cursor: pointer;
+    }
+
+    .product-name:hover {
+      color: var(--primary);
     }
 
     .price-row {
       display: flex;
       align-items: baseline;
       gap: 6px;
-      flex-wrap: wrap;
-      margin-top: 6px;
+      margin-top: auto;
+      margin-bottom: 12px;
     }
 
     .product-price {
-      font-size: 16px;
-      color: var(--brand);
-      font-weight: 900;
-    }
-
-    .product-old-price {
-      color: #aaa;
-      text-decoration: line-through;
-      font-size: 11px;
-    }
-
-    .product-stock {
-      margin-top: 4px;
-      color: var(--muted);
-      font-size: 11px;
+      font-size: 17px;
+      font-weight: 800;
+      color: var(--primary);
     }
 
     .product-actions {
       display: grid;
-      grid-template-columns: 40px 1fr;
-      gap: 7px;
-      margin-top: 9px;
+      grid-template-columns: 42px 1fr;
+      gap: 8px;
     }
 
-    .icon-button,
-    .buy-button {
+    .btn-add-cart {
       height: 38px;
-      border-radius: 10px;
-      border: 1px solid transparent;
+      border-radius: var(--radius-sm);
+      background: var(--primary-light);
+      color: var(--primary);
       display: grid;
       place-items: center;
-      transition: transform .12s ease, box-shadow .12s ease, background .12s ease;
+      transition: all 0.2s ease;
     }
 
-    .icon-button:active,
-    .buy-button:active { transform: scale(.98); }
-
-    .icon-button {
-      background: var(--brand-soft);
-      color: var(--brand);
-      border-color: #ffd7cd;
-    }
-
-    .buy-button {
-      background: var(--brand);
+    .btn-add-cart:hover {
+      background: var(--primary);
       color: #fff;
+    }
+
+    .btn-buy-now {
+      height: 38px;
+      border-radius: var(--radius-sm);
+      background: var(--primary);
+      color: #fff;
+      font-weight: 700;
       font-size: 13px;
-      font-weight: 800;
-      box-shadow: 0 5px 14px rgba(238,77,45,.16);
+      transition: all 0.2s ease;
+      box-shadow: 0 4px 12px rgba(79, 70, 229, 0.2);
     }
 
-    .empty-state {
-      grid-column: 1 / -1;
-      padding: 54px 16px;
-      text-align: center;
-      color: var(--muted);
+    .btn-buy-now:hover {
+      background: var(--primary-hover);
+      box-shadow: 0 6px 16px rgba(79, 70, 229, 0.3);
+    }
+
+    /* Skeleton Loading UI */
+    .skeleton-card {
       background: #fff;
-      border-radius: 12px;
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      border: 1px solid var(--border-color);
+    }
+    .skeleton-media {
+      aspect-ratio: 1;
+      background: #e2e8f0;
+      animation: pulse 1.5s infinite ease-in-out;
+    }
+    .skeleton-body { padding: 14px; }
+    .skeleton-line {
+      height: 12px;
+      background: #e2e8f0;
+      border-radius: 4px;
+      margin-bottom: 8px;
+      animation: pulse 1.5s infinite ease-in-out;
+    }
+    .skeleton-line.short { width: 60%; }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.4; }
     }
 
-    /* Modal / bottom sheet */
+    /* Floating Bottom Bar (Mobile UX) */
+    .floating-bottom-bar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: rgba(255, 255, 255, 0.9);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-top: 1px solid var(--border-color);
+      padding: 10px 20px;
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      z-index: 30;
+      box-shadow: 0 -4px 20px rgba(0,0,0,0.05);
+    }
+
+    @media (min-width: 768px) {
+      .floating-bottom-bar { display: none; }
+      body { padding-bottom: 0; }
+    }
+
+    .nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      color: var(--text-muted);
+      font-size: 11px;
+      font-weight: 600;
+      position: relative;
+      cursor: pointer;
+    }
+
+    .nav-item.active { color: var(--primary); }
+
+    .nav-cart-badge {
+      position: absolute;
+      top: -4px;
+      right: 12px;
+      background: #ef4444;
+      color: #fff;
+      font-size: 10px;
+      font-weight: 800;
+      padding: 1px 5px;
+      border-radius: 99px;
+    }
+
+    /* Sheet / Modal Drawer UX */
     .sheet-root {
       position: fixed;
       inset: 0;
       z-index: 100;
       pointer-events: none;
+      visibility: hidden;
+      transition: visibility 0.3s;
     }
 
-    .sheet-root.is-open { pointer-events: auto; }
+    .sheet-root.is-open {
+      pointer-events: auto;
+      visibility: visible;
+    }
 
     .sheet-backdrop {
       position: absolute;
       inset: 0;
-      background: rgba(0,0,0,.48);
+      background: rgba(15, 23, 42, 0.5);
+      backdrop-filter: blur(4px);
       opacity: 0;
-      transition: opacity .2s ease;
+      transition: opacity 0.3s ease;
     }
+
+    .sheet-root.is-open .sheet-backdrop { opacity: 1; }
 
     .sheet {
       position: absolute;
       left: 50%;
       bottom: 0;
-      width: min(960px, calc(100% - 16px));
-      height: min(92dvh, 900px);
-      transform: translate(-50%, 105%);
+      width: min(650px, 100%);
+      max-height: 90vh;
+      transform: translate(-50%, 100%);
       background: #fff;
-      border-radius: 22px 22px 0 0;
-      box-shadow: 0 -14px 42px rgba(0,0,0,.18);
+      border-radius: 24px 24px 0 0;
+      box-shadow: var(--shadow-lg);
       display: flex;
       flex-direction: column;
-      overflow: hidden;
-      transition: transform .24s cubic-bezier(.2,.8,.2,1);
+      transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
-    .sheet-root.is-open .sheet-backdrop { opacity: 1; }
     .sheet-root.is-open .sheet { transform: translate(-50%, 0); }
 
     .sheet-handle {
-      width: 44px;
-      height: 4px;
-      border-radius: 999px;
-      background: #ddd;
-      margin: 8px auto 0;
-      flex: 0 0 auto;
+      width: 40px;
+      height: 5px;
+      background: var(--border-color);
+      border-radius: 99px;
+      margin: 12px auto 4px;
     }
 
     .sheet-header {
-      min-height: 60px;
-      padding: 10px 16px;
+      padding: 12px 20px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 10px;
-      border-bottom: 1px solid var(--border);
-      flex: 0 0 auto;
+      border-bottom: 1px solid var(--border-color);
     }
 
-    .sheet-title-wrap { min-width: 0; }
-    .sheet-title { margin: 0; font-size: 18px; font-weight: 900; }
-    .sheet-subtitle { margin: 3px 0 0; color: var(--muted); font-size: 12px; }
+    .sheet-title { font-size: 18px; font-weight: 800; }
+    .sheet-subtitle { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
 
-    .sheet-actions { display: flex; gap: 7px; }
-
-    .ghost-icon-btn {
-      width: 38px;
-      height: 38px;
-      border: 0;
+    .btn-close-sheet {
+      width: 32px;
+      height: 32px;
       border-radius: 50%;
-      background: #f5f5f5;
-      color: #333;
+      background: #f1f5f9;
+      color: var(--text-muted);
       display: grid;
       place-items: center;
     }
 
     .sheet-body {
-      min-height: 0;
-      flex: 1;
-      overflow: auto;
-      -webkit-overflow-scrolling: touch;
-      padding: 12px 14px 130px;
+      padding: 16px 20px;
+      overflow-y: auto;
+      max-height: calc(90vh - 150px);
     }
 
-    .cart-list { display: grid; gap: 8px; }
+    /* Cart Items List */
+    .cart-list { display: flex; flex-direction: column; gap: 12px; }
 
     .cart-row {
       display: grid;
-      grid-template-columns: 22px 68px minmax(0,1fr);
-      gap: 10px;
-      align-items: start;
-      padding: 10px 0;
-      border-bottom: 1px solid #f0f0f0;
+      grid-template-columns: auto 70px 1fr;
+      gap: 12px;
+      align-items: center;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border-color);
     }
 
     .cart-check {
-      width: 18px;
-      height: 18px;
-      margin: 3px 0 0;
-      accent-color: var(--brand);
+      width: 20px;
+      height: 20px;
+      accent-color: var(--primary);
+      cursor: pointer;
     }
 
     .cart-image {
-      width: 68px;
-      height: 68px;
-      border-radius: 8px;
+      width: 70px;
+      height: 70px;
+      border-radius: var(--radius-sm);
       object-fit: cover;
-      background: #f3f3f3;
+      background: #f1f5f9;
     }
 
-    .cart-name {
-      font-size: 14px;
-      font-weight: 800;
-      line-height: 1.35;
-      display: -webkit-box;
-      -webkit-box-orient: vertical;
-      -webkit-line-clamp: 2;
-      overflow: hidden;
-    }
-
-    .cart-price { margin-top: 4px; color: var(--brand); font-size: 13px; font-weight: 800; }
+    .cart-info { display: flex; flex-direction: column; gap: 4px; }
+    .cart-name { font-size: 14px; font-weight: 700; color: var(--text-main); }
+    .cart-price { font-size: 14px; font-weight: 800; color: var(--primary); }
 
     .cart-line {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 8px;
-      margin-top: 9px;
+      margin-top: 6px;
     }
 
     .qty-stepper {
       display: inline-flex;
       align-items: center;
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      background: #f8fafc;
       overflow: hidden;
-      border: 1px solid #ddd;
-      border-radius: 9px;
     }
 
     .qty-stepper button {
-      width: 32px;
-      height: 32px;
-      border: 0;
-      background: #fff;
+      width: 28px;
+      height: 28px;
+      font-weight: 700;
+      color: var(--text-main);
     }
 
     .qty-stepper span {
-      width: 34px;
+      width: 32px;
       text-align: center;
       font-size: 13px;
-      font-weight: 800;
+      font-weight: 700;
     }
 
-    .remove-btn {
-      border: 0;
-      background: transparent;
-      color: #999;
-      padding: 4px;
-    }
-
-    .cart-summary {
-      margin-top: 14px;
-      padding: 14px;
-      border-radius: 12px;
-      background: #fafafa;
-      border: 1px solid #f0f0f0;
-    }
-
-    .summary-row {
+    .btn-remove {
+      color: #ef4444;
+      font-size: 13px;
       display: flex;
-      justify-content: space-between;
-      gap: 10px;
-      padding: 5px 0;
-      font-size: 13px;
+      align-items: center;
+      gap: 4px;
     }
 
-    .summary-total {
-      margin-top: 6px;
-      padding-top: 10px;
-      border-top: 1px solid #e6e6e6;
-      font-size: 18px;
-      font-weight: 900;
-    }
-
-    .checkout-products {
-      display: grid;
-      gap: 7px;
-      margin-bottom: 14px;
-    }
-
-    .checkout-product {
-      display: flex;
-      justify-content: space-between;
-      gap: 12px;
-      padding: 10px 0;
-      border-bottom: 1px solid #f0f0f0;
-      font-size: 13px;
-    }
-
-    .checkout-product strong { white-space: nowrap; }
-
-    .form-card {
-      margin-top: 12px;
-      padding: 14px;
-      border: 1px solid #ececec;
-      border-radius: 12px;
-    }
-
-    .form-title {
-      margin-bottom: 12px;
-      font-size: 15px;
-      font-weight: 900;
-    }
-
-    .form-group { margin-bottom: 12px; }
-    .form-group:last-child { margin-bottom: 0; }
-
-    label {
-      display: block;
-      margin-bottom: 6px;
-      font-size: 13px;
-      font-weight: 800;
-    }
-
-    input, textarea {
+    /* Form Styles */
+    .form-card { display: flex; flex-direction: column; gap: 14px; }
+    .form-group { display: flex; flex-direction: column; gap: 6px; }
+    .form-group label { font-size: 13px; font-weight: 700; color: var(--text-main); }
+    
+    .form-group input, .form-group textarea {
       width: 100%;
-      border: 1px solid #ddd;
-      border-radius: 10px;
-      padding: 11px 12px;
-      outline: none;
+      padding: 10px 14px;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-sm);
+      background: #f8fafc;
+      font-size: 14px;
+      transition: all 0.2s;
+    }
+
+    .form-group input:focus, .form-group textarea:focus {
       background: #fff;
-      color: var(--text);
+      border-color: var(--primary);
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
     }
-
-    input:focus, textarea:focus {
-      border-color: var(--brand);
-      box-shadow: 0 0 0 3px rgba(238,77,45,.08);
-    }
-
-    textarea { min-height: 92px; resize: vertical; }
 
     .sheet-footer {
-      position: absolute;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      padding: 10px 14px calc(10px + env(safe-area-inset-bottom));
-      background: rgba(255,255,255,.96);
-      backdrop-filter: blur(12px);
-      border-top: 1px solid var(--border);
+      padding: 16px 20px;
+      border-top: 1px solid var(--border-color);
+      background: #fff;
+      box-shadow: 0 -4px 12px rgba(0,0,0,0.03);
     }
 
     .footer-row {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 12px;
+      gap: 16px;
     }
 
-    .footer-meta { min-width: 0; }
-    .footer-label { color: var(--muted); font-size: 12px; }
-    .footer-total { margin-top: 2px; color: var(--brand); font-size: 19px; font-weight: 900; }
+    .footer-total-label { font-size: 12px; color: var(--text-muted); }
+    .footer-total-price { font-size: 20px; font-weight: 800; color: var(--primary); }
 
-    .primary-btn {
-      min-height: 44px;
-      padding: 0 18px;
-      border: 0;
-      border-radius: 10px;
-      background: var(--brand);
+    .btn-primary-action {
+      padding: 12px 24px;
+      border-radius: var(--radius-md);
+      background: var(--primary);
       color: #fff;
-      font-size: 14px;
-      font-weight: 900;
-      box-shadow: 0 8px 18px rgba(238,77,45,.18);
-    }
-
-    .secondary-btn {
-      min-height: 42px;
-      padding: 0 15px;
-      border: 1px solid #ddd;
-      border-radius: 10px;
-      background: #fff;
-      font-size: 13px;
       font-weight: 800;
+      font-size: 15px;
+      box-shadow: 0 4px 14px rgba(79, 70, 229, 0.3);
+      transition: all 0.2s;
     }
 
-    .empty-cart {
-      padding: 76px 20px;
-      text-align: center;
-      color: var(--muted);
+    .btn-primary-action:hover { background: var(--primary-hover); }
+
+    /* Toast Notification */
+    .toast {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: var(--text-main);
+      color: #fff;
+      padding: 12px 20px;
+      border-radius: var(--radius-md);
+      font-size: 14px;
+      font-weight: 600;
+      box-shadow: var(--shadow-lg);
+      z-index: 200;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      transform: translateY(-50px);
+      opacity: 0;
+      transition: all 0.3s ease;
     }
 
-    .empty-cart-icon {
-      width: 60px;
-      height: 60px;
-      margin: 0 auto 12px;
-      border-radius: 50%;
-      background: var(--brand-soft);
-      color: var(--brand);
-      display: grid;
-      place-items: center;
-    }
-
-    .success-state {
-      min-height: 100%;
-      display: grid;
-      place-items: center;
-      text-align: center;
-      padding: 24px;
-    }
-
-    .success-icon {
-      width: 74px;
-      height: 74px;
-      border-radius: 50%;
-      margin: 0 auto 14px;
-      background: #dcfce7;
-      color: var(--success);
-      display: grid;
-      place-items: center;
-    }
-
-    .success-state h2 { margin: 0; font-size: 22px; }
-    .success-state p { margin: 8px 0 0; color: var(--muted); font-size: 14px; }
-    .success-code { margin-top: 14px; font-size: 18px; font-weight: 900; }
-    .success-total { margin-top: 8px; color: var(--brand); font-size: 20px; font-weight: 900; }
-
-    .loading-grid .skeleton {
-      background: linear-gradient(90deg, #eee 25%, #f7f7f7 37%, #eee 63%);
-      background-size: 400% 100%;
-      animation: shimmer 1.2s infinite;
-      border-radius: 8px;
-    }
-
-    .skeleton-card { overflow: hidden; background: #fff; border-radius: 10px; }
-    .skeleton-image { aspect-ratio: 1; }
-    .skeleton-line { height: 12px; margin: 9px; }
-    .skeleton-line.short { width: 55%; }
-
-    @keyframes shimmer { 0% { background-position: 100% 0; } 100% { background-position: -100% 0; } }
-
-    @media (min-width: 700px) {
-      .products { gap: 12px; }
-      .product-card { border-radius: 12px; }
-      .product-content { padding: 12px; }
-      .product-name { font-size: 14px; }
-      .product-price { font-size: 18px; }
-      .product-actions { grid-template-columns: 42px 1fr; }
-    }
-
-    @media (min-width: 900px) {
-      .app-shell { padding-left: 20px; padding-right: 20px; }
-      .topbar { margin-left: -20px; margin-right: -20px; padding-left: 20px; padding-right: 20px; }
-      .products { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; }
-    }
-
-    @media (max-width: 520px) {
-      .brand { display: none; }
-      .topbar-inner { gap: 8px; }
-      .sheet { width: 100%; height: 96dvh; border-radius: 20px 20px 0 0; }
-      .sheet-body { padding-left: 12px; padding-right: 12px; }
-    }
+    .toast.show { transform: translateY(0); opacity: 1; }
   </style>
 </head>
 <body>
+
+  <!-- Toast Alert -->
+  <div id="toast" class="toast">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg>
+    <span id="toastMsg">Thao tác thành công</span>
+  </div>
+
   <div class="app-shell">
+    <!-- Topbar -->
     <header class="topbar">
       <div class="topbar-inner">
-        <div id="storeName" class="brand">Mini Shop</div>
+        <a href="#" class="brand">
+          <div class="brand-logo">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+          </div>
+          <span id="storeName">Mini Store</span>
+        </a>
 
+        <!-- Search Input -->
         <div class="search-wrap">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.5-3.5"></path></svg>
+          <svg class="search-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
           <input id="searchInput" class="search-input" type="search" placeholder="Tìm sản phẩm..." autocomplete="off" />
-          <button id="searchClear" class="search-clear hidden" type="button" aria-label="Xóa tìm kiếm">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 6 12 12M18 6 6 18"></path></svg>
+          <button id="searchClear" class="search-clear hidden" type="button">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M18 6L6 18M6 6l12 12"/></svg>
           </button>
         </div>
 
-        <button class="cart-icon-btn" data-action="open-cart" type="button" aria-label="Mở giỏ hàng">
-          <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="20" r="1"></circle><circle cx="18" cy="20" r="1"></circle><path d="M3 4h2l2.4 11.2a2 2 0 0 0 2 1.6h7.7a2 2 0 0 0 2-1.6L21 8H6"></path></svg>
-          <span id="cartCount" class="cart-count">0</span>
+        <!-- Desktop Cart Button -->
+        <button class="cart-btn-desktop hidden-mobile" data-action="open-cart" type="button">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="8" cy="21" r="1"/><circle cx="19" cy="21" r="1"/><path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"/></svg>
+          <span>Giỏ hàng</span>
+          <span id="cartCountDesktop" class="cart-badge">0</span>
         </button>
       </div>
     </header>
 
+    <!-- Main Content -->
     <main>
-      <section class="hero">
-        <h1 class="hero-title">Khám phá sản phẩm</h1>
-        <p class="hero-subtitle">Chọn sản phẩm bạn thích và đặt hàng nhanh.</p>
+      <!-- Hero Banner -->
+      <section class="hero-banner">
+        <h1 class="hero-title">Sản Phẩm Mới Nhất ⚡</h1>
+        <p class="hero-desc">Trải nghiệm mua sắm mượt mà, giao hàng nhanh chóng tận nơi.</p>
       </section>
 
-      <div id="globalMessage" class="message message-error hidden"></div>
-
       <div class="section-head">
-        <h2 class="section-title">Tất cả sản phẩm</h2>
-        <span id="resultCount" class="result-count"></span>
+        <h2 class="section-title">Danh sách sản phẩm</h2>
+        <span id="resultCount" class="result-count">Đang tải...</span>
       </div>
 
-      <div id="products" class="products loading-grid"></div>
+      <!-- Products Grid -->
+      <div id="products" class="products"></div>
     </main>
   </div>
 
+  <!-- Mobile Navigation Bar -->
+  <nav class="floating-bottom-bar">
+    <div class="nav-item active">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+      <span>Trang chủ</span>
+    </div>
+    <div class="nav-item" data-action="open-cart">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="8" cy="21" r="1"/><circle cx="19" cy="21" r="1"/><path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"/></svg>
+      <span>Giỏ hàng</span>
+      <span id="cartCountMobile" class="nav-cart-badge">0</span>
+    </div>
+  </nav>
+
+  <!-- Sheet Drawer (Cart & Checkout) -->
   <div id="sheetRoot" class="sheet-root" aria-hidden="true">
     <div class="sheet-backdrop" data-action="close-sheet"></div>
-    <section class="sheet" role="dialog" aria-modal="true" aria-labelledby="sheetTitle">
+    <section class="sheet" role="dialog" aria-modal="true">
       <div class="sheet-handle"></div>
       <header class="sheet-header">
-        <div class="sheet-title-wrap">
+        <div>
           <h2 id="sheetTitle" class="sheet-title">Giỏ hàng</h2>
-          <p id="sheetSubtitle" class="sheet-subtitle"></p>
+          <p id="sheetSubtitle" class="sheet-subtitle">0 sản phẩm</p>
         </div>
-        <div class="sheet-actions">
-          <button id="sheetBackButton" class="ghost-icon-btn hidden" type="button" data-action="sheet-back" aria-label="Quay lại">
-            <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m15 18-6-6 6-6"></path></svg>
-          </button>
-          <button class="ghost-icon-btn" type="button" data-action="close-sheet" aria-label="Đóng">
-            <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6l12 12M18 6 6 18"></path></svg>
-          </button>
-        </div>
+        <button class="btn-close-sheet" type="button" data-action="close-sheet">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+        </button>
       </header>
 
       <div id="sheetBody" class="sheet-body"></div>
@@ -764,44 +787,49 @@
   </div>
 
   <script>
-    /* =================================================
-       Configuration
-       ================================================= */
+    /* =========================================================
+     * JS GUARD: CHỐNG DOUBLE TAP ZOOM & PINCH ZOOM TRÊN SAFARI / MOBILE
+     * ========================================================= */
+    (function preventZoom() {
+      // 1. Chống double tap zoom
+      let lastTouchEnd = 0;
+      document.addEventListener('touchend', function (event) {
+        const now = Date.now();
+        if (now - lastTouchEnd <= 300) {
+          event.preventDefault();
+        }
+        lastTouchEnd = now;
+      }, { passive: false });
+
+      // 2. Chống pinch zoom (dùng 2 ngón tay thu phóng) trên Safari
+      document.addEventListener('gesturestart', function (e) {
+        e.preventDefault();
+      });
+    })();
+
+    /* =========================================================
+     * APPLICATION ARCHITECTURE & LOGIC
+     * ========================================================= */
     const CONFIG = {
       API_URL: 'https://script.google.com/macros/s/AKfycbwBmNWlCqustuCS6b_FBirEqg1pd8TmYgkA4u7yR26tn5itlFowpGi1Nk18LqvX740i/exec',
       CART_STORAGE_KEY: 'mini-shop-cart'
     };
 
-    /* =================================================
-       Infrastructure / Repositories
-       ================================================= */
     class ApiRepository {
       constructor(apiUrl) { this.apiUrl = apiUrl; }
-
       async getBootstrap() {
-        const response = await fetch(`${this.apiUrl}?action=bootstrap`);
-        return this.parseResponse(response);
+        const res = await fetch(`${this.apiUrl}?action=bootstrap`);
+        return this.parseResponse(res);
       }
-
-      async quoteOrder(items) {
-        return this.post({ action: 'quoteOrder', items });
-      }
-
-      async placeOrder(payload) {
-        return this.post({ action: 'placeOrder', ...payload });
-      }
-
+      async quoteOrder(items) { return this.post({ action: 'quoteOrder', items }); }
+      async placeOrder(payload) { return this.post({ action: 'placeOrder', ...payload }); }
       async post(payload) {
-        const response = await fetch(this.apiUrl, {
-          method: 'POST',
-          body: JSON.stringify(payload)
-        });
-        return this.parseResponse(response);
+        const res = await fetch(this.apiUrl, { method: 'POST', body: JSON.stringify(payload) });
+        return this.parseResponse(res);
       }
-
-      async parseResponse(response) {
-        if (!response.ok) throw new Error(`HTTP ${response.status}`);
-        const result = await response.json();
+      async parseResponse(res) {
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const result = await res.json();
         if (!result.success) throw new Error(result.error || 'Request failed');
         return result.data;
       }
@@ -809,829 +837,373 @@
 
     class LocalStorageCartRepository {
       constructor(storageKey) { this.storageKey = storageKey; }
-
       getItems() {
         try {
           const raw = localStorage.getItem(this.storageKey);
-          if (!raw) return [];
-          const parsed = JSON.parse(raw);
-          if (!Array.isArray(parsed)) return [];
-          return parsed
-            .map(item => ({ productId: String(item.productId), quantity: Number(item.quantity) }))
-            .filter(item => item.productId && Number.isInteger(item.quantity) && item.quantity > 0);
-        } catch {
-          return [];
-        }
+          return raw ? JSON.parse(raw) : [];
+        } catch { return []; }
       }
-
       saveItems(items) { localStorage.setItem(this.storageKey, JSON.stringify(items)); }
-
       add(productId, quantity) {
         const items = this.getItems();
-        const existing = items.find(item => item.productId === productId);
+        const existing = items.find(i => i.productId === productId);
         if (existing) existing.quantity += quantity;
         else items.push({ productId, quantity });
         this.saveItems(items);
         return items;
       }
-
       update(productId, quantity) {
-        const items = this.getItems();
-        const item = items.find(entry => entry.productId === productId);
-        if (!item) return items;
+        let items = this.getItems();
         if (quantity <= 0) return this.remove(productId);
-        item.quantity = quantity;
+        const item = items.find(i => i.productId === productId);
+        if (item) item.quantity = quantity;
         this.saveItems(items);
         return items;
       }
-
       remove(productId) {
-        const items = this.getItems().filter(item => item.productId !== productId);
+        const items = this.getItems().filter(i => i.productId !== productId);
         this.saveItems(items);
         return items;
       }
-
       removeMany(productIds) {
         const ids = new Set(productIds);
-        const items = this.getItems().filter(item => !ids.has(item.productId));
+        const items = this.getItems().filter(i => !ids.has(i.productId));
         this.saveItems(items);
         return items;
       }
     }
 
-    /* =================================================
-       Application Store
-       ================================================= */
     class AppStore {
       constructor() {
         this.state = {
-          loading: true,
-          products: [],
-          categories: [],
-          settings: {},
-          searchQuery: '',
-          cart: [],
-          selectedCartProductIds: new Set(),
+          loading: true, products: [], categories: [], settings: {},
+          searchQuery: '', cart: [], selectedCartProductIds: new Set(),
           checkout: { mode: null, items: [], quote: null },
           sheet: { open: false, view: 'cart' },
-          submitting: false,
-          message: null,
-          successOrder: null
+          submitting: false, message: null, successOrder: null
         };
         this.listeners = [];
       }
-
-      subscribe(listener) {
-        this.listeners.push(listener);
-        return () => { this.listeners = this.listeners.filter(item => item !== listener); };
-      }
-
-      setState(patch) {
-        this.state = { ...this.state, ...patch };
-        this.listeners.forEach(listener => listener(this.state));
-      }
-
+      subscribe(listener) { this.listeners.push(listener); return () => { this.listeners = this.listeners.filter(l => l !== listener); }; }
+      setState(patch) { this.state = { ...this.state, ...patch }; this.listeners.forEach(l => l(this.state)); }
       getState() { return this.state; }
     }
 
-    /* =================================================
-       Use Cases
-       ================================================= */
-    class LoadShopUseCase {
-      constructor(apiRepository) { this.apiRepository = apiRepository; }
-      execute() { return this.apiRepository.getBootstrap(); }
-    }
-
-    class SearchProductsUseCase {
-      execute(products, query) {
-        const normalized = String(query || '').trim().toLocaleLowerCase('vi');
-        if (!normalized) return products;
-        return products.filter(product => String(product.name || '').toLocaleLowerCase('vi').includes(normalized));
-      }
-    }
-
-    class AddToCartUseCase {
-      constructor(cartRepository) { this.cartRepository = cartRepository; }
-      execute(product, quantity = 1) {
-        if (!product) throw new Error('Không tìm thấy sản phẩm');
-        if (product.availableStock <= 0) throw new Error('Sản phẩm đã hết hàng');
-        if (quantity <= 0) throw new Error('Số lượng không hợp lệ');
-        const current = this.cartRepository.getItems().find(item => item.productId === product.productId);
-        const nextQuantity = (current?.quantity || 0) + quantity;
-        if (nextQuantity > product.availableStock) throw new Error(`Chỉ còn ${product.availableStock} sản phẩm`);
-        return this.cartRepository.add(product.productId, quantity);
-      }
-    }
-
-    class UpdateCartQuantityUseCase {
-      constructor(cartRepository) { this.cartRepository = cartRepository; }
-      execute(product, quantity) {
-        if (!product) throw new Error('Không tìm thấy sản phẩm');
-        if (quantity < 0) throw new Error('Số lượng không hợp lệ');
-        if (quantity > product.availableStock) throw new Error(`Chỉ còn ${product.availableStock} sản phẩm`);
-        return this.cartRepository.update(product.productId, quantity);
-      }
-    }
-
-    class RemoveFromCartUseCase {
-      constructor(cartRepository) { this.cartRepository = cartRepository; }
-      execute(productId) { return this.cartRepository.remove(productId); }
-    }
-
-    class BuyNowUseCase {
-      execute(product, quantity = 1) {
-        if (!product) throw new Error('Không tìm thấy sản phẩm');
-        if (product.availableStock <= 0) throw new Error('Sản phẩm đã hết hàng');
-        if (quantity > product.availableStock) throw new Error(`Chỉ còn ${product.availableStock} sản phẩm`);
-        return [{ productId: product.productId, quantity }];
-      }
-    }
-
-    class CheckoutCartUseCase {
-      execute(cart, selectedProductIds) {
-        const ids = new Set(selectedProductIds);
-        const items = cart.filter(item => ids.has(item.productId));
-        if (!items.length) throw new Error('Hãy chọn ít nhất 1 sản phẩm');
-        return items.map(item => ({ productId: item.productId, quantity: item.quantity }));
-      }
-    }
-
-    class GetCheckoutQuoteUseCase {
-      constructor(apiRepository) { this.apiRepository = apiRepository; }
-      execute(items) { return this.apiRepository.quoteOrder(items); }
-    }
-
-    class PlaceOrderUseCase {
-      constructor(apiRepository) { this.apiRepository = apiRepository; }
-      execute(form, items) {
-        return this.apiRepository.placeOrder({
-          customerName: 'Khách hàng',
-          phone: form.phone,
-          email: '',
-          address: form.address,
-          province: '',
-          district: '',
-          ward: '',
-          note: form.note,
-          paymentMethod: 'COD',
-          shippingMethod: 'STANDARD',
-          items
-        });
-      }
-    }
-
-    class CartSummaryUseCase {
-      execute(cart, products) {
-        const productMap = new Map(products.map(product => [product.productId, product]));
-        const items = cart.map(cartItem => {
-          const product = productMap.get(cartItem.productId);
-          if (!product) return null;
-          return {
-            ...cartItem,
-            product,
-            subtotal: Number(product.price || 0) * cartItem.quantity
-          };
-        }).filter(Boolean);
-        return { items, subtotal: items.reduce((sum, item) => sum + item.subtotal, 0) };
-      }
-    }
-
-    /* =================================================
-       Controller
-       ================================================= */
     class ShopController {
-      constructor(store, dependencies) {
-        Object.assign(this, dependencies);
+      constructor(store, repos) {
         this.store = store;
+        this.api = repos.api;
+        this.cartRepo = repos.cart;
       }
 
       async init() {
         try {
-          const data = await this.loadShopUseCase.execute();
-          const cart = this.cartRepository.getItems();
+          const data = await this.api.getBootstrap();
+          const cart = this.cartRepo.getItems();
           this.store.setState({
             loading: false,
             products: data.products || [],
-            categories: data.categories || [],
             settings: data.settings || {},
             cart,
-            selectedCartProductIds: new Set(cart.map(item => item.productId))
+            selectedCartProductIds: new Set(cart.map(i => i.productId))
           });
-        } catch (error) {
-          this.store.setState({ loading: false, message: error.message || 'Không thể tải sản phẩm' });
+        } catch (e) {
+          this.store.setState({ loading: false, message: e.message });
         }
       }
 
-      getProduct(productId) {
-        return this.store.getState().products.find(product => product.productId === productId);
+      getProduct(id) { return this.store.getState().products.find(p => p.productId === id); }
+
+      addToCart(productId) {
+        const product = this.getProduct(productId);
+        if (!product || product.availableStock <= 0) return;
+        const cart = this.cartRepo.add(productId, 1);
+        const selected = new Set(this.store.getState().selectedCartProductIds);
+        selected.add(productId);
+        this.store.setState({ cart, selectedCartProductIds: selected });
+        showToast(`Đã thêm "${product.name}" vào giỏ`);
       }
 
-      setSearchQuery(query) {
-        this.store.setState({ searchQuery: query });
-      }
-
-      async addToCart(productId) {
-        try {
-          const product = this.getProduct(productId);
-          const cart = this.addToCartUseCase.execute(product, 1);
-          const selected = new Set(this.store.getState().selectedCartProductIds);
-          selected.add(productId);
-          this.store.setState({ cart, selectedCartProductIds: selected, message: null });
-        } catch (error) {
-          this.showError(error.message);
-        }
-      }
-
-      async buyNow(productId) {
-        try {
-          const product = this.getProduct(productId);
-          const items = this.buyNowUseCase.execute(product, 1);
-          await this.startCheckout('buyNow', items);
-        } catch (error) {
-          this.showError(error.message);
-        }
+      buyNow(productId) {
+        const product = this.getProduct(productId);
+        if (!product || product.availableStock <= 0) return;
+        this.startCheckout('buyNow', [{ productId, quantity: 1 }]);
       }
 
       updateCartQuantity(productId, quantity) {
-        try {
-          const product = this.getProduct(productId);
-          const cart = this.updateCartQuantityUseCase.execute(product, quantity);
-          const state = this.store.getState();
-          const selected = new Set(state.selectedCartProductIds);
-          if (quantity <= 0) selected.delete(productId);
-          this.store.setState({ cart, selectedCartProductIds: selected });
-          this.refreshCheckoutAfterCartChange();
-        } catch (error) {
-          this.showError(error.message);
-        }
+        const cart = this.cartRepo.update(productId, quantity);
+        this.store.setState({ cart });
       }
 
       removeFromCart(productId) {
-        const cart = this.removeFromCartUseCase.execute(productId);
-        const selected = new Set(this.store.getState().selectedCartProductIds);
-        selected.delete(productId);
-        this.store.setState({ cart, selectedCartProductIds: selected });
-        this.refreshCheckoutAfterCartChange();
-      }
-
-      toggleCartSelection(productId, selected) {
-        const ids = new Set(this.store.getState().selectedCartProductIds);
-        selected ? ids.add(productId) : ids.delete(productId);
-        this.store.setState({ selectedCartProductIds: ids });
-      }
-
-      selectAllCart() {
-        const ids = new Set(this.store.getState().cart.map(item => item.productId));
-        this.store.setState({ selectedCartProductIds: ids });
-      }
-
-      clearCartSelection() {
-        this.store.setState({ selectedCartProductIds: new Set() });
+        const cart = this.cartRepo.remove(productId);
+        this.store.setState({ cart });
       }
 
       openCart() {
-        this.store.setState({ sheet: { open: true, view: 'cart' }, message: null, successOrder: null });
+        this.store.setState({ sheet: { open: true, view: 'cart' } });
       }
 
       closeSheet() {
         this.store.setState({ sheet: { open: false, view: 'cart' } });
       }
 
-      async checkoutSelectedCart() {
-        try {
-          const state = this.store.getState();
-          const items = this.checkoutCartUseCase.execute(state.cart, state.selectedCartProductIds);
-          await this.startCheckout('cart', items);
-        } catch (error) {
-          this.showError(error.message);
-        }
-      }
-
       async startCheckout(mode, items) {
         try {
-          const quote = await this.getCheckoutQuoteUseCase.execute(items);
+          const quote = await this.api.quoteOrder(items);
           this.store.setState({
             checkout: { mode, items, quote },
-            sheet: { open: true, view: 'checkout' },
-            message: null,
-            successOrder: null
+            sheet: { open: true, view: 'checkout' }
           });
-        } catch (error) {
-          this.showError(error.message);
+        } catch (e) {
+          alert(e.message || 'Lỗi tính tiền');
         }
-      }
-
-      backToCart() {
-        this.store.setState({ sheet: { open: true, view: 'cart' }, message: null });
-      }
-
-      async refreshCheckoutAfterCartChange() {
-        const state = this.store.getState();
-        if (state.checkout.mode !== 'cart') return;
-
-        const ids = new Set(state.selectedCartProductIds);
-        const items = state.cart.filter(item => ids.has(item.productId));
-        if (!items.length) {
-          this.store.setState({ checkout: { mode: null, items: [], quote: null }, sheet: { open: true, view: 'cart' } });
-          return;
-        }
-
-        try {
-          const quote = await this.getCheckoutQuoteUseCase.execute(items);
-          this.store.setState({ checkout: { mode: 'cart', items, quote } });
-        } catch { /* quote refreshed next checkout */ }
       }
 
       async placeOrder(form) {
-        const state = this.store.getState();
-        if (!state.checkout.items.length) {
-          this.showError('Không có sản phẩm để đặt hàng');
-          return;
-        }
-
-        if (!/^0\d{9,10}$/.test(form.phone.replace(/\s+/g, ''))) {
-          this.showError('Vui lòng nhập số điện thoại hợp lệ');
-          return;
-        }
-
-        if (!form.address.trim()) {
-          this.showError('Vui lòng nhập địa chỉ nhận hàng');
-          return;
-        }
-
-        this.store.setState({ submitting: true, message: null });
-
+        this.store.setState({ submitting: true });
         try {
-          const result = await this.placeOrderUseCase.execute(form, state.checkout.items);
-
-          let cart = state.cart;
-          if (state.checkout.mode === 'cart') {
-            const ids = state.checkout.items.map(item => item.productId);
-            cart = this.cartRepository.removeMany(ids);
+          const items = this.store.getState().checkout.items;
+          const res = await this.api.placeOrder({
+            phone: form.phone,
+            address: form.address,
+            note: form.note,
+            items
+          });
+          
+          if (this.store.getState().checkout.mode === 'cart') {
+            const ids = items.map(i => i.productId);
+            const cart = this.cartRepo.removeMany(ids);
+            this.store.setState({ cart });
           }
 
           this.store.setState({
             submitting: false,
-            cart,
-            checkout: { mode: null, items: [], quote: null },
             sheet: { open: true, view: 'success' },
-            successOrder: result,
-            message: null
+            successOrder: res
           });
-
-          await this.reloadProducts();
-        } catch (error) {
-          this.store.setState({ submitting: false, message: error.message || 'Đặt hàng thất bại' });
+        } catch (e) {
+          this.store.setState({ submitting: false });
+          alert(e.message || 'Đặt hàng thất bại');
         }
-      }
-
-      async reloadProducts() {
-        try {
-          const data = await this.loadShopUseCase.execute();
-          this.store.setState({ products: data.products || [] });
-        } catch { /* keep current data */ }
-      }
-
-      showError(message) {
-        this.store.setState({ message: message || 'Có lỗi xảy ra' });
-      }
-
-      getCartSummary() {
-        const state = this.store.getState();
-        return this.cartSummaryUseCase.execute(state.cart, state.products);
       }
     }
 
-    /* =================================================
-       UI
-       ================================================= */
     class ShopUI {
-      constructor(searchProductsUseCase) {
-        this.controller = null;
-        this.searchProductsUseCase = searchProductsUseCase;
-        this.messageTimer = null;
-      }
-
-      connect(controller) {
+      constructor(store, controller) {
+        this.store = store;
         this.controller = controller;
         this.bindEvents();
       }
 
       bindEvents() {
-        document.addEventListener('click', event => {
-          const target = event.target.closest('[data-action]');
-          if (!target) return;
+        document.addEventListener('click', e => {
+          const actionBtn = e.target.closest('[data-action]');
+          if (!actionBtn) return;
+          const action = actionBtn.dataset.action;
+          const id = actionBtn.dataset.productId;
 
-          const action = target.dataset.action;
-          const productId = target.dataset.productId;
-
-          switch (action) {
-            case 'open-cart': this.controller.openCart(); break;
-            case 'close-sheet': this.controller.closeSheet(); break;
-            case 'sheet-back': this.controller.backToCart(); break;
-            case 'add-cart': this.controller.addToCart(productId); break;
-            case 'buy-now': this.controller.buyNow(productId); break;
-            case 'cart-minus': this.controller.updateCartQuantity(productId, Number(target.dataset.quantity) - 1); break;
-            case 'cart-plus': this.controller.updateCartQuantity(productId, Number(target.dataset.quantity) + 1); break;
-            case 'cart-remove': this.controller.removeFromCart(productId); break;
-            case 'checkout-cart': this.controller.checkoutSelectedCart(); break;
-            case 'select-all': this.controller.selectAllCart(); break;
-            case 'clear-select': this.controller.clearCartSelection(); break;
-            case 'continue-shopping': this.controller.closeSheet(); break;
+          if (action === 'open-cart') this.controller.openCart();
+          if (action === 'close-sheet') this.controller.closeSheet();
+          if (action === 'add-cart') this.controller.addToCart(id);
+          if (action === 'buy-now') this.controller.buyNow(id);
+          if (action === 'cart-minus') this.controller.updateCartQuantity(id, Number(actionBtn.dataset.qty) - 1);
+          if (action === 'cart-plus') this.controller.updateCartQuantity(id, Number(actionBtn.dataset.qty) + 1);
+          if (action === 'cart-remove') this.controller.removeFromCart(id);
+          if (action === 'checkout-selected') {
+            const state = this.store.getState();
+            const items = state.cart.map(i => ({ productId: i.productId, quantity: i.quantity }));
+            if (items.length) this.controller.startCheckout('cart', items);
           }
         });
 
-        document.addEventListener('change', event => {
-          const selectAll = event.target.closest('[data-cart-select-all]');
-          if (selectAll) {
-            selectAll.checked ? this.controller.selectAllCart() : this.controller.clearCartSelection();
-            return;
+        document.getElementById('searchInput').addEventListener('input', e => {
+          this.store.setState({ searchQuery: e.target.value });
+        });
+
+        document.getElementById('sheetBody').addEventListener('submit', e => {
+          if (e.target.id === 'checkoutForm') {
+            e.preventDefault();
+            this.controller.placeOrder({
+              phone: e.target.phone.value,
+              address: e.target.address.value,
+              note: e.target.note.value
+            });
           }
-
-          const checkbox = event.target.closest('[data-cart-select]');
-          if (checkbox) this.controller.toggleCartSelection(checkbox.dataset.productId, checkbox.checked);
-        });
-
-        const searchInput = document.getElementById('searchInput');
-        searchInput.addEventListener('input', event => this.controller.setSearchQuery(event.target.value));
-
-        document.getElementById('searchClear').addEventListener('click', () => {
-          searchInput.value = '';
-          this.controller.setSearchQuery('');
-          searchInput.focus();
-        });
-
-        document.getElementById('sheetBody').addEventListener('submit', event => {
-          const form = event.target.closest('#checkoutForm');
-          if (!form) return;
-          event.preventDefault();
-          this.controller.placeOrder({
-            phone: form.elements.phone.value.trim(),
-            address: form.elements.address.value.trim(),
-            note: form.elements.note.value.trim()
-          });
-        });
-
-        document.addEventListener('keydown', event => {
-          if (event.key === 'Escape') this.controller.closeSheet();
         });
       }
 
       render(state) {
-        this.renderHeader(state);
-        this.renderMessage(state.message);
-        this.renderProducts(state);
-        this.renderSheet(state);
-        this.renderSubmitting(state.submitting);
-        document.body.classList.toggle('no-scroll', state.sheet.open);
-      }
+        document.getElementById('storeName').textContent = state.settings.storeName || 'Mini Store';
+        const totalCartCount = state.cart.reduce((s, i) => s + i.quantity, 0);
+        document.getElementById('cartCountDesktop').textContent = totalCartCount;
+        document.getElementById('cartCountMobile').textContent = totalCartCount;
 
-      renderHeader(state) {
-        const storeName = state.settings.storeName || 'Mini Shop';
-        document.getElementById('storeName').textContent = storeName;
-        const count = state.cart.reduce((sum, item) => sum + item.quantity, 0);
-        document.getElementById('cartCount').textContent = count > 99 ? '99+' : count;
-        const clearButton = document.getElementById('searchClear');
-        clearButton.classList.toggle('hidden', !state.searchQuery);
-        const searchInput = document.getElementById('searchInput');
-        if (document.activeElement !== searchInput && searchInput.value !== state.searchQuery) {
-          searchInput.value = state.searchQuery;
-        }
-      }
-
-      renderMessage(message) {
-        const element = document.getElementById('globalMessage');
-        if (!message) {
-          element.classList.add('hidden');
-          element.textContent = '';
-          return;
-        }
-        element.textContent = message;
-        element.classList.remove('hidden');
-        clearTimeout(this.messageTimer);
-        this.messageTimer = setTimeout(() => {
-          if (this.controller) this.controller.store.setState({ message: null });
-        }, 3200);
-      }
-
-      renderProducts(state) {
-        const container = document.getElementById('products');
+        const grid = document.getElementById('products');
         if (state.loading) {
-          container.className = 'products loading-grid';
-          container.innerHTML = Array.from({ length: 8 }).map(() => `
-            <article class="skeleton-card">
-              <div class="skeleton skeleton-image"></div>
-              <div class="skeleton skeleton-line"></div>
-              <div class="skeleton skeleton-line short"></div>
-            </article>
+          grid.innerHTML = Array.from({ length: 8 }).map(() => `
+            <div class="skeleton-card">
+              <div class="skeleton-media"></div>
+              <div class="skeleton-body">
+                <div class="skeleton-line"></div>
+                <div class="skeleton-line short"></div>
+              </div>
+            </div>
           `).join('');
-          document.getElementById('resultCount').textContent = '';
           return;
         }
 
-        const products = this.searchProductsUseCase.execute(state.products, state.searchQuery);
-        document.getElementById('resultCount').textContent = state.searchQuery ? `${products.length} kết quả` : `${products.length} sản phẩm`;
+        const filtered = state.products.filter(p => p.name.toLowerCase().includes(state.searchQuery.toLowerCase()));
+        document.getElementById('resultCount').textContent = `${filtered.length} sản phẩm`;
 
-        if (!products.length) {
-          container.className = 'products';
-          container.innerHTML = `<div class="empty-state">Không tìm thấy sản phẩm phù hợp.</div>`;
-          return;
-        }
-
-        container.className = 'products';
-        container.innerHTML = products.map(product => this.renderProductCard(product)).join('');
-      }
-
-      renderProductCard(product) {
-        const outOfStock = Number(product.availableStock || 0) <= 0;
-        const hasDiscount = Number(product.compareAtPrice || 0) > Number(product.price || 0);
-        const discount = hasDiscount ? Math.round((1 - Number(product.price) / Number(product.compareAtPrice)) * 100) : 0;
-
-        const image = product.imageUrl
-          ? `<img class="product-image" src="${escapeHtml(product.imageUrl)}" alt="${escapeHtml(product.name)}" loading="lazy">`
-          : `<div class="product-placeholder">${icon('image')}</div>`;
-
-        return `
-          <article class="product-card">
-            <div class="product-media">
-              ${image}
-              ${hasDiscount ? `<span class="discount-badge">-${discount}%</span>` : ''}
-              ${outOfStock ? `<span class="out-badge">Hết hàng</span>` : ''}
-            </div>
-            <div class="product-content">
-              <div class="product-name">${escapeHtml(product.name)}</div>
-              <div class="price-row">
-                <span class="product-price">${formatCurrency(product.price)}</span>
-                ${hasDiscount ? `<span class="product-old-price">${formatCurrency(product.compareAtPrice)}</span>` : ''}
-              </div>
-              <div class="product-stock">${outOfStock ? 'Tạm hết' : `Còn ${product.availableStock}`}</div>
-              <div class="product-actions">
-                <button
-                  type="button"
-                  class="icon-button"
-                  data-action="add-cart"
-                  data-product-id="${escapeHtml(product.productId)}"
-                  ${outOfStock ? 'disabled' : ''}
-                  aria-label="Thêm vào giỏ hàng"
-                  title="Thêm vào giỏ hàng"
-                >${icon('cart-plus')}</button>
-                <button
-                  type="button"
-                  class="buy-button"
-                  data-action="buy-now"
-                  data-product-id="${escapeHtml(product.productId)}"
-                  ${outOfStock ? 'disabled' : ''}
-                >Mua ngay</button>
-              </div>
-            </div>
-          </article>
-        `;
-      }
-
-      renderSheet(state) {
-        const root = document.getElementById('sheetRoot');
-        root.classList.toggle('is-open', state.sheet.open);
-        root.setAttribute('aria-hidden', String(!state.sheet.open));
-        const title = document.getElementById('sheetTitle');
-        const subtitle = document.getElementById('sheetSubtitle');
-        const body = document.getElementById('sheetBody');
-        const footer = document.getElementById('sheetFooter');
-        const back = document.getElementById('sheetBackButton');
-
-        if (!state.sheet.open) return;
-
-        if (state.sheet.view === 'cart') {
-          title.textContent = 'Giỏ hàng';
-          subtitle.textContent = this.cartSubtitle(state);
-          back.classList.add('hidden');
-          const summary = this.controller.getCartSummary();
-          body.innerHTML = this.renderCartBody(summary, state);
-          footer.innerHTML = this.renderCartFooter(summary, state);
-          footer.classList.toggle('hidden', !summary.items.length);
-          return;
-        }
-
-        if (state.sheet.view === 'checkout') {
-          title.textContent = 'Thông tin nhận hàng';
-          subtitle.textContent = state.checkout.mode === 'buyNow' ? 'Mua ngay' : 'Sản phẩm đã chọn';
-          back.classList.remove('hidden');
-          body.innerHTML = this.renderCheckoutBody(state);
-          footer.innerHTML = this.renderCheckoutFooter(state);
-          footer.classList.remove('hidden');
-          return;
-        }
-
-        title.textContent = 'Đặt hàng thành công';
-        subtitle.textContent = '';
-        back.classList.add('hidden');
-        body.innerHTML = this.renderSuccessBody(state.successOrder);
-        footer.innerHTML = `<div class="footer-row"><div></div><button class="primary-btn" type="button" data-action="continue-shopping">Tiếp tục mua sắm</button></div>`;
-        footer.classList.remove('hidden');
-      }
-
-      cartSubtitle(state) {
-        const totalQty = state.cart.reduce((sum, item) => sum + item.quantity, 0);
-        return `${totalQty} sản phẩm trong giỏ`;
-      }
-
-      renderCartBody(summary, state) {
-        if (!summary.items.length) {
+        grid.innerHTML = filtered.map(p => {
+          const out = p.availableStock <= 0;
           return `
-            <div class="empty-cart">
-              <div class="empty-cart-icon">${icon('cart')}</div>
-              <strong>Giỏ hàng đang trống</strong>
-              <div style="margin-top:6px">Thêm sản phẩm để bắt đầu mua sắm.</div>
+            <div class="product-card">
+              <div class="product-media" data-action="buy-now" data-product-id="${p.productId}">
+                ${p.imageUrl ? `<img class="product-image" src="${p.imageUrl}" alt="${p.name}">` : `<div class="product-placeholder">No Image</div>`}
+                ${out ? `<div class="out-badge">Tạm hết hàng</div>` : ''}
+              </div>
+              <div class="product-content">
+                <div class="product-name" data-action="buy-now" data-product-id="${p.productId}">${p.name}</div>
+                <div class="price-row">
+                  <span class="product-price">${formatCurrency(p.price)}</span>
+                </div>
+                <div class="product-actions">
+                  <button class="btn-add-cart" data-action="add-cart" data-product-id="${p.productId}" ${out ? 'disabled' : ''}>
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
+                  </button>
+                  <button class="btn-buy-now" data-action="buy-now" data-product-id="${p.productId}" ${out ? 'disabled' : ''}>Mua ngay</button>
+                </div>
+              </div>
             </div>
           `;
-        }
+        }).join('');
 
-        const allSelected = summary.items.every(item => state.selectedCartProductIds.has(item.product.productId));
-        return `
-          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
-            <label style="display:flex;align-items:center;gap:8px;margin:0;font-size:13px;font-weight:800">
-              <input type="checkbox" class="cart-check" data-cart-select-all ${allSelected ? 'checked' : ''} />
-              Chọn tất cả
-            </label>
-            <button class="remove-btn" type="button" data-action="clear-select">Bỏ chọn</button>
-          </div>
-          <div class="cart-list">
-            ${summary.items.map(item => this.renderCartItem(item, state)).join('')}
-          </div>
-        `;
-      }
+        const sheetRoot = document.getElementById('sheetRoot');
+        sheetRoot.classList.toggle('is-open', state.sheet.open);
 
-      renderCartItem(item, state) {
-        const selected = state.selectedCartProductIds.has(item.product.productId);
-        const maxStock = Number(item.product.availableStock || 0);
-        return `
-          <div class="cart-row">
-            <input class="cart-check" type="checkbox" data-cart-select data-product-id="${escapeHtml(item.product.productId)}" ${selected ? 'checked' : ''} />
-            ${item.product.imageUrl
-              ? `<img class="cart-image" src="${escapeHtml(item.product.imageUrl)}" alt="${escapeHtml(item.product.name)}">`
-              : `<div class="cart-image"></div>`}
-            <div>
-              <div class="cart-name">${escapeHtml(item.product.name)}</div>
-              <div class="cart-price">${formatCurrency(item.product.price)}</div>
-              <div class="cart-line">
-                <div class="qty-stepper">
-                  <button type="button" data-action="cart-minus" data-product-id="${escapeHtml(item.product.productId)}" data-quantity="${item.quantity}" aria-label="Giảm">−</button>
-                  <span>${item.quantity}</span>
-                  <button type="button" data-action="cart-plus" data-product-id="${escapeHtml(item.product.productId)}" data-quantity="${item.quantity}" ${item.quantity >= maxStock ? 'disabled' : ''} aria-label="Tăng">+</button>
+        if (state.sheet.open) {
+          const body = document.getElementById('sheetBody');
+          const footer = document.getElementById('sheetFooter');
+          
+          if (state.sheet.view === 'cart') {
+            document.getElementById('sheetTitle').textContent = 'Giỏ hàng của bạn';
+            document.getElementById('sheetSubtitle').textContent = `${totalCartCount} sản phẩm`;
+            
+            if (!state.cart.length) {
+              body.innerHTML = `<div style="text-align:center;padding:40px 0;color:var(--text-muted)">Giỏ hàng trống</div>`;
+              footer.classList.add('hidden');
+            } else {
+              const productMap = new Map(state.products.map(p => [p.productId, p]));
+              let total = 0;
+              body.innerHTML = `
+                <div class="cart-list">
+                  ${state.cart.map(item => {
+                    const p = productMap.get(item.productId);
+                    if (!p) return '';
+                    const subtotal = p.price * item.quantity;
+                    total += subtotal;
+                    return `
+                      <div class="cart-row">
+                        <input type="checkbox" class="cart-check" checked />
+                        <img class="cart-image" src="${p.imageUrl}" />
+                        <div class="cart-info">
+                          <div class="cart-name">${p.name}</div>
+                          <div class="cart-price">${formatCurrency(p.price)}</div>
+                          <div class="cart-line">
+                            <div class="qty-stepper">
+                              <button data-action="cart-minus" data-product-id="${p.productId}" data-qty="${item.quantity}">-</button>
+                              <span>${item.quantity}</span>
+                              <button data-action="cart-plus" data-product-id="${p.productId}" data-qty="${item.quantity}">+</button>
+                            </div>
+                            <button class="btn-remove" data-action="cart-remove" data-product-id="${p.productId}">Xóa</button>
+                          </div>
+                        </div>
+                      </div>
+                    `;
+                  }).join('')}
                 </div>
-                <button class="remove-btn" type="button" data-action="cart-remove" data-product-id="${escapeHtml(item.product.productId)}" aria-label="Xóa sản phẩm">${icon('trash')}</button>
+              `;
+              
+              footer.classList.remove('hidden');
+              footer.innerHTML = `
+                <div class="footer-row">
+                  <div>
+                    <div class="footer-total-label">Tổng cộng</div>
+                    <div class="footer-total-price">${formatCurrency(total)}</div>
+                  </div>
+                  <button class="btn-primary-action" data-action="checkout-selected">Thanh toán</button>
+                </div>
+              `;
+            }
+          } else if (state.sheet.view === 'checkout') {
+            document.getElementById('sheetTitle').textContent = 'Thông tin giao hàng';
+            document.getElementById('sheetSubtitle').textContent = 'Nhập địa chỉ nhận hàng';
+            
+            const q = state.checkout.quote;
+            body.innerHTML = `
+              <form id="checkoutForm" class="form-card">
+                <div class="form-group">
+                  <label>Số điện thoại *</label>
+                  <input type="tel" name="phone" placeholder="0901234567" required />
+                </div>
+                <div class="form-group">
+                  <label>Địa chỉ nhận hàng *</label>
+                  <textarea name="address" placeholder="Số nhà, đường, phường/xã..." required></textarea>
+                </div>
+                <div class="form-group">
+                  <label>Ghi chú</label>
+                  <textarea name="note" placeholder="Lời nhắn cho shipper..."></textarea>
+                </div>
+              </form>
+            `;
+
+            footer.classList.remove('hidden');
+            footer.innerHTML = `
+              <div class="footer-row">
+                <div>
+                  <div class="footer-total-label">Tổng thanh toán</div>
+                  <div class="footer-total-price">${formatCurrency(q ? q.total : 0)}</div>
+                </div>
+                <button class="btn-primary-action" type="submit" form="checkoutForm" ${state.submitting ? 'disabled' : ''}>
+                  ${state.submitting ? 'Đang gửi...' : 'Đặt hàng COD'}
+                </button>
               </div>
-            </div>
-          </div>
-        `;
-      }
-
-      renderCartFooter(summary, state) {
-        const selectedItems = summary.items.filter(item => state.selectedCartProductIds.has(item.product.productId));
-        const selectedSubtotal = selectedItems.reduce((sum, item) => sum + item.subtotal, 0);
-        const count = selectedItems.reduce((sum, item) => sum + item.quantity, 0);
-        return `
-          <div class="footer-row">
-            <div class="footer-meta">
-              <div class="footer-label">Đã chọn ${count} sản phẩm</div>
-              <div class="footer-total">${formatCurrency(selectedSubtotal)}</div>
-            </div>
-            <button class="primary-btn" type="button" data-action="checkout-cart" ${selectedItems.length ? '' : 'disabled'}>Mua sản phẩm</button>
-          </div>
-        `;
-      }
-
-      renderCheckoutBody(state) {
-        const quote = state.checkout.quote;
-        const items = quote?.items || [];
-        return `
-          <div class="checkout-products">
-            ${items.map(item => `
-              <div class="checkout-product">
-                <span>${escapeHtml(item.name)} × ${item.quantity}</span>
-                <strong>${formatCurrency(item.subtotal)}</strong>
+            `;
+          } else if (state.sheet.view === 'success') {
+            document.getElementById('sheetTitle').textContent = 'Đặt hàng thành công 🎉';
+            document.getElementById('sheetSubtitle').textContent = '';
+            body.innerHTML = `
+              <div style="text-align:center;padding:20px 0">
+                <p>Cảm ơn bạn đã mua hàng. Mã đơn của bạn là:</p>
+                <h2 style="color:var(--primary);margin:10px 0">${state.successOrder?.orderCode || ''}</h2>
               </div>
-            `).join('')}
-          </div>
-
-          ${quote ? `
-            <div class="cart-summary">
-              <div class="summary-row"><span>Tạm tính</span><strong>${formatCurrency(quote.subtotal)}</strong></div>
-              <div class="summary-row"><span>Phí vận chuyển</span><strong>${formatCurrency(quote.shippingFee)}</strong></div>
-              <div class="summary-row"><span>Giảm giá</span><strong>${formatCurrency(quote.discount)}</strong></div>
-              <div class="summary-row summary-total"><span>Tổng thanh toán</span><strong>${formatCurrency(quote.total)}</strong></div>
-            </div>
-          ` : ''}
-
-          <form id="checkoutForm" class="form-card" novalidate>
-            <div class="form-title">Thông tin nhận hàng</div>
-            <div class="form-group">
-              <label for="checkoutPhone">Số điện thoại *</label>
-              <input id="checkoutPhone" name="phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="0901 234 567" required />
-            </div>
-            <div class="form-group">
-              <label for="checkoutAddress">Địa chỉ nhận hàng *</label>
-              <textarea id="checkoutAddress" name="address" autocomplete="street-address" placeholder="Số nhà, tên đường, phường/xã, quận/huyện, tỉnh/thành" required></textarea>
-            </div>
-            <div class="form-group">
-              <label for="checkoutNote">Ghi chú</label>
-              <textarea id="checkoutNote" name="note" placeholder="Ví dụ: giao giờ hành chính, gọi trước khi giao..."></textarea>
-            </div>
-          </form>
-
-          ${state.message ? `<div class="message message-error">${escapeHtml(state.message)}</div>` : ''}
-        `;
-      }
-
-      renderCheckoutFooter(state) {
-        const total = state.checkout.quote?.total || 0;
-        return `
-          <div class="footer-row">
-            <div class="footer-meta">
-              <div class="footer-label">Thanh toán khi nhận hàng</div>
-              <div class="footer-total">${formatCurrency(total)}</div>
-            </div>
-            <button id="placeOrderButton" class="primary-btn" type="submit" form="checkoutForm" ${state.submitting ? 'disabled' : ''}>
-              ${state.submitting ? 'Đang đặt...' : 'Đặt hàng'}
-            </button>
-          </div>
-        `;
-      }
-
-      renderSuccessBody(order) {
-        if (!order) return '';
-        return `
-          <div class="success-state">
-            <div>
-              <div class="success-icon">${icon('check')}</div>
-              <h2>Đặt hàng thành công</h2>
-              <p>Cảm ơn bạn. Shop sẽ liên hệ để xác nhận đơn.</p>
-              <div class="success-code">Mã đơn: ${escapeHtml(order.orderCode || order.orderId || '')}</div>
-              <div class="success-total">${formatCurrency(order.total)}</div>
-            </div>
-          </div>
-        `;
-      }
-
-      renderSubmitting(submitting) {
-        const button = document.getElementById('placeOrderButton');
-        if (!button) return;
-        button.disabled = submitting;
-        button.textContent = submitting ? 'Đang đặt...' : 'Đặt hàng';
+            `;
+            footer.classList.remove('hidden');
+            footer.innerHTML = `<button class="btn-primary-action" style="width:100%" data-action="close-sheet">Tiếp tục mua sắm</button>`;
+          }
+        }
       }
     }
 
-    /* =================================================
-       Formatting / Icons
-       ================================================= */
-    function formatCurrency(value) {
-      return `${Number(value || 0).toLocaleString('vi-VN')} ₫`;
+    function formatCurrency(v) { return `${Number(v || 0).toLocaleString('vi-VN')} ₫`; }
+    function showToast(msg) {
+      const t = document.getElementById('toast');
+      document.getElementById('toastMsg').textContent = msg;
+      t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 2500);
     }
 
-    function escapeHtml(value) {
-      return String(value ?? '')
-        .replaceAll('&', '&amp;')
-        .replaceAll('<', '&lt;')
-        .replaceAll('>', '&gt;')
-        .replaceAll('"', '&quot;')
-        .replaceAll("'", '&#039;');
-    }
-
-    function icon(name) {
-      const icons = {
-        cart: '<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="9" cy="20" r="1"></circle><circle cx="18" cy="20" r="1"></circle><path d="M3 4h2l2.4 11.2a2 2 0 0 0 2 1.6h7.7a2 2 0 0 0 2-1.6L21 8H6"></path></svg>',
-        'cart-plus': '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><circle cx="9" cy="20" r="1"></circle><circle cx="18" cy="20" r="1"></circle><path d="M3 4h2l2.4 11.2a2 2 0 0 0 2 1.6h7.7a2 2 0 0 0 2-1.6L21 8H6"></path><path d="M15 4v6M12 7h6"></path></svg>',
-        trash: '<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"></path></svg>',
-        check: '<svg width="38" height="38" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="m5 12 4 4L19 6"></path></svg>',
-        image: '<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="3" width="18" height="18" rx="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><path d="m21 15-5-5L5 21"></path></svg>'
-      };
-      return icons[name] || '';
-    }
-
-    /* =================================================
-       Composition Root
-       ================================================= */
-    const apiRepository = new ApiRepository(CONFIG.API_URL);
-    const cartRepository = new LocalStorageCartRepository(CONFIG.CART_STORAGE_KEY);
+    /* Run App */
     const store = new AppStore();
-    const searchProductsUseCase = new SearchProductsUseCase();
-
     const controller = new ShopController(store, {
-      loadShopUseCase: new LoadShopUseCase(apiRepository),
-      addToCartUseCase: new AddToCartUseCase(cartRepository),
-      updateCartQuantityUseCase: new UpdateCartQuantityUseCase(cartRepository),
-      removeFromCartUseCase: new RemoveFromCartUseCase(cartRepository),
-      buyNowUseCase: new BuyNowUseCase(),
-      checkoutCartUseCase: new CheckoutCartUseCase(),
-      getCheckoutQuoteUseCase: new GetCheckoutQuoteUseCase(apiRepository),
-      placeOrderUseCase: new PlaceOrderUseCase(apiRepository),
-      cartRepository,
-      cartSummaryUseCase: new CartSummaryUseCase()
+      api: new ApiRepository(CONFIG.API_URL),
+      cart: new LocalStorageCartRepository(CONFIG.CART_STORAGE_KEY)
     });
+    const ui = new ShopUI(store, controller);
 
-    const ui = new ShopUI(searchProductsUseCase);
-    ui.connect(controller);
     store.subscribe(state => ui.render(state));
-    ui.render(store.getState());
     controller.init();
   </script>
 </body>
